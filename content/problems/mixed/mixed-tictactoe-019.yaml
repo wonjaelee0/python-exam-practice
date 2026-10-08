@@ -1,0 +1,168 @@
+id: mixed-tictactoe-019
+title: 틱택토 판정
+unit: mixed
+difficulty: 4
+tags: [list.2d, cond.compound, str.count]
+statement: |
+  틱택토(3×3) 판의 상태를 판정하시오. 판은 3줄로 입력되며 `X`, `O`, `.`(빈칸)으로 이루어진다.
+
+  게임 규칙: X가 먼저 두고 둘이 번갈아 둔다. 가로·세로·대각선으로 같은 기호 3개가 이어지면 그 사람이 이기고 게임이 바로 끝난다.
+
+  - 입력 프롬프트: `줄: ` (3번)
+  - 규칙대로는 나올 수 없는 판이면 `잘못된 판입니다`를 출력한다. 다음 중 하나라도 해당하면 잘못된 판이다.
+    - X의 개수가 O의 개수와 같지도, 1 많지도 않다
+    - X와 O가 모두 이겼다
+    - X가 이겼는데 X가 O보다 1개 많지 않다
+    - O가 이겼는데 X와 O의 개수가 같지 않다
+  - 올바른 판이면 `X 승리`, `O 승리`, `무승부`(빈칸 없이 다 찼고 승자 없음), `진행 중` 가운데 하나를 출력한다.
+starter: |
+  board = []
+  for i in range(3):
+      board.append(input("줄: "))
+solution: |
+  board = []
+  for i in range(3):
+      board.append(input("줄: "))
+  lines = []
+  for i in range(3):
+      lines.append(board[i])
+      lines.append(board[0][i] + board[1][i] + board[2][i])
+  lines.append(board[0][0] + board[1][1] + board[2][2])
+  lines.append(board[0][2] + board[1][1] + board[2][0])
+  x_win = "XXX" in lines
+  o_win = "OOO" in lines
+  x = "".join(board).count("X")
+  o = "".join(board).count("O")
+  if not (x == o or x == o + 1) or (x_win and o_win) or (x_win and x != o + 1) or (o_win and x != o):
+      print("잘못된 판입니다")
+  elif x_win:
+      print("X 승리")
+  elif o_win:
+      print("O 승리")
+  elif x + o == 9:
+      print("무승부")
+  else:
+      print("진행 중")
+alt_solutions:
+  - |
+    g = [input("줄: ") for _ in range(3)]
+    cells = g[0] + g[1] + g[2]
+    combos = [(0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (1, 4, 7), (2, 5, 8), (0, 4, 8), (2, 4, 6)]
+    winners = set()
+    for a, b, c in combos:
+        if cells[a] != "." and cells[a] == cells[b] == cells[c]:
+            winners.add(cells[a])
+    nx = cells.count("X")
+    no = cells.count("O")
+    valid = no <= nx <= no + 1
+    if len(winners) == 2:
+        valid = False
+    if "X" in winners and nx != no + 1:
+        valid = False
+    if "O" in winners and nx != no:
+        valid = False
+    if not valid:
+        print("잘못된 판입니다")
+    elif winners:
+        print(list(winners)[0] + " 승리")
+    elif "." not in cells:
+        print("무승부")
+    else:
+        print("진행 중")
+mutants:
+  - name: 기호 개수를 검사하지 않음
+    code: |
+      board = []
+      for i in range(3):
+          board.append(input("줄: "))
+      lines = []
+      for i in range(3):
+          lines.append(board[i])
+          lines.append(board[0][i] + board[1][i] + board[2][i])
+      lines.append(board[0][0] + board[1][1] + board[2][2])
+      lines.append(board[0][2] + board[1][1] + board[2][0])
+      x_win = "XXX" in lines
+      o_win = "OOO" in lines
+      x = "".join(board).count("X")
+      o = "".join(board).count("O")
+      if x_win and o_win:
+          print("잘못된 판입니다")
+      elif x_win:
+          print("X 승리")
+      elif o_win:
+          print("O 승리")
+      elif x + o == 9:
+          print("무승부")
+      else:
+          print("진행 중")
+  - name: 대각선을 확인하지 않음
+    code: |
+      board = []
+      for i in range(3):
+          board.append(input("줄: "))
+      lines = []
+      for i in range(3):
+          lines.append(board[i])
+          lines.append(board[0][i] + board[1][i] + board[2][i])
+      x_win = "XXX" in lines
+      o_win = "OOO" in lines
+      x = "".join(board).count("X")
+      o = "".join(board).count("O")
+      if not (x == o or x == o + 1) or (x_win and o_win) or (x_win and x != o + 1) or (o_win and x != o):
+          print("잘못된 판입니다")
+      elif x_win:
+          print("X 승리")
+      elif o_win:
+          print("O 승리")
+      elif x + o == 9:
+          print("무승부")
+      else:
+          print("진행 중")
+  - name: O가 이긴 판의 개수 조건을 확인하지 않음
+    code: |
+      board = []
+      for i in range(3):
+          board.append(input("줄: "))
+      lines = []
+      for i in range(3):
+          lines.append(board[i])
+          lines.append(board[0][i] + board[1][i] + board[2][i])
+      lines.append(board[0][0] + board[1][1] + board[2][2])
+      lines.append(board[0][2] + board[1][1] + board[2][0])
+      x_win = "XXX" in lines
+      o_win = "OOO" in lines
+      x = "".join(board).count("X")
+      o = "".join(board).count("O")
+      if not (x == o or x == o + 1) or (x_win and o_win) or (x_win and x != o + 1):
+          print("잘못된 판입니다")
+      elif x_win:
+          print("X 승리")
+      elif o_win:
+          print("O 승리")
+      elif x + o == 9:
+          print("무승부")
+      else:
+          print("진행 중")
+tests:
+  - stdin: "XO.\n.XO\n..X\n"
+    public: true
+  - stdin: "XOX\nXOO\nOXX\n"
+    public: true
+  - stdin: "XXX\n...\n...\n"
+    note: X만 3개
+  - stdin: "OOO\nXX.\nXX.\n"
+    note: O가 이겼는데 X가 더 많음
+  - stdin: "XXX\nOOO\n...\n"
+    note: 둘 다 이김
+  - stdin: "X..\n.O.\n...\n"
+  - stdin: "OX.\nOXX\nO..\n"
+  - stdin: "O.X\nOX.\nX..\n"
+    note: 반대쪽 대각선
+  - stdin: ".O.\n...\n...\n"
+    note: O가 먼저 둠
+hints:
+  - "가로 3줄, 세로 3줄, 대각선 2줄을 문자열 8개로 만들어 두면 `\"XXX\" in lines`로 승리를 확인할 수 있습니다."
+  - "X가 먼저 두므로 X의 개수는 O와 같거나 1 많습니다. 이긴 사람이 마지막에 둔 사람이어야 합니다."
+explanation: |
+  판정 순서가 중요합니다. 먼저 '나올 수 없는 판'을 모두 걸러 낸 뒤 승리 → 무승부 → 진행 중 순서로 확인합니다.
+  X가 이겼다면 X가 마지막에 뒀으니 X가 1개 많아야 하고, O가 이겼다면 개수가 같아야 합니다.

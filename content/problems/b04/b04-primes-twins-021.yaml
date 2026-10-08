@@ -1,0 +1,135 @@
+id: b04-primes-twins-021
+title: 구간의 소수와 쌍둥이 소수
+unit: b04
+difficulty: 4
+tags: [loop.nested, loop.break, str.join]
+statement: |
+  정수 a, b(2 ≤ a ≤ b ≤ 2000)를 입력받아 a 이상 b 이하의 소수를 모두 구하시오.
+
+  - 첫째 줄: `소수: 11 13 17 19` — 오름차순, 공백 하나로 구분, **줄 끝 공백 없음**
+  - 둘째 줄: `개수: 4`
+  - 셋째 줄: `쌍둥이 소수: 2쌍` — 구간 안의 두 소수 차가 2인 쌍의 수 (예: 11과 13)
+  - 구간에 소수가 없으면 `소수가 없습니다` 한 줄만 출력한다.
+  - 입력 프롬프트: `a: `, `b: `
+starter: |
+  a = int(input("a: "))
+  b = int(input("b: "))
+  primes = []
+solution: |
+  a = int(input("a: "))
+  b = int(input("b: "))
+  primes = []
+  for n in range(a, b + 1):
+      if n < 2:
+          continue
+      is_prime = True
+      d = 2
+      while d * d <= n:
+          if n % d == 0:
+              is_prime = False
+              break
+          d += 1
+      if is_prime:
+          primes.append(n)
+  if len(primes) == 0:
+      print("소수가 없습니다")
+  else:
+      print("소수: " + " ".join([str(p) for p in primes]))
+      print(f"개수: {len(primes)}")
+      twins = 0
+      for i in range(len(primes) - 1):
+          if primes[i + 1] - primes[i] == 2:
+              twins += 1
+      print(f"쌍둥이 소수: {twins}쌍")
+alt_solutions:
+  - |
+    a = int(input("a: "))
+    b = int(input("b: "))
+    sieve = [True] * (b + 1)
+    sieve[0] = False
+    sieve[1] = False
+    for i in range(2, b + 1):
+        if sieve[i]:
+            for j in range(i * i, b + 1, i):
+                sieve[j] = False
+    primes = [n for n in range(a, b + 1) if sieve[n]]
+    if not primes:
+        print("소수가 없습니다")
+    else:
+        line = "소수:"
+        for p in primes:
+            line += " " + str(p)
+        print(line)
+        print("개수:", len(primes))
+        twins = 0
+        for p in primes:
+            if p + 2 <= b and sieve[p + 2]:
+                twins += 1
+        print("쌍둥이 소수: " + str(twins) + "쌍")
+mutants:
+  - name: 제곱수를 소수로 잘못 판정 (d * d < n)
+    code: |
+      a = int(input("a: "))
+      b = int(input("b: "))
+      primes = []
+      for n in range(a, b + 1):
+          is_prime = True
+          d = 2
+          while d * d < n:
+              if n % d == 0:
+                  is_prime = False
+                  break
+              d += 1
+          if is_prime:
+              primes.append(n)
+      if len(primes) == 0:
+          print("소수가 없습니다")
+      else:
+          print("소수: " + " ".join([str(p) for p in primes]))
+          print(f"개수: {len(primes)}")
+          twins = 0
+          for i in range(len(primes) - 1):
+              if primes[i + 1] - primes[i] == 2:
+                  twins += 1
+          print(f"쌍둥이 소수: {twins}쌍")
+  - name: b를 포함하지 않음
+    code: |
+      a = int(input("a: "))
+      b = int(input("b: "))
+      primes = []
+      for n in range(a, b):
+          is_prime = True
+          d = 2
+          while d * d <= n:
+              if n % d == 0:
+                  is_prime = False
+                  break
+              d += 1
+          if is_prime:
+              primes.append(n)
+      if len(primes) == 0:
+          print("소수가 없습니다")
+      else:
+          print("소수: " + " ".join([str(p) for p in primes]))
+          print(f"개수: {len(primes)}")
+          twins = 0
+          for i in range(len(primes) - 1):
+              if primes[i + 1] - primes[i] == 2:
+                  twins += 1
+          print(f"쌍둥이 소수: {twins}쌍")
+tests:
+  - stdin: "10\n20\n"
+    public: true
+  - stdin: "24\n28\n"
+    note: 소수가 없음
+  - stdin: "2\n10\n"
+    note: (3, 5)와 (5, 7)
+  - stdin: "20\n50\n"
+    note: 25, 49 같은 제곱수 주의
+  - stdin: "2\n2\n"
+  - stdin: "1990\n2000\n"
+hints:
+  - "n이 소수인지는 2부터 √n까지(`d * d <= n`) 나누어떨어지는지 보면 됩니다. 나누어떨어지면 `break`."
+  - "쌍둥이 소수는 연속한 두 소수의 차가 2인 경우입니다."
+explanation: |
+  `d * d <= n`까지만 검사해도 충분합니다 (약수는 짝을 이루므로). `<`로 쓰면 25 = 5 × 5 같은 제곱수를 놓칩니다.

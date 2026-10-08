@@ -1,0 +1,96 @@
+id: b05-median-mode-026
+title: 중앙값과 최빈값
+unit: b05
+difficulty: 4
+tags: [list.sorted, dict.count-get, io.fstring-format]
+statement: |
+  공백으로 구분된 정수들을 입력받아 다음 세 줄을 출력하시오.
+
+  - `정렬: [1, 1, 2, 3, 4, 5, 6, 9]` — 오름차순 정렬한 리스트
+  - `중앙값: 3.5` — 개수가 홀수면 가운데 수, 짝수면 가운데 두 수의 평균. 항상 소수점 첫째 자리까지
+  - `최빈값: [1]` — 가장 많이 나온 수를 **모두** 오름차순 리스트로 (모든 수가 한 번씩이면 모든 수)
+  - 입력 프롬프트: `정수들: `
+starter: |
+  nums = list(map(int, input("정수들: ").split()))
+solution: |
+  nums = list(map(int, input("정수들: ").split()))
+  s = sorted(nums)
+  n = len(s)
+  if n % 2 == 1:
+      median = s[n // 2]
+  else:
+      median = (s[n // 2 - 1] + s[n // 2]) / 2
+  counts = {}
+  for x in s:
+      counts[x] = counts.get(x, 0) + 1
+  top = max(counts.values())
+  modes = []
+  for x in counts:
+      if counts[x] == top:
+          modes.append(x)
+  print(f"정렬: {s}")
+  print(f"중앙값: {median:.1f}")
+  print(f"최빈값: {modes}")
+alt_solutions:
+  - |
+    nums = list(map(int, input("정수들: ").split()))
+    nums.sort()
+    half = len(nums) // 2
+    if len(nums) % 2 == 0:
+        med = (nums[half - 1] + nums[half]) / 2
+    else:
+        med = float(nums[half])
+    best = 0
+    for v in set(nums):
+        if nums.count(v) > best:
+            best = nums.count(v)
+    modes = sorted([v for v in set(nums) if nums.count(v) == best])
+    print("정렬:", nums)
+    print("중앙값:", format(med, ".1f"))
+    print("최빈값:", modes)
+mutants:
+  - name: 정렬 전 리스트로 중앙값
+    code: |
+      nums = list(map(int, input("정수들: ").split()))
+      n = len(nums)
+      if n % 2 == 1:
+          median = nums[n // 2]
+      else:
+          median = (nums[n // 2 - 1] + nums[n // 2]) / 2
+      counts = {}
+      for x in nums:
+          counts[x] = counts.get(x, 0) + 1
+      top = max(counts.values())
+      print(f"정렬: {sorted(nums)}")
+      print(f"중앙값: {median:.1f}")
+      print(f"최빈값: {sorted([x for x in counts if counts[x] == top])}")
+  - name: 최빈값을 처음 나온 순서로
+    code: |
+      nums = list(map(int, input("정수들: ").split()))
+      s = sorted(nums)
+      n = len(s)
+      if n % 2 == 1:
+          median = s[n // 2]
+      else:
+          median = (s[n // 2 - 1] + s[n // 2]) / 2
+      counts = {}
+      for x in nums:
+          counts[x] = counts.get(x, 0) + 1
+      top = max(counts.values())
+      print(f"정렬: {s}")
+      print(f"중앙값: {median:.1f}")
+      print(f"최빈값: {[x for x in counts if counts[x] == top]}")
+tests:
+  - stdin: "3 1 4 1 5 9 2 6\n"
+    public: true
+  - stdin: "5 2 5 2 7\n"
+    note: 최빈값이 둘
+  - stdin: "4\n"
+  - stdin: "20 10\n"
+    note: 모두 한 번씩, 정렬 순서로
+  - stdin: "-3 -1 -2\n"
+hints:
+  - "개수 n이 짝수면 가운데 두 수의 인덱스는 `n // 2 - 1`과 `n // 2`입니다."
+  - "정렬된 리스트로 개수를 세면 딕셔너리 키도 오름차순으로 들어갑니다."
+explanation: |
+  중앙값은 반드시 **정렬된** 리스트에서 구합니다. 최빈값은 개수 딕셔너리에서 최댓값과 같은 키를 모두 모읍니다.

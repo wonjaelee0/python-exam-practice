@@ -1,0 +1,155 @@
+id: mixed-spiral-012
+title: 표를 나선형으로 읽기
+unit: mixed
+difficulty: 5
+tags: [list.2d, loop.while, index.boundary]
+statement: |
+  r행 c열의 표를 입력받아, 왼쪽 위에서 시작해 **시계 방향 나선**으로 읽은 순서대로 출력하시오.
+
+  - 입력 프롬프트: 크기는 `크기: ` (예: `3 4` → 3행 4열), 각 행은 `행: ` (공백으로 구분된 값 c개)
+  - 출력 형식: `결과: 1 2 3 6 9 8 7 4 5` (값을 공백 하나로 구분)
+  - 1 ≤ r, c ≤ 10
+
+  예) 3행 3열 표를 오른쪽 → 아래 → 왼쪽 → 위 순서로, 바깥부터 안쪽으로 돌며 읽는다.
+
+  ```
+  1 2 3
+  4 5 6
+  7 8 9
+  ```
+  → `1 2 3 6 9 8 7 4 5`
+starter: |
+  r, c = input("크기: ").split()
+  r = int(r)
+  c = int(c)
+  grid = []
+  for i in range(r):
+      grid.append(input("행: ").split())
+solution: |
+  r, c = input("크기: ").split()
+  r = int(r)
+  c = int(c)
+  grid = []
+  for i in range(r):
+      grid.append(input("행: ").split())
+  top = 0
+  bottom = r - 1
+  left = 0
+  right = c - 1
+  result = []
+  while top <= bottom and left <= right:
+      for j in range(left, right + 1):
+          result.append(grid[top][j])
+      top += 1
+      for i in range(top, bottom + 1):
+          result.append(grid[i][right])
+      right -= 1
+      if top <= bottom:
+          for j in range(right, left - 1, -1):
+              result.append(grid[bottom][j])
+          bottom -= 1
+      if left <= right:
+          for i in range(bottom, top - 1, -1):
+              result.append(grid[i][left])
+          left += 1
+  print("결과: " + " ".join(result))
+alt_solutions:
+  - |
+    size = input("크기: ").split()
+    r = int(size[0])
+    c = int(size[1])
+    grid = [input("행: ").split() for _ in range(r)]
+    visited = [[False] * c for _ in range(r)]
+    dr = [0, 1, 0, -1]
+    dc = [1, 0, -1, 0]
+    d = 0
+    i = 0
+    j = 0
+    out = []
+    for _ in range(r * c):
+        out.append(grid[i][j])
+        visited[i][j] = True
+        ni = i + dr[d]
+        nj = j + dc[d]
+        if not (0 <= ni < r and 0 <= nj < c) or visited[ni][nj]:
+            d = (d + 1) % 4
+            ni = i + dr[d]
+            nj = j + dc[d]
+        i = ni
+        j = nj
+    print("결과:", " ".join(out))
+mutants:
+  - name: 남은 행·열이 있는지 확인하지 않고 돎
+    code: |
+      r, c = input("크기: ").split()
+      r = int(r)
+      c = int(c)
+      grid = []
+      for i in range(r):
+          grid.append(input("행: ").split())
+      top = 0
+      bottom = r - 1
+      left = 0
+      right = c - 1
+      result = []
+      while top <= bottom and left <= right:
+          for j in range(left, right + 1):
+              result.append(grid[top][j])
+          top += 1
+          for i in range(top, bottom + 1):
+              result.append(grid[i][right])
+          right -= 1
+          for j in range(right, left - 1, -1):
+              result.append(grid[bottom][j])
+          bottom -= 1
+          for i in range(bottom, top - 1, -1):
+              result.append(grid[i][left])
+          left += 1
+      print("결과: " + " ".join(result))
+  - name: 왼쪽 열을 위에서 아래로 읽음
+    code: |
+      r, c = input("크기: ").split()
+      r = int(r)
+      c = int(c)
+      grid = []
+      for i in range(r):
+          grid.append(input("행: ").split())
+      top = 0
+      bottom = r - 1
+      left = 0
+      right = c - 1
+      result = []
+      while top <= bottom and left <= right:
+          for j in range(left, right + 1):
+              result.append(grid[top][j])
+          top += 1
+          for i in range(top, bottom + 1):
+              result.append(grid[i][right])
+          right -= 1
+          if top <= bottom:
+              for j in range(right, left - 1, -1):
+                  result.append(grid[bottom][j])
+              bottom -= 1
+          if left <= right:
+              for i in range(top, bottom + 1):
+                  result.append(grid[i][left])
+              left += 1
+      print("결과: " + " ".join(result))
+tests:
+  - stdin: "3 3\n1 2 3\n4 5 6\n7 8 9\n"
+    public: true
+  - stdin: "3 4\n1 2 3 4\n5 6 7 8\n9 10 11 12\n"
+    public: true
+  - stdin: "1 4\n1 2 3 4\n"
+    note: 한 줄짜리 표
+  - stdin: "4 1\n1\n2\n3\n4\n"
+    note: 한 열짜리 표
+  - stdin: "4 4\n1 2 3 4\n5 6 7 8\n9 10 11 12\n13 14 15 16\n"
+  - stdin: "1 1\n7\n"
+  - stdin: "2 3\na b c\nd e f\n"
+hints:
+  - "위·아래·왼쪽·오른쪽 경계 `top`, `bottom`, `left`, `right`를 두고, 한 변을 읽을 때마다 그 경계를 한 칸 안으로 줄입니다."
+  - "한 줄짜리 표(`1 4`)처럼 아래 변이나 왼쪽 변을 읽기 전에 이미 경계가 엇갈렸을 수 있습니다. 읽기 전에 `top <= bottom`, `left <= right`를 다시 확인하세요."
+explanation: |
+  경계를 줄여 가는 방식이 가장 흔합니다. 정사각형에서는 잘 되다가 직사각형(`1×4`, `4×1`)에서 같은 칸을 두 번 읽는 실수가 많습니다.
+  다른 방법으로, 방향 `(0,1) → (1,0) → (0,-1) → (-1,0)`을 돌려 가며 '범위를 벗어나거나 이미 방문한 칸이면 방향을 바꾸는' 시뮬레이션도 있습니다.

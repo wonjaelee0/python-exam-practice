@@ -1,0 +1,83 @@
+id: b04-euclid-steps-022
+title: 유클리드 호제법 과정 출력
+unit: b04
+difficulty: 4
+tags: [loop.while, op.mod, var.multi-assign]
+statement: |
+  두 자연수 a, b를 입력받아 유클리드 호제법으로 최대공약수를 구하는 **과정**과 결과를 출력하시오.
+
+  - 큰 수를 x, 작은 수를 y로 두고, y가 0이 될 때까지 `x = y * 몫 + 나머지` 형식의 줄을 출력한 뒤 `x, y = y, 나머지`로 바꾼다.
+    (예: `48 = 18 * 2 + 12`)
+  - 마지막 두 줄: `최대공약수: 6`, `최소공배수: 144`
+  - 입력 프롬프트: `a: `, `b: `
+starter: |
+  a = int(input("a: "))
+  b = int(input("b: "))
+solution: |
+  a = int(input("a: "))
+  b = int(input("b: "))
+  x = a
+  y = b
+  if x < y:
+      x, y = y, x
+  while y != 0:
+      q = x // y
+      r = x % y
+      print(f"{x} = {y} * {q} + {r}")
+      x, y = y, r
+  print(f"최대공약수: {x}")
+  print(f"최소공배수: {a * b // x}")
+alt_solutions:
+  - |
+    a = int(input("a: "))
+    b = int(input("b: "))
+    big = max(a, b)
+    small = min(a, b)
+    while True:
+        r = big % small
+        print(str(big) + " = " + str(small) + " * " + str(big // small) + " + " + str(r))
+        if r == 0:
+            break
+        big = small
+        small = r
+    print("최대공약수:", small)
+    print("최소공배수:", a * b // small)
+mutants:
+  - name: 큰 수·작은 수를 정리하지 않음
+    code: |
+      a = int(input("a: "))
+      b = int(input("b: "))
+      x = a
+      y = b
+      while y != 0:
+          q = x // y
+          r = x % y
+          print(f"{x} = {y} * {q} + {r}")
+          x, y = y, r
+      print(f"최대공약수: {x}")
+      print(f"최소공배수: {a * b // x}")
+  - name: 최소공배수를 / 로 (실수)
+    code: |
+      a = int(input("a: "))
+      b = int(input("b: "))
+      x, y = max(a, b), min(a, b)
+      while y != 0:
+          print(f"{x} = {y} * {x // y} + {x % y}")
+          x, y = y, x % y
+      print(f"최대공약수: {x}")
+      print(f"최소공배수: {a * b / x}")
+tests:
+  - stdin: "48\n18\n"
+    public: true
+  - stdin: "18\n48\n"
+    note: 작은 수가 먼저 입력됨
+  - stdin: "7\n13\n"
+    note: 서로소
+  - stdin: "12\n12\n"
+  - stdin: "100\n75\n"
+  - stdin: "1\n99\n"
+hints:
+  - "`x, y = y, x % y`를 반복하면 y가 0이 될 때의 x가 최대공약수입니다."
+  - "최소공배수 = a × b ÷ 최대공약수 (정수이므로 `//`)"
+explanation: |
+  유클리드 호제법: gcd(x, y) = gcd(y, x % y). 나머지가 0이 되면 그때의 나누는 수가 최대공약수입니다.

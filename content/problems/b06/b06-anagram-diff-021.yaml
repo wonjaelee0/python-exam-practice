@@ -1,0 +1,94 @@
+id: b06-anagram-diff-021
+title: 애너그램 판별과 남는 글자
+unit: b06
+difficulty: 4
+tags: [dict.count-get, str.clean-pipeline, list.sorted]
+statement: |
+  두 문장을 입력받아, 공백을 무시하고 대소문자를 구분하지 않을 때 같은 글자를 같은 개수만큼 가지고 있으면(애너그램) `애너그램입니다`를 출력하시오.
+
+  애너그램이 아니면 다음 세 줄을 출력한다.
+  - `애너그램이 아닙니다`
+  - `첫 문장에 더 많은 글자: ['e', 'h', 'l']` — 첫 문장에서 더 많이 나온 글자들 (정렬된 리스트, 중복 없이)
+  - `둘째 문장에 더 많은 글자: ['d', 'r', 'w']` — 둘째 문장에서 더 많이 나온 글자들
+
+  (위 예시는 `hello`와 `world`를 입력한 경우)
+
+  - 입력 프롬프트: `첫 문장: `, `둘째 문장: `
+starter: |
+  a = input("첫 문장: ").replace(" ", "").lower()
+  b = input("둘째 문장: ").replace(" ", "").lower()
+solution: |
+  a = input("첫 문장: ").replace(" ", "").lower()
+  b = input("둘째 문장: ").replace(" ", "").lower()
+  ca = {}
+  for ch in a:
+      ca[ch] = ca.get(ch, 0) + 1
+  cb = {}
+  for ch in b:
+      cb[ch] = cb.get(ch, 0) + 1
+  if ca == cb:
+      print("애너그램입니다")
+  else:
+      more_a = sorted([ch for ch in ca if ca[ch] > cb.get(ch, 0)])
+      more_b = sorted([ch for ch in cb if cb[ch] > ca.get(ch, 0)])
+      print("애너그램이 아닙니다")
+      print(f"첫 문장에 더 많은 글자: {more_a}")
+      print(f"둘째 문장에 더 많은 글자: {more_b}")
+alt_solutions:
+  - |
+    a = input("첫 문장: ").replace(" ", "").lower()
+    b = input("둘째 문장: ").replace(" ", "").lower()
+    if sorted(a) == sorted(b):
+        print("애너그램입니다")
+    else:
+        letters = sorted(set(a) | set(b))
+        more_a = [ch for ch in letters if a.count(ch) > b.count(ch)]
+        more_b = [ch for ch in letters if b.count(ch) > a.count(ch)]
+        print("애너그램이 아닙니다")
+        print("첫 문장에 더 많은 글자:", more_a)
+        print("둘째 문장에 더 많은 글자:", more_b)
+mutants:
+  - name: 글자 종류(set)만 비교 (개수 무시)
+    code: |
+      a = input("첫 문장: ").replace(" ", "").lower()
+      b = input("둘째 문장: ").replace(" ", "").lower()
+      if set(a) == set(b):
+          print("애너그램입니다")
+      else:
+          print("애너그램이 아닙니다")
+          print(f"첫 문장에 더 많은 글자: {sorted(set(a) - set(b))}")
+          print(f"둘째 문장에 더 많은 글자: {sorted(set(b) - set(a))}")
+  - name: 대소문자를 구분함
+    code: |
+      a = input("첫 문장: ").replace(" ", "")
+      b = input("둘째 문장: ").replace(" ", "")
+      ca = {}
+      for ch in a:
+          ca[ch] = ca.get(ch, 0) + 1
+      cb = {}
+      for ch in b:
+          cb[ch] = cb.get(ch, 0) + 1
+      if ca == cb:
+          print("애너그램입니다")
+      else:
+          more_a = sorted([ch for ch in ca if ca[ch] > cb.get(ch, 0)])
+          more_b = sorted([ch for ch in cb if cb[ch] > ca.get(ch, 0)])
+          print("애너그램이 아닙니다")
+          print(f"첫 문장에 더 많은 글자: {more_a}")
+          print(f"둘째 문장에 더 많은 글자: {more_b}")
+tests:
+  - stdin: "Listen\nSilent\n"
+    public: true
+  - stdin: "Dormitory\ndirty Room\n"
+    note: 공백과 대소문자 무시
+  - stdin: "aab\nabb\n"
+    note: 글자 종류는 같지만 개수가 다름
+  - stdin: "hello\nworld\n"
+    public: true
+  - stdin: "abc\nabcd\n"
+    note: 한쪽만 남는 글자
+hints:
+  - "글자별 개수를 딕셔너리로 세면, 두 딕셔너리를 `==`로 바로 비교할 수 있습니다 (순서 무관)."
+  - "`cb.get(ch, 0)`으로 상대 문장에 없는 글자는 0개로 봅니다."
+explanation: |
+  애너그램은 '글자별 개수'가 모두 같아야 합니다. `set`으로 비교하면 개수를 놓쳐 `aab`와 `abb`를 같다고 판단하는 실수가 생깁니다.

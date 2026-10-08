@@ -1,0 +1,112 @@
+id: b05-minesweeper-023
+title: 지뢰찾기 숫자 채우기
+unit: b05
+difficulty: 5
+tags: [list.2d, loop.nested, cond.boundary]
+statement: |
+  지뢰찾기 판을 입력받아, 빈칸(`.`)마다 주변 8칸(가로·세로·대각선)에 있는 지뢰(`*`)의 개수를 채워 출력하시오. 지뢰는 `*` 그대로 둔다.
+
+  - 입력 프롬프트: `행: `, `열: `, 이어서 판의 각 줄은 `줄: ` (공백 없이 열 개수만큼의 `*`와 `.`)
+  - 출력: 판의 각 줄을 한 줄씩 (예: `1*21`)
+  - 판 밖의 칸은 세지 않는다.
+
+  예) 3행 4열 판 `*...` / `..*.` / `....` → 출력 `*211` / `12*1` / `0111`
+starter: |
+  r = int(input("행: "))
+  c = int(input("열: "))
+  board = []
+  for i in range(r):
+      board.append(input("줄: "))
+solution: |
+  r = int(input("행: "))
+  c = int(input("열: "))
+  board = []
+  for i in range(r):
+      board.append(input("줄: "))
+  for i in range(r):
+      line = ""
+      for j in range(c):
+          if board[i][j] == "*":
+              line += "*"
+          else:
+              count = 0
+              for di in [-1, 0, 1]:
+                  for dj in [-1, 0, 1]:
+                      ni = i + di
+                      nj = j + dj
+                      if 0 <= ni < r and 0 <= nj < c and board[ni][nj] == "*":
+                          count += 1
+              line += str(count)
+      print(line)
+alt_solutions:
+  - |
+    r = int(input("행: "))
+    c = int(input("열: "))
+    padded = ["." * (c + 2)]
+    for i in range(r):
+        padded.append("." + input("줄: ") + ".")
+    padded.append("." * (c + 2))
+    for i in range(1, r + 1):
+        out = []
+        for j in range(1, c + 1):
+            if padded[i][j] == "*":
+                out.append("*")
+            else:
+                n = 0
+                for row in padded[i - 1:i + 2]:
+                    n += row[j - 1:j + 2].count("*")
+                out.append(str(n))
+        print("".join(out))
+mutants:
+  - name: 판 밖 검사를 빠뜨림 (음수 인덱스가 반대편을 가리킴)
+    code: |
+      r = int(input("행: "))
+      c = int(input("열: "))
+      board = [input("줄: ") for i in range(r)]
+      for i in range(r):
+          line = ""
+          for j in range(c):
+              if board[i][j] == "*":
+                  line += "*"
+              else:
+                  count = 0
+                  for di in [-1, 0, 1]:
+                      for dj in [-1, 0, 1]:
+                          ni = i + di
+                          nj = j + dj
+                          if ni < r and nj < c and board[ni][nj] == "*":
+                              count += 1
+                  line += str(count)
+          print(line)
+  - name: 대각선을 세지 않음
+    code: |
+      r = int(input("행: "))
+      c = int(input("열: "))
+      board = [input("줄: ") for i in range(r)]
+      for i in range(r):
+          line = ""
+          for j in range(c):
+              if board[i][j] == "*":
+                  line += "*"
+              else:
+                  count = 0
+                  for di, dj in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                      ni = i + di
+                      nj = j + dj
+                      if 0 <= ni < r and 0 <= nj < c and board[ni][nj] == "*":
+                          count += 1
+                  line += str(count)
+          print(line)
+tests:
+  - stdin: "3\n4\n*...\n..*.\n....\n"
+    public: true
+  - stdin: "1\n1\n.\n"
+  - stdin: "1\n1\n*\n"
+  - stdin: "2\n2\n**\n**\n"
+  - stdin: "4\n5\n.....\n.*.*.\n.....\n*...*\n"
+    note: 가장자리 지뢰
+hints:
+  - "주변 8칸은 `di`, `dj`를 각각 -1, 0, 1로 바꿔 가며 확인합니다 (0, 0은 자기 자신이지만 빈칸이라 지뢰가 아님)."
+  - "파이썬에서 `board[-1]`은 마지막 줄을 가리킵니다. 그래서 `0 <= ni < r` 같은 범위 검사가 꼭 필요해요."
+explanation: |
+  2차원 격자 문제의 기본은 '이웃 좌표 계산 + 범위 검사'입니다. 음수 인덱스가 오류 없이 반대편을 가리키는 점이 함정입니다.

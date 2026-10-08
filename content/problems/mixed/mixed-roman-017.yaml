@@ -1,0 +1,180 @@
+id: mixed-roman-017
+title: 로마 숫자 변환기
+unit: mixed
+difficulty: 4
+tags: [dict.lookup, loop.while, list.parallel]
+statement: |
+  정수와 로마 숫자를 서로 바꾸시오.
+
+  | 기호 | I | V | X | L | C | D | M |
+  |---|---|---|---|---|---|---|---|
+  | 값 | 1 | 5 | 10 | 50 | 100 | 500 | 1000 |
+
+  - 큰 값부터 적고, 4·9·40·90·400·900은 빼기 표기를 쓴다: `IV`(4), `IX`(9), `XL`(40), `XC`(90), `CD`(400), `CM`(900)
+    - 예: 1994 → `MCMXCIV` (1000 + 900 + 90 + 4), 58 → `LVIII` (50 + 5 + 3)
+  - 입력 프롬프트: `모드(1: 정수→로마, 2: 로마→정수): `, `값: `
+  - 출력 형식: `결과: MCMXCIV`, `결과: 1994`
+  - 1번에서 값이 1~3999 범위를 벗어나면 `변환할 수 없습니다`를 출력한다.
+  - 2번의 로마 숫자는 항상 올바른 표기이며, 소문자로 입력될 수도 있다.
+  - 모드가 1, 2가 아니면 `값: `을 입력받지 않고 `잘못된 모드입니다`를 출력한다.
+starter: |
+  ROMAN = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
+solution: |
+  ROMAN = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
+  VALUES = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
+  SYMBOLS = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"]
+  mode = input("모드(1: 정수→로마, 2: 로마→정수): ")
+  if mode == "1":
+      n = int(input("값: "))
+      if n < 1 or n > 3999:
+          print("변환할 수 없습니다")
+      else:
+          result = ""
+          for i in range(len(VALUES)):
+              while n >= VALUES[i]:
+                  result += SYMBOLS[i]
+                  n -= VALUES[i]
+          print(f"결과: {result}")
+  elif mode == "2":
+      s = input("값: ").upper()
+      total = 0
+      for i in range(len(s)):
+          if i + 1 < len(s) and ROMAN[s[i]] < ROMAN[s[i + 1]]:
+              total -= ROMAN[s[i]]
+          else:
+              total += ROMAN[s[i]]
+      print(f"결과: {total}")
+  else:
+      print("잘못된 모드입니다")
+alt_solutions:
+  - |
+    ROMAN = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
+    mode = input("모드(1: 정수→로마, 2: 로마→정수): ")
+    if mode != "1" and mode != "2":
+        print("잘못된 모드입니다")
+    else:
+        v = input("값: ")
+        if mode == "1":
+            n = int(v)
+            if 1 <= n <= 3999:
+                ones = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"]
+                tens = ["", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"]
+                hundreds = ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"]
+                thousands = ["", "M", "MM", "MMM"]
+                print("결과:", thousands[n // 1000] + hundreds[n // 100 % 10] + tens[n // 10 % 10] + ones[n % 10])
+            else:
+                print("변환할 수 없습니다")
+        else:
+            total = 0
+            prev = 0
+            for ch in reversed(v.upper()):
+                val = ROMAN[ch]
+                if val < prev:
+                    total -= val
+                else:
+                    total += val
+                prev = val
+            print("결과:", total)
+mutants:
+  - name: 로마→정수에서 빼기 표기를 무시
+    code: |
+      ROMAN = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
+      VALUES = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
+      SYMBOLS = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"]
+      mode = input("모드(1: 정수→로마, 2: 로마→정수): ")
+      if mode == "1":
+          n = int(input("값: "))
+          if n < 1 or n > 3999:
+              print("변환할 수 없습니다")
+          else:
+              result = ""
+              for i in range(len(VALUES)):
+                  while n >= VALUES[i]:
+                      result += SYMBOLS[i]
+                      n -= VALUES[i]
+              print(f"결과: {result}")
+      elif mode == "2":
+          s = input("값: ").upper()
+          total = 0
+          for ch in s:
+              total += ROMAN[ch]
+          print(f"결과: {total}")
+      else:
+          print("잘못된 모드입니다")
+  - name: 정수→로마에서 빼기 표기를 쓰지 않음 (4 → IIII)
+    code: |
+      ROMAN = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
+      VALUES = [1000, 500, 100, 50, 10, 5, 1]
+      SYMBOLS = ["M", "D", "C", "L", "X", "V", "I"]
+      mode = input("모드(1: 정수→로마, 2: 로마→정수): ")
+      if mode == "1":
+          n = int(input("값: "))
+          if n < 1 or n > 3999:
+              print("변환할 수 없습니다")
+          else:
+              result = ""
+              for i in range(len(VALUES)):
+                  while n >= VALUES[i]:
+                      result += SYMBOLS[i]
+                      n -= VALUES[i]
+              print(f"결과: {result}")
+      elif mode == "2":
+          s = input("값: ").upper()
+          total = 0
+          for i in range(len(s)):
+              if i + 1 < len(s) and ROMAN[s[i]] < ROMAN[s[i + 1]]:
+                  total -= ROMAN[s[i]]
+              else:
+                  total += ROMAN[s[i]]
+          print(f"결과: {total}")
+      else:
+          print("잘못된 모드입니다")
+  - name: 0을 범위 밖으로 보지 않음
+    code: |
+      ROMAN = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
+      VALUES = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
+      SYMBOLS = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"]
+      mode = input("모드(1: 정수→로마, 2: 로마→정수): ")
+      if mode == "1":
+          n = int(input("값: "))
+          if n > 3999:
+              print("변환할 수 없습니다")
+          else:
+              result = ""
+              for i in range(len(VALUES)):
+                  while n >= VALUES[i]:
+                      result += SYMBOLS[i]
+                      n -= VALUES[i]
+              print(f"결과: {result}")
+      elif mode == "2":
+          s = input("값: ").upper()
+          total = 0
+          for i in range(len(s)):
+              if i + 1 < len(s) and ROMAN[s[i]] < ROMAN[s[i + 1]]:
+                  total -= ROMAN[s[i]]
+              else:
+                  total += ROMAN[s[i]]
+          print(f"결과: {total}")
+      else:
+          print("잘못된 모드입니다")
+tests:
+  - stdin: "1\n1994\n"
+    public: true
+  - stdin: "2\nMCMXCIV\n"
+    public: true
+  - stdin: "1\n3999\n"
+  - stdin: "1\n0\n"
+    note: 범위 밖
+  - stdin: "2\niv\n"
+    note: 소문자 입력
+  - stdin: "1\n58\n"
+  - stdin: "2\nMMXXVI\n"
+  - stdin: "3\n"
+    note: 잘못된 모드
+  - stdin: "1\n4000\n"
+hints:
+  - "정수→로마: `[1000, 900, 500, 400, …, 1]`과 `[\"M\", \"CM\", \"D\", \"CD\", …, \"I\"]`를 나란히 두고, 큰 값부터 뺄 수 있는 만큼 빼며 기호를 붙입니다."
+  - "로마→정수: 바로 오른쪽 기호가 더 크면 지금 기호의 값은 **뺍니다** (`IV` = -1 + 5)."
+explanation: |
+  빼기 표기 6개(900, 400, 90, 40, 9, 4)를 표에 미리 넣어 두면 정수→로마가 '큰 값부터 탐욕적으로 빼기'로 끝납니다.
+  로마→정수는 왼쪽에서 오른쪽으로 보며, 다음 기호보다 작은 기호만 빼면 됩니다.

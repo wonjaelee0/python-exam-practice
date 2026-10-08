@@ -1,0 +1,67 @@
+id: b04-number-pyramid-025
+title: 숫자 피라미드 (1 121 12321)
+unit: b04
+difficulty: 4
+tags: [loop.nested, str.concat, loop.range-reverse]
+statement: |
+  1 이상 9 이하의 정수 n을 입력받아 n줄짜리 숫자 피라미드를 출력하시오.
+
+  - i번째 줄: 공백 `n - i`개, 그다음 1부터 i까지 올라갔다가 다시 1까지 내려오는 숫자를 **붙여서** 출력 (예: i = 3 → `12321`)
+  - 줄 끝에는 공백이 없어야 한다.
+  - 입력 프롬프트: `줄 수: `
+
+  n이 4일 때 프롬프트 다음에 출력되는 피라미드:
+  ```
+     1
+    121
+   12321
+  1234321
+  ```
+starter: |
+  n = int(input("줄 수: "))
+solution: |
+  n = int(input("줄 수: "))
+  for i in range(1, n + 1):
+      line = " " * (n - i)
+      for j in range(1, i + 1):
+          line += str(j)
+      for j in range(i - 1, 0, -1):
+          line += str(j)
+      print(line)
+alt_solutions:
+  - |
+    n = int(input("줄 수: "))
+    for i in range(1, n + 1):
+        up = ""
+        for j in range(1, i + 1):
+            up += str(j)
+        print(" " * (n - i) + up + up[:-1][::-1])
+mutants:
+  - name: 꼭짓점 숫자를 두 번 씀
+    code: |
+      n = int(input("줄 수: "))
+      for i in range(1, n + 1):
+          line = " " * (n - i)
+          for j in range(1, i + 1):
+              line += str(j)
+          for j in range(i, 0, -1):
+              line += str(j)
+          print(line)
+  - name: 내려오는 부분 누락
+    code: |
+      n = int(input("줄 수: "))
+      for i in range(1, n + 1):
+          line = " " * (n - i)
+          for j in range(1, i + 1):
+              line += str(j)
+          print(line)
+tests:
+  - stdin: "4\n"
+    public: true
+  - stdin: "1\n"
+  - stdin: "9\n"
+  - stdin: "2\n"
+hints:
+  - "올라가는 부분은 `range(1, i + 1)`, 내려오는 부분은 `range(i - 1, 0, -1)`입니다."
+explanation: |
+  한 줄을 문자열로 조립한 뒤 한 번에 출력하면 줄 끝 공백 문제를 피할 수 있습니다.

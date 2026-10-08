@@ -1,0 +1,141 @@
+id: b03-next-date-017
+title: 날짜 검사와 다음 날 구하기
+unit: b03
+difficulty: 4
+tags: [cond.nested-if, cond.logic-and-or, cond.boundary]
+statement: |
+  연도·월·일을 정수로 입력받아 올바른 날짜인지 검사하고, 올바르면 다음 날의 날짜를 출력하시오.
+
+  - 월은 1~12, 일은 1부터 그 달의 마지막 날까지
+  - 4·6·9·11월은 30일, 2월은 윤년이면 29일·아니면 28일, 나머지 달은 31일
+  - 윤년: 4의 배수이면서 100의 배수가 아니거나, 400의 배수인 해
+  - 입력 프롬프트: `연도: `, `월: `, `일: `
+  - 올바르면 `올바른 날짜입니다`와 `다음 날: 2024년 3월 1일` 두 줄
+  - 올바르지 않으면 `올바르지 않은 날짜입니다` 한 줄
+starter: |
+  y = int(input("연도: "))
+  m = int(input("월: "))
+  d = int(input("일: "))
+solution: |
+  y = int(input("연도: "))
+  m = int(input("월: "))
+  d = int(input("일: "))
+  leap = (y % 4 == 0 and y % 100 != 0) or y % 400 == 0
+  if m < 1 or m > 12:
+      last = 0
+  elif m == 2:
+      if leap:
+          last = 29
+      else:
+          last = 28
+  elif m == 4 or m == 6 or m == 9 or m == 11:
+      last = 30
+  else:
+      last = 31
+  if d < 1 or d > last:
+      print("올바르지 않은 날짜입니다")
+  else:
+      print("올바른 날짜입니다")
+      d += 1
+      if d > last:
+          d = 1
+          m += 1
+          if m > 12:
+              m = 1
+              y += 1
+      print(f"다음 날: {y}년 {m}월 {d}일")
+alt_solutions:
+  - |
+    y = int(input("연도: "))
+    m = int(input("월: "))
+    d = int(input("일: "))
+    days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    if y % 400 == 0 or (y % 4 == 0 and y % 100 != 0):
+        days[1] = 29
+    if 1 <= m <= 12 and 1 <= d <= days[m - 1]:
+        print("올바른 날짜입니다")
+        if d < days[m - 1]:
+            print("다음 날: " + str(y) + "년 " + str(m) + "월 " + str(d + 1) + "일")
+        elif m < 12:
+            print("다음 날: " + str(y) + "년 " + str(m + 1) + "월 1일")
+        else:
+            print("다음 날: " + str(y + 1) + "년 1월 1일")
+    else:
+        print("올바르지 않은 날짜입니다")
+mutants:
+  - name: 4의 배수면 모두 윤년
+    code: |
+      y = int(input("연도: "))
+      m = int(input("월: "))
+      d = int(input("일: "))
+      leap = y % 4 == 0
+      if m < 1 or m > 12:
+          last = 0
+      elif m == 2:
+          if leap:
+              last = 29
+          else:
+              last = 28
+      elif m == 4 or m == 6 or m == 9 or m == 11:
+          last = 30
+      else:
+          last = 31
+      if d < 1 or d > last:
+          print("올바르지 않은 날짜입니다")
+      else:
+          print("올바른 날짜입니다")
+          d += 1
+          if d > last:
+              d = 1
+              m += 1
+              if m > 12:
+                  m = 1
+                  y += 1
+          print(f"다음 날: {y}년 {m}월 {d}일")
+  - name: 12월 31일 다음을 13월로
+    code: |
+      y = int(input("연도: "))
+      m = int(input("월: "))
+      d = int(input("일: "))
+      leap = (y % 4 == 0 and y % 100 != 0) or y % 400 == 0
+      if m < 1 or m > 12:
+          last = 0
+      elif m == 2:
+          if leap:
+              last = 29
+          else:
+              last = 28
+      elif m == 4 or m == 6 or m == 9 or m == 11:
+          last = 30
+      else:
+          last = 31
+      if d < 1 or d > last:
+          print("올바르지 않은 날짜입니다")
+      else:
+          print("올바른 날짜입니다")
+          d += 1
+          if d > last:
+              d = 1
+              m += 1
+          print(f"다음 날: {y}년 {m}월 {d}일")
+tests:
+  - stdin: "2024\n2\n28\n"
+    public: true
+  - stdin: "2023\n2\n28\n"
+    note: 평년 2월 28일 → 3월 1일
+  - stdin: "2023\n2\n29\n"
+    note: 평년에는 2월 29일이 없음
+  - stdin: "1900\n2\n29\n"
+    note: 1900년은 평년
+  - stdin: "2000\n2\n29\n"
+    note: 2000년은 윤년
+  - stdin: "2025\n12\n31\n"
+    note: 해가 바뀜
+  - stdin: "2025\n4\n31\n"
+  - stdin: "2025\n13\n1\n"
+  - stdin: "2025\n6\n30\n"
+hints:
+  - "먼저 그 달의 마지막 날(`last`)을 구하면 날짜 검사와 다음 날 계산을 모두 그 값으로 할 수 있습니다."
+  - "다음 날은 '일 + 1 → 넘치면 월 + 1 → 넘치면 연 + 1' 순서로 올립니다."
+explanation: |
+  조건이 많을 때는 '마지막 날 구하기 → 검사 → 올림' 단계로 나누면 실수가 줄어듭니다. 경계값(2월 29일, 12월 31일, 1900·2000년)을 꼭 확인하세요.

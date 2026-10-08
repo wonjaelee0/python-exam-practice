@@ -1,0 +1,160 @@
+id: mixed-date-diff-018
+title: 날짜 사이 일수와 요일
+unit: mixed
+difficulty: 5
+tags: [cond.leap-year, list.lookup, op.modulo]
+statement: |
+  두 날짜를 `YYYY-MM-DD` 형식으로 입력받아, 두 날짜 사이의 일수와 **뒤 날짜**의 요일을 출력하시오.
+
+  - 입력 프롬프트: `앞 날짜: `, `뒤 날짜: `
+  - 출력: `차이: 12일`, `요일: 화요일`
+  - 날짜는 1900-01-01 ~ 2100-12-31 사이이고, 뒤 날짜는 앞 날짜와 같거나 그 이후이다.
+  - **1900년 1월 1일은 월요일**이다.
+  - 윤년: 4로 나누어떨어지는 해. 단, 100으로 나누어떨어지면 평년이고, 그중 400으로 나누어떨어지면 다시 윤년이다. (2000년은 윤년, 1900·2100년은 평년)
+  - `datetime` 모듈 없이 풀어 보자.
+starter: |
+  DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+  NAMES = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"]
+solution: |
+  DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+  NAMES = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"]
+  dates = [input("앞 날짜: "), input("뒤 날짜: ")]
+  counts = []
+  for date in dates:
+      y, m, d = date.split("-")
+      y = int(y)
+      m = int(m)
+      d = int(d)
+      total = 0
+      for year in range(1900, y):
+          if (year % 4 == 0 and year % 100 != 0) or year % 400 == 0:
+              total += 366
+          else:
+              total += 365
+      for month in range(1, m):
+          total += DAYS[month - 1]
+          if month == 2 and ((y % 4 == 0 and y % 100 != 0) or y % 400 == 0):
+              total += 1
+      total += d - 1
+      counts.append(total)
+  print(f"차이: {counts[1] - counts[0]}일")
+  print(f"요일: {NAMES[counts[1] % 7]}")
+alt_solutions:
+  - |
+    CUM = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]
+    ZNAMES = ["토요일", "일요일", "월요일", "화요일", "수요일", "목요일", "금요일"]
+    a = [int(x) for x in input("앞 날짜: ").split("-")]
+    b = [int(x) for x in input("뒤 날짜: ").split("-")]
+    serial = []
+    for y, m, d in [a, b]:
+        leap = (y % 4 == 0 and y % 100 != 0) or y % 400 == 0
+        p = y - 1
+        leaps_before = (p // 4 - p // 100 + p // 400) - (1899 // 4 - 1899 // 100 + 1899 // 400)
+        n = 365 * (y - 1900) + leaps_before + CUM[m - 1] + d
+        if leap and m > 2:
+            n += 1
+        serial.append(n)
+    print("차이: " + str(serial[1] - serial[0]) + "일")
+    y, m, q = b
+    if m < 3:
+        m += 12
+        y -= 1
+    K = y % 100
+    J = y // 100
+    h = (q + 13 * (m + 1) // 5 + K + K // 4 + J // 4 + 5 * J) % 7
+    print("요일: " + ZNAMES[h])
+mutants:
+  - name: 4년마다 윤년 (100·400 규칙 무시)
+    code: |
+      DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+      NAMES = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"]
+      dates = [input("앞 날짜: "), input("뒤 날짜: ")]
+      counts = []
+      for date in dates:
+          y, m, d = date.split("-")
+          y = int(y)
+          m = int(m)
+          d = int(d)
+          total = 0
+          for year in range(1900, y):
+              if year % 4 == 0:
+                  total += 366
+              else:
+                  total += 365
+          for month in range(1, m):
+              total += DAYS[month - 1]
+              if month == 2 and y % 4 == 0:
+                  total += 1
+          total += d - 1
+          counts.append(total)
+      print(f"차이: {counts[1] - counts[0]}일")
+      print(f"요일: {NAMES[counts[1] % 7]}")
+  - name: 앞 날짜의 요일을 출력
+    code: |
+      DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+      NAMES = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"]
+      dates = [input("앞 날짜: "), input("뒤 날짜: ")]
+      counts = []
+      for date in dates:
+          y, m, d = date.split("-")
+          y = int(y)
+          m = int(m)
+          d = int(d)
+          total = 0
+          for year in range(1900, y):
+              if (year % 4 == 0 and year % 100 != 0) or year % 400 == 0:
+                  total += 366
+              else:
+                  total += 365
+          for month in range(1, m):
+              total += DAYS[month - 1]
+              if month == 2 and ((y % 4 == 0 and y % 100 != 0) or y % 400 == 0):
+                  total += 1
+          total += d - 1
+          counts.append(total)
+      print(f"차이: {counts[1] - counts[0]}일")
+      print(f"요일: {NAMES[counts[0] % 7]}")
+  - name: 1월 1일을 1일째로 셈 (요일이 하루 밀림)
+    code: |
+      DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+      NAMES = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"]
+      dates = [input("앞 날짜: "), input("뒤 날짜: ")]
+      counts = []
+      for date in dates:
+          y, m, d = date.split("-")
+          y = int(y)
+          m = int(m)
+          d = int(d)
+          total = 0
+          for year in range(1900, y):
+              if (year % 4 == 0 and year % 100 != 0) or year % 400 == 0:
+                  total += 366
+              else:
+                  total += 365
+          for month in range(1, m):
+              total += DAYS[month - 1]
+              if month == 2 and ((y % 4 == 0 and y % 100 != 0) or y % 400 == 0):
+                  total += 1
+          total += d
+          counts.append(total)
+      print(f"차이: {counts[1] - counts[0]}일")
+      print(f"요일: {NAMES[counts[1] % 7]}")
+tests:
+  - stdin: "2024-02-28\n2024-03-01\n"
+    public: true
+  - stdin: "2026-10-08\n2026-10-20\n"
+    public: true
+  - stdin: "1900-01-01\n1900-01-01\n"
+    note: 같은 날짜
+  - stdin: "1999-12-31\n2000-03-01\n"
+    note: 2000년은 윤년
+  - stdin: "2100-02-28\n2100-03-01\n"
+    note: 2100년은 평년
+  - stdin: "1900-02-28\n1900-03-01\n"
+  - stdin: "1900-01-01\n2100-12-31\n"
+hints:
+  - "각 날짜가 1900-01-01로부터 며칠째인지(0부터) 구하면, 차이는 빼기이고 요일은 `% 7`입니다 (0이면 월요일)."
+  - "앞선 해들의 일수(365 또는 366) + 앞선 달들의 일수(그해가 윤년이고 2월을 지났으면 +1) + (일 - 1)"
+explanation: |
+  날짜 계산은 '기준일로부터 며칠째인가'라는 하나의 숫자로 바꾸면 간단해집니다. 두 날짜 모두 같은 방법으로 바꾸므로 반복문 하나로 처리했습니다.
+  요일만 따로 구하는 공식(첼러의 공식)도 있지만, 일수를 이미 구했다면 `% 7`이 가장 쉽습니다.

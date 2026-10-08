@@ -1,0 +1,172 @@
+id: mixed-brackets-015
+title: 괄호 검사기 (위치와 깊이)
+unit: mixed
+difficulty: 4
+tags: [list.stack, dict.lookup, str.iterate]
+statement: |
+  문자열의 괄호 `()`, `[]`, `{}`가 올바르게 짝지어졌는지 검사하시오. 괄호가 아닌 글자는 무시한다.
+
+  - 입력 프롬프트: `문자열: `
+  - 올바르면 `올바른 괄호입니다`와 `최대 깊이: 3`을 출력한다. 최대 깊이는 동시에 열려 있던 괄호 수의 최댓값이다 (괄호가 없으면 0).
+  - 올바르지 않으면 `잘못된 괄호입니다`와 `위치: 3`을 출력한다. 위치는 1부터 센 글자 위치로,
+    - 짝이 맞지 않거나 여는 괄호 없이 나온 **닫는 괄호**가 있으면, 처음 나온 그 닫는 괄호의 위치
+    - 그런 닫는 괄호는 없는데 끝까지 닫히지 않은 괄호가 남으면, 닫히지 않은 괄호 중 **가장 앞**의 위치
+
+  예)
+  - `{a[b(c)d]e}` → 올바름, 최대 깊이 3
+  - `([)]` → 3번째 글자 `)`가 `[`와 짝이 맞지 않음 → 위치 3
+  - `a(b[c` → 2번째 `(`와 4번째 `[`가 닫히지 않음 → 위치 2
+starter: |
+  s = input("문자열: ")
+  pairs = {")": "(", "]": "[", "}": "{"}
+  stack = []
+solution: |
+  s = input("문자열: ")
+  pairs = {")": "(", "]": "[", "}": "{"}
+  stack = []
+  depth = 0
+  bad = 0
+  for i in range(len(s)):
+      ch = s[i]
+      if ch in "([{":
+          stack.append([ch, i + 1])
+          if len(stack) > depth:
+              depth = len(stack)
+      elif ch in ")]}":
+          if len(stack) == 0 or stack[-1][0] != pairs[ch]:
+              bad = i + 1
+              break
+          stack.pop()
+  if bad == 0 and len(stack) > 0:
+      bad = stack[0][1]
+  if bad == 0:
+      print("올바른 괄호입니다")
+      print(f"최대 깊이: {depth}")
+  else:
+      print("잘못된 괄호입니다")
+      print(f"위치: {bad}")
+alt_solutions:
+  - |
+    text = input("문자열: ")
+    opens = "([{"
+    closes = ")]}"
+    kinds = []
+    where = []
+    best = 0
+    pos = 0
+    for idx, c in enumerate(text):
+        if c in opens:
+            kinds.append(opens.index(c))
+            where.append(idx + 1)
+            best = max(best, len(kinds))
+        elif c in closes:
+            if not kinds or kinds[-1] != closes.index(c):
+                pos = idx + 1
+                break
+            kinds.pop()
+            where.pop()
+    if pos == 0 and where:
+        pos = where[0]
+    if pos:
+        print("잘못된 괄호입니다")
+        print("위치:", pos)
+    else:
+        print("올바른 괄호입니다")
+        print("최대 깊이:", best)
+mutants:
+  - name: 괄호 종류를 확인하지 않음
+    code: |
+      s = input("문자열: ")
+      stack = []
+      depth = 0
+      bad = 0
+      for i in range(len(s)):
+          ch = s[i]
+          if ch in "([{":
+              stack.append(i + 1)
+              depth = max(depth, len(stack))
+          elif ch in ")]}":
+              if len(stack) == 0:
+                  bad = i + 1
+                  break
+              stack.pop()
+      if bad == 0 and len(stack) > 0:
+          bad = stack[0]
+      if bad == 0:
+          print("올바른 괄호입니다")
+          print(f"최대 깊이: {depth}")
+      else:
+          print("잘못된 괄호입니다")
+          print(f"위치: {bad}")
+  - name: 남은 괄호 중 마지막 위치를 출력
+    code: |
+      s = input("문자열: ")
+      pairs = {")": "(", "]": "[", "}": "{"}
+      stack = []
+      depth = 0
+      bad = 0
+      for i in range(len(s)):
+          ch = s[i]
+          if ch in "([{":
+              stack.append([ch, i + 1])
+              depth = max(depth, len(stack))
+          elif ch in ")]}":
+              if len(stack) == 0 or stack[-1][0] != pairs[ch]:
+                  bad = i + 1
+                  break
+              stack.pop()
+      if bad == 0 and len(stack) > 0:
+          bad = stack[-1][1]
+      if bad == 0:
+          print("올바른 괄호입니다")
+          print(f"최대 깊이: {depth}")
+      else:
+          print("잘못된 괄호입니다")
+          print(f"위치: {bad}")
+  - name: 최대 깊이 대신 여는 괄호 수를 셈
+    code: |
+      s = input("문자열: ")
+      pairs = {")": "(", "]": "[", "}": "{"}
+      stack = []
+      depth = 0
+      bad = 0
+      for i in range(len(s)):
+          ch = s[i]
+          if ch in "([{":
+              stack.append([ch, i + 1])
+              depth += 1
+          elif ch in ")]}":
+              if len(stack) == 0 or stack[-1][0] != pairs[ch]:
+                  bad = i + 1
+                  break
+              stack.pop()
+      if bad == 0 and len(stack) > 0:
+          bad = stack[0][1]
+      if bad == 0:
+          print("올바른 괄호입니다")
+          print(f"최대 깊이: {depth}")
+      else:
+          print("잘못된 괄호입니다")
+          print(f"위치: {bad}")
+tests:
+  - stdin: "{a[b(c)d]e}\n"
+    public: true
+  - stdin: "([)]\n"
+    public: true
+  - stdin: "hello\n"
+    note: 괄호 없음
+  - stdin: "())(\n"
+    note: 여는 괄호 없이 닫힘
+  - stdin: "a(b[c\n"
+    note: 닫히지 않은 괄호가 여러 개
+  - stdin: "()[]{}\n"
+  - stdin: "}\n"
+  - stdin: "((()))(\n"
+  - stdin: "x{(})y\n"
+    note: 종류가 엇갈림
+hints:
+  - "여는 괄호를 만나면 `[괄호, 위치]`를 스택(리스트)에 넣고, 닫는 괄호를 만나면 맨 위(`stack[-1]`)와 짝이 맞는지 확인해 꺼냅니다."
+  - "끝까지 갔는데 스택이 비어 있지 않으면, 가장 앞에서 열린 괄호는 `stack[0]`입니다."
+explanation: |
+  괄호 검사는 스택의 대표 예제입니다. 개수만 세면 `([)]`처럼 종류가 엇갈린 경우를 잡지 못합니다.
+  최대 깊이는 괄호를 넣을 때마다 `len(stack)`의 최댓값을 갱신하면 됩니다.

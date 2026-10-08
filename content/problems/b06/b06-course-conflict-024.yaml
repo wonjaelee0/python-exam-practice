@@ -1,0 +1,115 @@
+id: b06-course-conflict-024
+title: 수강 신청 시간 충돌 검사
+unit: b06
+difficulty: 4
+tags: [set.ops, list.2d, loop.nested]
+statement: |
+  과목 수 n을 입력받고, 이어서 n줄에 걸쳐 `과목명 시간1,시간2,…` 형식으로 과목 정보를 입력받는다 (예: `파이썬 월1,수1`).
+  두 과목이 같은 시간을 하나라도 공유하면 충돌이다.
+
+  - 입력 순서대로 모든 과목 쌍(앞 과목, 뒤 과목)을 확인해, 충돌하는 쌍마다 `파이썬 - 통계: ['월1']` 형식으로 출력한다
+    (겹치는 시간은 정렬된 리스트). 순서: 앞 과목의 입력 순서, 같으면 뒤 과목의 입력 순서
+  - 충돌이 하나도 없으면 `충돌 없음`
+  - 마지막 줄: `전체 수업 시간: 4개` (모든 과목 시간의 합집합 크기)
+  - 입력 프롬프트: `과목 수: `, 각 과목은 `과목: `
+starter: |
+  n = int(input("과목 수: "))
+  courses = []
+solution: |
+  n = int(input("과목 수: "))
+  courses = []
+  for i in range(n):
+      name, times = input("과목: ").split()
+      courses.append([name, set(times.split(","))])
+  found = False
+  all_times = set()
+  for i in range(n):
+      all_times = all_times | courses[i][1]
+      for j in range(i + 1, n):
+          common = courses[i][1] & courses[j][1]
+          if len(common) > 0:
+              print(f"{courses[i][0]} - {courses[j][0]}: {sorted(common)}")
+              found = True
+  if not found:
+      print("충돌 없음")
+  print(f"전체 수업 시간: {len(all_times)}개")
+alt_solutions:
+  - |
+    n = int(input("과목 수: "))
+    names = []
+    slots = []
+    for i in range(n):
+        parts = input("과목: ").split()
+        names.append(parts[0])
+        slots.append(parts[1].split(","))
+    count = 0
+    every = []
+    for i in range(n):
+        for t in slots[i]:
+            if t not in every:
+                every.append(t)
+        for j in range(i + 1, n):
+            same = []
+            for t in slots[i]:
+                if t in slots[j] and t not in same:
+                    same.append(t)
+            if same:
+                same.sort()
+                print(names[i] + " - " + names[j] + ":", same)
+                count += 1
+    if count == 0:
+        print("충돌 없음")
+    print("전체 수업 시간: " + str(len(every)) + "개")
+mutants:
+  - name: 같은 쌍을 두 번 검사 (j를 0부터)
+    code: |
+      n = int(input("과목 수: "))
+      courses = []
+      for i in range(n):
+          name, times = input("과목: ").split()
+          courses.append([name, set(times.split(","))])
+      found = False
+      all_times = set()
+      for i in range(n):
+          all_times |= courses[i][1]
+          for j in range(n):
+              if i != j:
+                  common = courses[i][1] & courses[j][1]
+                  if common:
+                      print(f"{courses[i][0]} - {courses[j][0]}: {sorted(common)}")
+                      found = True
+      if not found:
+          print("충돌 없음")
+      print(f"전체 수업 시간: {len(all_times)}개")
+  - name: 전체 시간을 중복까지 셈
+    code: |
+      n = int(input("과목 수: "))
+      courses = []
+      total = 0
+      for i in range(n):
+          name, times = input("과목: ").split()
+          courses.append([name, set(times.split(","))])
+          total += len(times.split(","))
+      found = False
+      for i in range(n):
+          for j in range(i + 1, n):
+              common = courses[i][1] & courses[j][1]
+              if common:
+                  print(f"{courses[i][0]} - {courses[j][0]}: {sorted(common)}")
+                  found = True
+      if not found:
+          print("충돌 없음")
+      print(f"전체 수업 시간: {total}개")
+tests:
+  - stdin: "3\n파이썬 월1,수1\n통계 월1,목2\n영어 화3,수1\n"
+    public: true
+  - stdin: "2\nA 월1\nB 화1\n"
+    note: 충돌 없음
+  - stdin: "1\nX 월1,월2\n"
+  - stdin: "3\nA 월1,월2\nB 월2,월1\nC 월1\n"
+    note: 여러 쌍이 겹침
+hints:
+  - "각 과목의 시간을 집합으로 저장하면 교집합 `&`으로 겹치는 시간을 바로 구할 수 있습니다."
+  - "쌍을 한 번씩만 보려면 `for j in range(i + 1, n)`입니다."
+explanation: |
+  모든 쌍 검사는 이중 반복문 `i < j` 패턴입니다. 집합 연산(`&`, `|`)으로 겹침과 전체를 간단히 구합니다.

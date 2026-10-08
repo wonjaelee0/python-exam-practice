@@ -1,0 +1,113 @@
+id: b06-word-chain-025
+title: 끝말잇기 규칙 검사
+unit: b06
+difficulty: 4
+tags: [loop.while-sentinel, str.index, list.in]
+statement: |
+  끝말잇기 단어를 한 줄에 하나씩 입력받으며 규칙을 검사하시오. 규칙은 아래 순서대로 검사한다.
+
+  1. 두 글자 이상이어야 한다. → 어기면 이유 `한 글자 단어`
+  2. 첫 단어가 아니면, 바로 앞 단어의 마지막 글자로 시작해야 한다. → `끝말이 이어지지 않음`
+  3. 앞에서 나온 단어를 다시 쓸 수 없다. → `이미 나온 단어`
+
+  - 규칙을 어긴 단어가 나오면 `3번째 단어 '기차'에서 탈락: 끝말이 이어지지 않음` 형식으로 출력하고 즉시 끝낸다 (더 입력받지 않는다).
+  - `종료`가 입력될 때까지 모두 통과하면 `성공: 4개 단어`를 출력한다.
+  - 입력 프롬프트: `단어: `
+starter: |
+  used = []
+solution: |
+  used = []
+  while True:
+      word = input("단어: ")
+      if word == "종료":
+          print(f"성공: {len(used)}개 단어")
+          break
+      n = len(used) + 1
+      reason = ""
+      if len(word) < 2:
+          reason = "한 글자 단어"
+      elif len(used) > 0 and word[0] != used[-1][-1]:
+          reason = "끝말이 이어지지 않음"
+      elif word in used:
+          reason = "이미 나온 단어"
+      if reason != "":
+          print(f"{n}번째 단어 '{word}'에서 탈락: {reason}")
+          break
+      used.append(word)
+alt_solutions:
+  - |
+    words = []
+    count = 0
+    while True:
+        w = input("단어: ")
+        if w == "종료":
+            print("성공: " + str(count) + "개 단어")
+            break
+        count += 1
+        if len(w) == 1:
+            print(str(count) + "번째 단어 '" + w + "'에서 탈락: 한 글자 단어")
+            break
+        if count > 1 and words[count - 2][len(words[count - 2]) - 1] != w[0]:
+            print(str(count) + "번째 단어 '" + w + "'에서 탈락: 끝말이 이어지지 않음")
+            break
+        if words.count(w) > 0:
+            print(str(count) + "번째 단어 '" + w + "'에서 탈락: 이미 나온 단어")
+            break
+        words.append(w)
+mutants:
+  - name: 중복을 끝말보다 먼저 검사
+    code: |
+      used = []
+      while True:
+          word = input("단어: ")
+          if word == "종료":
+              print(f"성공: {len(used)}개 단어")
+              break
+          n = len(used) + 1
+          reason = ""
+          if len(word) < 2:
+              reason = "한 글자 단어"
+          elif word in used:
+              reason = "이미 나온 단어"
+          elif len(used) > 0 and word[0] != used[-1][-1]:
+              reason = "끝말이 이어지지 않음"
+          if reason != "":
+              print(f"{n}번째 단어 '{word}'에서 탈락: {reason}")
+              break
+          used.append(word)
+  - name: 첫 글자끼리 비교
+    code: |
+      used = []
+      while True:
+          word = input("단어: ")
+          if word == "종료":
+              print(f"성공: {len(used)}개 단어")
+              break
+          n = len(used) + 1
+          reason = ""
+          if len(word) < 2:
+              reason = "한 글자 단어"
+          elif len(used) > 0 and word[0] != used[-1][0]:
+              reason = "끝말이 이어지지 않음"
+          elif word in used:
+              reason = "이미 나온 단어"
+          if reason != "":
+              print(f"{n}번째 단어 '{word}'에서 탈락: {reason}")
+              break
+          used.append(word)
+tests:
+  - stdin: "사과\n과자\n자전거\n거미\n종료\n"
+    public: true
+  - stdin: "기차\n차표\n기차\n종료\n"
+    note: 중복이면서 끝말도 안 이어짐 → 끝말 규칙을 먼저 검사
+  - stdin: "종료\n"
+    note: 단어 0개
+  - stdin: "바나나\n나\n"
+    note: 한 글자 단어
+  - stdin: "토마토\n토마토\n"
+    note: 끝말은 맞지만 이미 나온 단어
+hints:
+  - "앞 단어의 마지막 글자는 `used[-1][-1]`, 지금 단어의 첫 글자는 `word[0]`입니다."
+  - "검사 순서가 출력(이유)을 바꿉니다. 지문의 순서대로 `if-elif`를 쓰세요."
+explanation: |
+  탈락하면 `break`로 바로 끝내야 이후 입력을 받지 않습니다. 몇 번째 단어인지는 '지금까지 통과한 단어 수 + 1'입니다.

@@ -1,0 +1,134 @@
+id: b03-parcel-fee-018
+title: 부피 무게를 반영한 택배 요금
+unit: b03
+difficulty: 4
+tags: [cond.elif-order, cond.logic-and-or, op.ceil]
+statement: |
+  택배 요금을 계산하시오. 실제 무게(kg, 실수)와 상자의 가로·세로·높이(cm, 정수), 도착 지역을 차례로 입력받는다.
+
+  - 부피 무게(kg) = 가로 × 세로 × 높이 / 6000
+  - 적용 무게 = 실제 무게와 부피 무게 중 큰 값을 **올림한 정수** (`math.ceil` 사용)
+  - 기본 요금: 적용 무게 2kg 이하 3000원, 5kg 이하 4000원, 10kg 이하 6000원, 20kg 이하 9000원
+  - 적용 무게가 20kg을 넘거나, 세 변의 합이 160cm를 넘으면 배송할 수 없다.
+  - 지역이 `제주`이면 3000원을 더한다.
+  - 입력 프롬프트: `무게(kg): `, `가로(cm): `, `세로(cm): `, `높이(cm): `, `지역: ` (항상 다섯 개를 모두 입력받는다)
+  - 배송 가능하면 `적용 무게: 3kg`, `요금: 4000원` 두 줄, 불가하면 `배송할 수 없습니다` 한 줄
+starter: |
+  import math
+solution: |
+  import math
+  weight = float(input("무게(kg): "))
+  w = int(input("가로(cm): "))
+  l = int(input("세로(cm): "))
+  h = int(input("높이(cm): "))
+  region = input("지역: ")
+  volume_weight = w * l * h / 6000
+  applied = math.ceil(max(weight, volume_weight))
+  if w + l + h > 160 or applied > 20:
+      print("배송할 수 없습니다")
+  else:
+      if applied <= 2:
+          fee = 3000
+      elif applied <= 5:
+          fee = 4000
+      elif applied <= 10:
+          fee = 6000
+      else:
+          fee = 9000
+      if region == "제주":
+          fee += 3000
+      print(f"적용 무게: {applied}kg")
+      print(f"요금: {fee}원")
+alt_solutions:
+  - |
+    weight = float(input("무게(kg): "))
+    w = int(input("가로(cm): "))
+    l = int(input("세로(cm): "))
+    h = int(input("높이(cm): "))
+    region = input("지역: ")
+    real = int(weight)
+    if weight > real:
+        real += 1
+    vol = (w * l * h + 5999) // 6000
+    applied = real
+    if vol > applied:
+        applied = vol
+    if w + l + h <= 160 and applied <= 20:
+        fee = 9000
+        if applied <= 10:
+            fee = 6000
+        if applied <= 5:
+            fee = 4000
+        if applied <= 2:
+            fee = 3000
+        if region == "제주":
+            fee = fee + 3000
+        print("적용 무게: " + str(applied) + "kg")
+        print("요금: " + str(fee) + "원")
+    else:
+        print("배송할 수 없습니다")
+mutants:
+  - name: 올림 대신 반올림
+    code: |
+      weight = float(input("무게(kg): "))
+      w = int(input("가로(cm): "))
+      l = int(input("세로(cm): "))
+      h = int(input("높이(cm): "))
+      region = input("지역: ")
+      applied = round(max(weight, w * l * h / 6000))
+      if w + l + h > 160 or applied > 20:
+          print("배송할 수 없습니다")
+      else:
+          if applied <= 2:
+              fee = 3000
+          elif applied <= 5:
+              fee = 4000
+          elif applied <= 10:
+              fee = 6000
+          else:
+              fee = 9000
+          if region == "제주":
+              fee += 3000
+          print(f"적용 무게: {applied}kg")
+          print(f"요금: {fee}원")
+  - name: 부피 무게를 무시
+    code: |
+      import math
+      weight = float(input("무게(kg): "))
+      w = int(input("가로(cm): "))
+      l = int(input("세로(cm): "))
+      h = int(input("높이(cm): "))
+      region = input("지역: ")
+      applied = math.ceil(weight)
+      if w + l + h > 160 or applied > 20:
+          print("배송할 수 없습니다")
+      else:
+          if applied <= 2:
+              fee = 3000
+          elif applied <= 5:
+              fee = 4000
+          elif applied <= 10:
+              fee = 6000
+          else:
+              fee = 9000
+          if region == "제주":
+              fee += 3000
+          print(f"적용 무게: {applied}kg")
+          print(f"요금: {fee}원")
+tests:
+  - stdin: "2.3\n30\n20\n10\n서울\n"
+    public: true
+  - stdin: "1\n60\n50\n40\n제주\n"
+    note: 부피 무게 20kg + 제주
+  - stdin: "25\n10\n10\n10\n서울\n"
+    note: 20kg 초과
+  - stdin: "1\n80\n50\n40\n서울\n"
+    note: 세 변의 합 170cm
+  - stdin: "0.5\n10\n10\n10\n제주\n"
+  - stdin: "2.0\n100\n30\n30\n부산\n"
+    note: 세 변의 합이 정확히 160cm (가능)
+hints:
+  - "`math.ceil(2.3)`은 3, `math.ceil(2.0)`은 2입니다. 맨 위에 `import math`가 필요해요."
+  - "배송 불가 조건을 먼저 검사하고, 요금 구간은 작은 무게부터 `elif`로 나누세요."
+explanation: |
+  여러 조건이 섞일 때는 '불가 조건 → 구간 요금 → 추가 요금' 순서로 정리합니다. 올림·반올림·버림의 차이를 구별하세요.

@@ -1,0 +1,96 @@
+id: b05-bubble-pass-021
+title: 버블 정렬 과정 출력
+unit: b05
+difficulty: 4
+tags: [list.index, loop.nested, var.multi-assign]
+statement: |
+  공백으로 구분된 정수들을 입력받아 **버블 정렬**(오름차순)을 직접 구현하시오. `sort()`, `sorted()`는 쓰지 않는다.
+
+  - 리스트의 앞에서부터 이웃한 두 수를 비교해 앞의 수가 **더 크면** 두 수를 바꾼다. 끝까지 한 번 훑는 것을 '회차'라고 한다.
+  - 회차가 끝날 때마다 `1회차: [1, 4, 2, 5, 8]` 형식으로 리스트를 출력한다.
+  - 한 회차 동안 한 번도 바꾸지 않았으면 그 회차까지 출력하고 멈춘다.
+  - 마지막 줄: `교환 횟수: 4` (전체에서 두 수를 바꾼 횟수)
+  - 입력 프롬프트: `정수들: `
+starter: |
+  nums = list(map(int, input("정수들: ").split()))
+solution: |
+  nums = list(map(int, input("정수들: ").split()))
+  swaps = 0
+  p = 0
+  while True:
+      p += 1
+      swapped = False
+      for j in range(len(nums) - p):
+          if nums[j] > nums[j + 1]:
+              nums[j], nums[j + 1] = nums[j + 1], nums[j]
+              swaps += 1
+              swapped = True
+      print(f"{p}회차: {nums}")
+      if not swapped:
+          break
+  print(f"교환 횟수: {swaps}")
+alt_solutions:
+  - |
+    nums = list(map(int, input("정수들: ").split()))
+    total = 0
+    rnd = 1
+    done = False
+    while not done:
+        changed = 0
+        for j in range(len(nums) - 1):
+            if nums[j] > nums[j + 1]:
+                tmp = nums[j]
+                nums[j] = nums[j + 1]
+                nums[j + 1] = tmp
+                changed += 1
+        total += changed
+        print(str(rnd) + "회차:", nums)
+        rnd += 1
+        if changed == 0:
+            done = True
+    print("교환 횟수:", total)
+mutants:
+  - name: 같은 수도 바꿈 (>=)
+    code: |
+      nums = list(map(int, input("정수들: ").split()))
+      swaps = 0
+      p = 0
+      while True:
+          p += 1
+          swapped = False
+          for j in range(len(nums) - p):
+              if nums[j] >= nums[j + 1]:
+                  nums[j], nums[j + 1] = nums[j + 1], nums[j]
+                  swaps += 1
+                  swapped = True
+          print(f"{p}회차: {nums}")
+          if not swapped or p >= len(nums):
+              break
+      print(f"교환 횟수: {swaps}")
+  - name: 일찍 멈추지 않음 (항상 n-1회차)
+    code: |
+      nums = list(map(int, input("정수들: ").split()))
+      swaps = 0
+      for p in range(1, len(nums)):
+          for j in range(len(nums) - p):
+              if nums[j] > nums[j + 1]:
+                  nums[j], nums[j + 1] = nums[j + 1], nums[j]
+                  swaps += 1
+          print(f"{p}회차: {nums}")
+      print(f"교환 횟수: {swaps}")
+tests:
+  - stdin: "5 1 4 2 8\n"
+    public: true
+  - stdin: "1 2 3\n"
+    note: 이미 정렬됨 → 1회차에서 멈춤
+  - stdin: "3 2 1\n"
+  - stdin: "7\n"
+    note: 원소 하나
+  - stdin: "2 2 1\n"
+    note: 같은 수는 바꾸지 않는다
+  - stdin: "9 8 7 6 5 4\n"
+hints:
+  - "`nums[j], nums[j + 1] = nums[j + 1], nums[j]`로 두 값을 바꿉니다."
+  - "회차마다 '이번에 바꿨는가'를 기록하는 변수를 두고, False면 `break` 하세요."
+explanation: |
+  한 회차가 끝나면 가장 큰 수가 맨 뒤로 갑니다. 그래서 p회차에는 마지막 p-1개를 비교하지 않아도 됩니다. 교환이 없으면 이미 정렬된 것입니다.

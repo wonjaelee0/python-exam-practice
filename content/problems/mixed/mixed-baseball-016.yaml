@@ -1,0 +1,197 @@
+id: mixed-baseball-016
+title: 숫자 야구 게임
+unit: mixed
+difficulty: 4
+tags: [random.seed, loop.while-true, list.in]
+statement: |
+  숫자 야구 게임을 만드시오. 시작 코드가 `random.seed(1)`로 정답 `answer`(1~9 사이의 서로 다른 숫자 3개, 정수 리스트)를 만든다. 이 부분은 수정하지 말 것.
+
+  - 입력 프롬프트: `추측: `
+  - 추측은 1~9 사이의 **서로 다른 숫자 3개**로 된 문자열이어야 한다 (예: `123`). 아니면 `잘못된 입력입니다`를 출력하고, 시도 횟수에 넣지 않고 다시 입력받는다.
+  - 숫자와 자리가 모두 맞으면 스트라이크(S), 숫자는 정답에 있지만 자리가 다르면 볼(B)이다.
+    - 출력: `1S 1B` 형식. 스트라이크와 볼이 모두 0이면 `OUT`
+  - `3S 0B`가 되면 다음 줄에 `정답! 3번 만에 맞혔습니다.`를 출력하고 끝낸다.
+starter: |
+  import random
+  random.seed(1)
+  answer = []
+  while len(answer) < 3:
+      d = random.randint(1, 9)
+      if d not in answer:
+          answer.append(d)
+  ##############################
+solution: |
+  import random
+  random.seed(1)
+  answer = []
+  while len(answer) < 3:
+      d = random.randint(1, 9)
+      if d not in answer:
+          answer.append(d)
+  ##############################
+  tries = 0
+  while True:
+      guess = input("추측: ")
+      if len(guess) != 3 or not guess.isdigit() or "0" in guess or len(set(guess)) != 3:
+          print("잘못된 입력입니다")
+          continue
+      tries += 1
+      nums = [int(ch) for ch in guess]
+      strike = 0
+      ball = 0
+      for i in range(3):
+          if nums[i] == answer[i]:
+              strike += 1
+          elif nums[i] in answer:
+              ball += 1
+      if strike == 0 and ball == 0:
+          print("OUT")
+      else:
+          print(f"{strike}S {ball}B")
+      if strike == 3:
+          print(f"정답! {tries}번 만에 맞혔습니다.")
+          break
+alt_solutions:
+  - |
+    import random
+    random.seed(1)
+    answer = []
+    while len(answer) < 3:
+        d = random.randint(1, 9)
+        if d not in answer:
+            answer.append(d)
+    target = "".join([str(d) for d in answer])
+    count = 0
+    done = False
+    while not done:
+        g = input("추측: ")
+        ok = len(g) == 3
+        if ok:
+            for ch in g:
+                if ch not in "123456789" or g.count(ch) > 1:
+                    ok = False
+        if not ok:
+            print("잘못된 입력입니다")
+        else:
+            count += 1
+            s = 0
+            b = 0
+            for i in range(3):
+                if g[i] == target[i]:
+                    s += 1
+                elif g[i] in target:
+                    b += 1
+            if s + b == 0:
+                print("OUT")
+            else:
+                print(str(s) + "S " + str(b) + "B")
+            if s == 3:
+                print("정답! " + str(count) + "번 만에 맞혔습니다.")
+                done = True
+mutants:
+  - name: 잘못된 입력도 시도 횟수에 셈
+    code: |
+      import random
+      random.seed(1)
+      answer = []
+      while len(answer) < 3:
+          d = random.randint(1, 9)
+          if d not in answer:
+              answer.append(d)
+      tries = 0
+      while True:
+          guess = input("추측: ")
+          tries += 1
+          if len(guess) != 3 or not guess.isdigit() or "0" in guess or len(set(guess)) != 3:
+              print("잘못된 입력입니다")
+              continue
+          nums = [int(ch) for ch in guess]
+          strike = 0
+          ball = 0
+          for i in range(3):
+              if nums[i] == answer[i]:
+                  strike += 1
+              elif nums[i] in answer:
+                  ball += 1
+          if strike == 0 and ball == 0:
+              print("OUT")
+          else:
+              print(f"{strike}S {ball}B")
+          if strike == 3:
+              print(f"정답! {tries}번 만에 맞혔습니다.")
+              break
+  - name: 스트라이크인 숫자도 볼로 셈
+    code: |
+      import random
+      random.seed(1)
+      answer = []
+      while len(answer) < 3:
+          d = random.randint(1, 9)
+          if d not in answer:
+              answer.append(d)
+      tries = 0
+      while True:
+          guess = input("추측: ")
+          if len(guess) != 3 or not guess.isdigit() or "0" in guess or len(set(guess)) != 3:
+              print("잘못된 입력입니다")
+              continue
+          tries += 1
+          nums = [int(ch) for ch in guess]
+          strike = 0
+          ball = 0
+          for i in range(3):
+              if nums[i] == answer[i]:
+                  strike += 1
+              if nums[i] in answer:
+                  ball += 1
+          if strike == 0 and ball == 0:
+              print("OUT")
+          else:
+              print(f"{strike}S {ball}B")
+          if strike == 3:
+              print(f"정답! {tries}번 만에 맞혔습니다.")
+              break
+  - name: 같은 숫자가 겹친 추측을 허용
+    code: |
+      import random
+      random.seed(1)
+      answer = []
+      while len(answer) < 3:
+          d = random.randint(1, 9)
+          if d not in answer:
+              answer.append(d)
+      tries = 0
+      while True:
+          guess = input("추측: ")
+          if len(guess) != 3 or not guess.isdigit() or "0" in guess:
+              print("잘못된 입력입니다")
+              continue
+          tries += 1
+          nums = [int(ch) for ch in guess]
+          strike = 0
+          ball = 0
+          for i in range(3):
+              if nums[i] == answer[i]:
+                  strike += 1
+              elif nums[i] in answer:
+                  ball += 1
+          if strike == 0 and ball == 0:
+              print("OUT")
+          else:
+              print(f"{strike}S {ball}B")
+          if strike == 3:
+              print(f"정답! {tries}번 만에 맞혔습니다.")
+              break
+tests:
+  - stdin: "123\n456\n325\n"
+    public: true
+  - stdin: "12\n1234\n102\n112\nabc\n789\n325\n"
+    note: 잘못된 입력은 횟수에 넣지 않음
+  - stdin: "325\n"
+  - stdin: "532\n352\n325\n"
+hints:
+  - "입력 검사: 길이 3, 모두 숫자(`isdigit()`), `0` 없음, 서로 다름(`len(set(guess)) == 3`)."
+  - "같은 자리면 스트라이크, **아니면서** 정답에 있으면 볼입니다 (`if` / `elif`)."
+explanation: |
+  `random.seed(1)` 덕분에 정답이 매번 같으므로 채점이 가능합니다. 정답이 궁금하면 `print(answer)`로 확인해 보세요 (제출 전에는 지울 것).
+  잘못된 입력은 `continue`로 건너뛰되, 시도 횟수는 그 **뒤에서** 늘려야 합니다.

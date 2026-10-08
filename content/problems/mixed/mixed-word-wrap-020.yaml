@@ -1,0 +1,132 @@
+id: mixed-word-wrap-020
+title: 단어 단위 줄바꿈 상자
+unit: mixed
+difficulty: 4
+tags: [str.split-join, str.multiply, loop.accumulate]
+statement: |
+  폭과 영어 문장을 입력받아, 한 줄의 길이가 폭을 넘지 않도록 단어 단위로 줄을 나눠 상자 안에 출력하시오.
+
+  - 입력 프롬프트: `폭: `, `문장: `
+  - 앞에서부터 한 줄에 들어갈 수 있는 만큼 단어를 넣고(단어 사이는 공백 하나), 다음 단어가 들어가지 않으면 새 줄을 시작한다.
+  - 각 줄은 `|`로 감싸고, 줄 길이가 폭보다 짧으면 오른쪽을 공백으로 채워 폭에 맞춘다.
+  - 마지막 줄에 `줄 수: 3`을 출력한다.
+  - 문장의 단어 사이에는 공백이 여러 개 있을 수 있다. 모든 단어의 길이는 폭 이하이다.
+
+  예) 폭 16, 문장 `the quick brown fox jumps over the lazy dog`
+
+  ```
+  |the quick brown |
+  |fox jumps over  |
+  |the lazy dog    |
+  줄 수: 3
+  ```
+starter: |
+  width = int(input("폭: "))
+  words = input("문장: ").split()
+solution: |
+  width = int(input("폭: "))
+  words = input("문장: ").split()
+  lines = []
+  current = ""
+  for w in words:
+      if current == "":
+          current = w
+      elif len(current) + 1 + len(w) <= width:
+          current += " " + w
+      else:
+          lines.append(current)
+          current = w
+  if current != "":
+      lines.append(current)
+  for line in lines:
+      print("|" + line + " " * (width - len(line)) + "|")
+  print(f"줄 수: {len(lines)}")
+alt_solutions:
+  - |
+    w = int(input("폭: "))
+    ws = input("문장: ").split()
+    rows = []
+    row = []
+    for word in ws:
+        if row and len(" ".join(row + [word])) > w:
+            rows.append(" ".join(row))
+            row = []
+        row.append(word)
+    if row:
+        rows.append(" ".join(row))
+    for r in rows:
+        print("|" + r.ljust(w) + "|")
+    print("줄 수:", len(rows))
+mutants:
+  - name: 폭과 딱 맞는 줄을 넘친다고 판단 (< 사용)
+    code: |
+      width = int(input("폭: "))
+      words = input("문장: ").split()
+      lines = []
+      current = ""
+      for w in words:
+          if current == "":
+              current = w
+          elif len(current) + 1 + len(w) < width:
+              current += " " + w
+          else:
+              lines.append(current)
+              current = w
+      if current != "":
+          lines.append(current)
+      for line in lines:
+          print("|" + line + " " * (width - len(line)) + "|")
+      print(f"줄 수: {len(lines)}")
+  - name: 오른쪽을 공백으로 채우지 않음
+    code: |
+      width = int(input("폭: "))
+      words = input("문장: ").split()
+      lines = []
+      current = ""
+      for w in words:
+          if current == "":
+              current = w
+          elif len(current) + 1 + len(w) <= width:
+              current += " " + w
+          else:
+              lines.append(current)
+              current = w
+      if current != "":
+          lines.append(current)
+      for line in lines:
+          print("|" + line + "|")
+      print(f"줄 수: {len(lines)}")
+  - name: 마지막 줄을 빠뜨림
+    code: |
+      width = int(input("폭: "))
+      words = input("문장: ").split()
+      lines = []
+      current = ""
+      for w in words:
+          if current == "":
+              current = w
+          elif len(current) + 1 + len(w) <= width:
+              current += " " + w
+          else:
+              lines.append(current)
+              current = w
+      for line in lines:
+          print("|" + line + " " * (width - len(line)) + "|")
+      print(f"줄 수: {len(lines)}")
+tests:
+  - stdin: "16\nthe quick brown fox jumps over the lazy dog\n"
+    public: true
+  - stdin: "9\naaaa bbbb cccc\n"
+    note: 폭과 딱 맞는 줄
+  - stdin: "5\nhello world\n"
+  - stdin: "20\n  spaced   out   words  \n"
+    note: 공백이 여러 개
+  - stdin: "3\na b c d e\n"
+  - stdin: "10\n\n"
+    note: 빈 문장
+hints:
+  - "지금 줄 `current`에 단어를 붙였을 때의 길이는 `len(current) + 1 + len(w)`입니다 (공백 1칸 포함)."
+  - "반복이 끝나면 아직 `current`에 남아 있는 마지막 줄을 꼭 추가하세요. 채울 공백은 `\" \" * (폭 - 줄 길이)`입니다."
+explanation: |
+  '들어가면 붙이고, 안 들어가면 줄을 넘기는' 탐욕적 방법입니다. 폭과 **정확히 같은** 길이도 들어가므로 비교는 `<=`입니다.
+  문자열 메서드 `ljust(폭)`을 쓰면 오른쪽 공백 채우기를 한 번에 할 수 있습니다.

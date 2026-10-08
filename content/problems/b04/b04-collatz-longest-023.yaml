@@ -1,0 +1,136 @@
+id: b04-collatz-longest-023
+title: 콜라츠 수열과 가장 긴 수
+unit: b04
+difficulty: 4
+tags: [loop.while, loop.nested, str.join]
+statement: |
+  콜라츠 규칙: 수가 짝수면 2로 나누고, 홀수면 3을 곱하고 1을 더한다. 이를 1이 될 때까지 반복한다.
+  자연수 n(1 이상 1000 이하)을 입력받아 다음 네 줄을 출력하시오.
+
+  - 첫째 줄: n부터 1까지의 수열을 ` -> `로 이어 출력 (예: `6 -> 3 -> 10 -> 5 -> 16 -> 8 -> 4 -> 2 -> 1`, n이 1이면 `1`)
+  - `단계 수: 8` — 1이 될 때까지 규칙을 적용한 횟수
+  - `최댓값: 16` — 수열에서 가장 큰 수
+  - `가장 긴 수: 6 (8단계)` — 1부터 n까지의 수 중 단계 수가 가장 많은 수 (같으면 작은 수)
+  - 입력 프롬프트: `n: `
+starter: |
+  n = int(input("n: "))
+solution: |
+  n = int(input("n: "))
+  seq = [n]
+  x = n
+  while x != 1:
+      if x % 2 == 0:
+          x = x // 2
+      else:
+          x = x * 3 + 1
+      seq.append(x)
+  print(" -> ".join([str(v) for v in seq]))
+  print(f"단계 수: {len(seq) - 1}")
+  print(f"최댓값: {max(seq)}")
+  best = 1
+  best_steps = 0
+  for k in range(1, n + 1):
+      steps = 0
+      x = k
+      while x != 1:
+          if x % 2 == 0:
+              x = x // 2
+          else:
+              x = x * 3 + 1
+          steps += 1
+      if steps > best_steps:
+          best = k
+          best_steps = steps
+  print(f"가장 긴 수: {best} ({best_steps}단계)")
+alt_solutions:
+  - |
+    n = int(input("n: "))
+    steps_of = [0] * (n + 1)
+    for k in range(2, n + 1):
+        x = k
+        s = 0
+        while x >= k:
+            if x % 2 == 0:
+                x //= 2
+            else:
+                x = 3 * x + 1
+            s += 1
+        steps_of[k] = s + steps_of[x]
+    text = str(n)
+    x = n
+    biggest = n
+    while x != 1:
+        x = x // 2 if x % 2 == 0 else 3 * x + 1
+        text += " -> " + str(x)
+        if x > biggest:
+            biggest = x
+    print(text)
+    print("단계 수:", steps_of[n])
+    print("최댓값:", biggest)
+    best = 1
+    for k in range(1, n + 1):
+        if steps_of[k] > steps_of[best]:
+            best = k
+    print("가장 긴 수: " + str(best) + " (" + str(steps_of[best]) + "단계)")
+mutants:
+  - name: 단계 수에 시작 수까지 셈
+    code: |
+      n = int(input("n: "))
+      seq = [n]
+      x = n
+      while x != 1:
+          x = x // 2 if x % 2 == 0 else x * 3 + 1
+          seq.append(x)
+      print(" -> ".join([str(v) for v in seq]))
+      print(f"단계 수: {len(seq)}")
+      print(f"최댓값: {max(seq)}")
+      best = 1
+      best_steps = 0
+      for k in range(1, n + 1):
+          steps = 0
+          x = k
+          while x != 1:
+              x = x // 2 if x % 2 == 0 else x * 3 + 1
+              steps += 1
+          if steps > best_steps:
+              best = k
+              best_steps = steps
+      print(f"가장 긴 수: {best} ({best_steps}단계)")
+  - name: 같으면 큰 수 (>=)
+    code: |
+      n = int(input("n: "))
+      seq = [n]
+      x = n
+      while x != 1:
+          x = x // 2 if x % 2 == 0 else x * 3 + 1
+          seq.append(x)
+      print(" -> ".join([str(v) for v in seq]))
+      print(f"단계 수: {len(seq) - 1}")
+      print(f"최댓값: {max(seq)}")
+      best = 1
+      best_steps = 0
+      for k in range(1, n + 1):
+          steps = 0
+          x = k
+          while x != 1:
+              x = x // 2 if x % 2 == 0 else x * 3 + 1
+              steps += 1
+          if steps >= best_steps:
+              best = k
+              best_steps = steps
+      print(f"가장 긴 수: {best} ({best_steps}단계)")
+tests:
+  - stdin: "6\n"
+    public: true
+  - stdin: "1\n"
+    note: 처음부터 1
+  - stdin: "27\n"
+    note: 아주 길어지는 수
+  - stdin: "19\n"
+    note: 18과 19가 모두 20단계 → 작은 수 18
+  - stdin: "100\n"
+hints:
+  - "수열은 리스트에 모아 두면 `\" -> \".join(...)`, `max()`, 길이로 단계 수를 쉽게 구할 수 있습니다."
+  - "'가장 긴 수'는 1부터 n까지 하나씩 단계 수를 세는 이중 반복문입니다."
+explanation: |
+  `x // 2`를 써야 정수가 유지됩니다(`/`는 실수). 단계 수는 '바꾼 횟수'이므로 수열 길이 − 1입니다.

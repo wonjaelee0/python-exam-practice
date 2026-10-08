@@ -1,0 +1,119 @@
+id: mixed-rank-ties-011
+title: 동점자를 고려한 등수표
+unit: mixed
+difficulty: 4
+tags: [list.sort, list.2d, loop.while-sentinel]
+statement: |
+  학생의 이름과 점수를 `이름 점수` 형식으로 한 줄에 하나씩 입력받다가 `종료`가 입력되면 등수표를 출력하시오.
+
+  - 입력 프롬프트: `이름 점수: `
+  - 점수가 높은 순서로, 점수가 같으면 이름의 사전순으로 한 줄에 한 명씩 `1등 지민 95점` 형식으로 출력한다.
+  - **동점자는 같은 등수**이고, 그다음 등수는 동점자 수만큼 건너뛴다. (예: 95, 90, 90, 80점 → 1, 2, 2, 4등)
+  - 입력된 학생이 없으면 `학생이 없습니다`를 출력한다.
+  - 이름은 서로 다르고, 점수는 0 이상 100 이하의 정수이다.
+starter: |
+  students = []
+solution: |
+  students = []
+  while True:
+      line = input("이름 점수: ")
+      if line == "종료":
+          break
+      name, score = line.split()
+      students.append([-int(score), name])
+  if len(students) == 0:
+      print("학생이 없습니다")
+  else:
+      students.sort()
+      rank = 0
+      for i in range(len(students)):
+          if i == 0 or students[i][0] != students[i - 1][0]:
+              rank = i + 1
+          print(f"{rank}등 {students[i][1]} {-students[i][0]}점")
+alt_solutions:
+  - |
+    names = []
+    scores = []
+    line = input("이름 점수: ")
+    while line != "종료":
+        parts = line.split()
+        names.append(parts[0])
+        scores.append(int(parts[1]))
+        line = input("이름 점수: ")
+    if not names:
+        print("학생이 없습니다")
+    else:
+        order = sorted(zip([-s for s in scores], names))
+        for neg, name in order:
+            rank = 1
+            for s in scores:
+                if s > -neg:
+                    rank += 1
+            print(str(rank) + "등 " + name + " " + str(-neg) + "점")
+mutants:
+  - name: 동점 다음 등수를 건너뛰지 않음 (1, 2, 2, 3)
+    code: |
+      students = []
+      while True:
+          line = input("이름 점수: ")
+          if line == "종료":
+              break
+          name, score = line.split()
+          students.append([-int(score), name])
+      if len(students) == 0:
+          print("학생이 없습니다")
+      else:
+          students.sort()
+          rank = 0
+          for i in range(len(students)):
+              if i == 0 or students[i][0] != students[i - 1][0]:
+                  rank += 1
+              print(f"{rank}등 {students[i][1]} {-students[i][0]}점")
+  - name: 동점자에게도 다른 등수를 줌
+    code: |
+      students = []
+      while True:
+          line = input("이름 점수: ")
+          if line == "종료":
+              break
+          name, score = line.split()
+          students.append([-int(score), name])
+      if len(students) == 0:
+          print("학생이 없습니다")
+      else:
+          students.sort()
+          for i in range(len(students)):
+              print(f"{i + 1}등 {students[i][1]} {-students[i][0]}점")
+  - name: 동점자를 입력 순서로 출력
+    code: |
+      students = []
+      while True:
+          line = input("이름 점수: ")
+          if line == "종료":
+              break
+          name, score = line.split()
+          students.append([-int(score), len(students), name])
+      if len(students) == 0:
+          print("학생이 없습니다")
+      else:
+          students.sort()
+          rank = 0
+          for i in range(len(students)):
+              if i == 0 or students[i][0] != students[i - 1][0]:
+                  rank = i + 1
+              print(f"{rank}등 {students[i][2]} {-students[i][0]}점")
+tests:
+  - stdin: "민수 90\n지민 95\n하늘 90\n가람 80\n종료\n"
+    public: true
+  - stdin: "하늘 70\n가람 70\n나래 70\n종료\n"
+    note: 모두 동점 — 이름 사전순
+  - stdin: "종료\n"
+    note: 학생 없음
+  - stdin: "철수 50\n영희 60\n민지 60\n수진 60\n다은 40\n종료\n"
+  - stdin: "도윤 0\n종료\n"
+hints:
+  - "`[-점수, 이름]` 리스트를 정렬하면 점수 내림차순, 같으면 이름 오름차순이 한 번에 됩니다."
+  - "앞 사람과 점수가 다를 때만 등수를 `i + 1`(지금까지 앞선 사람 수 + 1)로 바꿉니다."
+explanation: |
+  '공동 순위' 방식(1, 2, 2, 4)은 **자기보다 점수가 높은 사람 수 + 1**이 등수입니다.
+  정렬된 상태에서는 점수가 바뀌는 순간의 위치 `i + 1`이 바로 그 값이고, 동점이면 앞 사람의 등수를 그대로 씁니다.

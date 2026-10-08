@@ -1,0 +1,122 @@
+id: b06-morse-both-023
+title: 모스 부호 양방향 변환
+unit: b06
+difficulty: 4
+tags: [dict.lookup, dict.reverse, str.join]
+statement: |
+  알파벳의 모스 부호가 딕셔너리 `MORSE`로 주어진다 (시작 코드 참고). 변환 방향을 입력받아 변환하시오.
+
+  - 입력 프롬프트: `방향(1: 영어→모스, 2: 모스→영어): `, `내용: `
+  - **1번**: 영어 문장을 대문자로 바꿔 변환한다. 글자 사이는 공백 하나, 단어 사이는 ` / `로 구분한다.
+    알파벳이 아닌 글자는 `?`로 바꾼다. (예: `Hi SOS` → `.... .. / ... --- ...`)
+  - **2번**: 모스 부호를 영어 대문자로 바꾼다. 단어는 ` / `로, 글자는 공백으로 구분되어 있다. 모르는 부호는 `?`.
+    단어 사이는 공백 하나로 출력한다. (예: `.... .. / ... --- ...` → `HI SOS`)
+  - 출력 형식: `결과: .... .. / ... --- ...`
+  - 방향이 1, 2가 아니면 `내용: `을 입력받지 않고 `잘못된 방향입니다`를 출력한다.
+starter: |
+  MORSE = {
+      "A": ".-", "B": "-...", "C": "-.-.", "D": "-..", "E": ".", "F": "..-.", "G": "--.",
+      "H": "....", "I": "..", "J": ".---", "K": "-.-", "L": ".-..", "M": "--", "N": "-.",
+      "O": "---", "P": ".--.", "Q": "--.-", "R": ".-.", "S": "...", "T": "-", "U": "..-",
+      "V": "...-", "W": ".--", "X": "-..-", "Y": "-.--", "Z": "--..",
+  }
+  ##############################
+solution: |
+  MORSE = {
+      "A": ".-", "B": "-...", "C": "-.-.", "D": "-..", "E": ".", "F": "..-.", "G": "--.",
+      "H": "....", "I": "..", "J": ".---", "K": "-.-", "L": ".-..", "M": "--", "N": "-.",
+      "O": "---", "P": ".--.", "Q": "--.-", "R": ".-.", "S": "...", "T": "-", "U": "..-",
+      "V": "...-", "W": ".--", "X": "-..-", "Y": "-.--", "Z": "--..",
+  }
+  ##############################
+  mode = input("방향(1: 영어→모스, 2: 모스→영어): ")
+  if mode == "1":
+      text = input("내용: ").upper()
+      words = []
+      for word in text.split():
+          codes = []
+          for ch in word:
+              codes.append(MORSE.get(ch, "?"))
+          words.append(" ".join(codes))
+      print("결과: " + " / ".join(words))
+  elif mode == "2":
+      reverse = {}
+      for letter, code in MORSE.items():
+          reverse[code] = letter
+      code_text = input("내용: ")
+      words = []
+      for word in code_text.split(" / "):
+          letters = ""
+          for code in word.split():
+              letters += reverse.get(code, "?")
+          words.append(letters)
+      print("결과: " + " ".join(words))
+  else:
+      print("잘못된 방향입니다")
+alt_solutions:
+  - |
+    MORSE = {
+        "A": ".-", "B": "-...", "C": "-.-.", "D": "-..", "E": ".", "F": "..-.", "G": "--.",
+        "H": "....", "I": "..", "J": ".---", "K": "-.-", "L": ".-..", "M": "--", "N": "-.",
+        "O": "---", "P": ".--.", "Q": "--.-", "R": ".-.", "S": "...", "T": "-", "U": "..-",
+        "V": "...-", "W": ".--", "X": "-..-", "Y": "-.--", "Z": "--..",
+    }
+    mode = input("방향(1: 영어→모스, 2: 모스→영어): ")
+    if mode not in ["1", "2"]:
+        print("잘못된 방향입니다")
+    else:
+        content = input("내용: ")
+        out = []
+        if mode == "1":
+            for word in content.upper().split():
+                out.append(" ".join([MORSE[c] if c in MORSE else "?" for c in word]))
+            print("결과:", " / ".join(out))
+        else:
+            inv = dict([(v, k) for k, v in MORSE.items()])
+            for word in content.split(" / "):
+                out.append("".join([inv.get(c, "?") for c in word.split()]))
+            print("결과:", " ".join(out))
+mutants:
+  - name: 대문자로 바꾸지 않음
+    code: |
+      MORSE = {"A": ".-", "B": "-...", "C": "-.-.", "D": "-..", "E": ".", "F": "..-.", "G": "--.", "H": "....", "I": "..", "J": ".---", "K": "-.-", "L": ".-..", "M": "--", "N": "-.", "O": "---", "P": ".--.", "Q": "--.-", "R": ".-.", "S": "...", "T": "-", "U": "..-", "V": "...-", "W": ".--", "X": "-..-", "Y": "-.--", "Z": "--.."}
+      mode = input("방향(1: 영어→모스, 2: 모스→영어): ")
+      if mode == "1":
+          text = input("내용: ")
+          print("결과: " + " / ".join([" ".join([MORSE.get(ch, "?") for ch in w]) for w in text.split()]))
+      elif mode == "2":
+          reverse = {v: k for k, v in MORSE.items()}
+          code_text = input("내용: ")
+          print("결과: " + " ".join(["".join([reverse.get(c, "?") for c in w.split()]) for w in code_text.split(" / ")]))
+      else:
+          print("잘못된 방향입니다")
+  - name: 단어 구분 없이 모두 공백으로 이음
+    code: |
+      MORSE = {"A": ".-", "B": "-...", "C": "-.-.", "D": "-..", "E": ".", "F": "..-.", "G": "--.", "H": "....", "I": "..", "J": ".---", "K": "-.-", "L": ".-..", "M": "--", "N": "-.", "O": "---", "P": ".--.", "Q": "--.-", "R": ".-.", "S": "...", "T": "-", "U": "..-", "V": "...-", "W": ".--", "X": "-..-", "Y": "-.--", "Z": "--.."}
+      mode = input("방향(1: 영어→모스, 2: 모스→영어): ")
+      if mode == "1":
+          text = input("내용: ").upper().replace(" ", "")
+          print("결과: " + " ".join([MORSE.get(ch, "?") for ch in text]))
+      elif mode == "2":
+          reverse = {v: k for k, v in MORSE.items()}
+          code_text = input("내용: ").replace(" / ", " ")
+          print("결과: " + "".join([reverse.get(c, "?") for c in code_text.split()]))
+      else:
+          print("잘못된 방향입니다")
+tests:
+  - stdin: "1\nHi SOS\n"
+    public: true
+  - stdin: "2\n.... .. / ... --- ...\n"
+    public: true
+  - stdin: "1\nhello world!\n"
+    note: 알파벳이 아닌 글자는 ?
+  - stdin: "2\n.--. -.-- - .... --- -. / ...---...\n"
+    note: 모르는 부호는 ?
+  - stdin: "3\n"
+    note: 잘못된 방향 — 내용을 입력받지 않음
+  - stdin: "1\n  python   is   fun  \n"
+hints:
+  - "영어→모스는 `MORSE.get(글자, \"?\")`로 바꾸고, 모스→영어는 키와 값을 뒤집은 딕셔너리를 새로 만듭니다."
+  - "`\" / \".join(...)`과 `split(\" / \")`로 단어 구분자를 다룹니다."
+explanation: |
+  딕셔너리를 거꾸로 쓰려면 `for 키, 값 in MORSE.items(): reverse[값] = 키`처럼 뒤집은 딕셔너리를 만듭니다.

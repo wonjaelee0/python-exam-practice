@@ -1,0 +1,202 @@
+id: mixed-sales-table-021
+title: 지점별 분기 매출 보고서
+unit: mixed
+difficulty: 4
+tags: [list.2d, loop.nested, list.index-max]
+statement: |
+  지점별 분기 매출을 입력받아 보고서를 출력하시오.
+
+  - 입력 프롬프트: `지점 수: `, 각 지점은 `지점: ` (형식: `지점명 1분기 2분기 3분기 4분기`, 매출은 0 이상의 정수)
+  - 출력 (순서대로)
+    1. 입력 순서대로 지점마다 `강남: 합계 560, 평균 140.0, 최고 분기 4분기` — 평균은 소수 첫째 자리까지, 최고 분기가 여럿이면 앞 분기
+    2. `분기 합계: [410, 440, 440, 450]` — 분기별로 모든 지점을 더한 리스트
+    3. `최고 지점: 홍대` — 합계가 가장 큰 지점 (같으면 먼저 입력된 지점)
+    4. `성장 지점: ['강남', '잠실']` — 4분기 매출이 1분기보다 큰 지점, 입력 순서 (없으면 `[]`)
+  - 지점 수는 1 이상이다.
+starter: |
+  n = int(input("지점 수: "))
+  names = []
+  table = []
+solution: |
+  n = int(input("지점 수: "))
+  names = []
+  table = []
+  for i in range(n):
+      parts = input("지점: ").split()
+      names.append(parts[0])
+      table.append([int(x) for x in parts[1:]])
+  quarter_sum = [0, 0, 0, 0]
+  best_name = ""
+  best_total = -1
+  growth = []
+  for i in range(n):
+      row = table[i]
+      total = sum(row)
+      top_q = row.index(max(row)) + 1
+      print(f"{names[i]}: 합계 {total}, 평균 {total / 4:.1f}, 최고 분기 {top_q}분기")
+      for q in range(4):
+          quarter_sum[q] += row[q]
+      if total > best_total:
+          best_total = total
+          best_name = names[i]
+      if row[3] > row[0]:
+          growth.append(names[i])
+  print(f"분기 합계: {quarter_sum}")
+  print(f"최고 지점: {best_name}")
+  print(f"성장 지점: {growth}")
+alt_solutions:
+  - |
+    n = int(input("지점 수: "))
+    data = []
+    for _ in range(n):
+        name, a, b, c, d = input("지점: ").split()
+        data.append([name, int(a), int(b), int(c), int(d)])
+    totals = []
+    for row in data:
+        vals = row[1:]
+        t = vals[0] + vals[1] + vals[2] + vals[3]
+        totals.append(t)
+        best_q = 0
+        for q in range(1, 4):
+            if vals[q] > vals[best_q]:
+                best_q = q
+        print(row[0] + ": 합계 " + str(t) + ", 평균 " + "{:.1f}".format(t / 4) + ", 최고 분기 " + str(best_q + 1) + "분기")
+    cols = []
+    for q in range(1, 5):
+        s = 0
+        for row in data:
+            s += row[q]
+        cols.append(s)
+    print("분기 합계:", cols)
+    print("최고 지점:", data[totals.index(max(totals))][0])
+    print("성장 지점:", [row[0] for row in data if row[4] > row[1]])
+mutants:
+  - name: 합계가 같으면 나중 지점을 최고로 봄
+    code: |
+      n = int(input("지점 수: "))
+      names = []
+      table = []
+      for i in range(n):
+          parts = input("지점: ").split()
+          names.append(parts[0])
+          table.append([int(x) for x in parts[1:]])
+      quarter_sum = [0, 0, 0, 0]
+      best_name = ""
+      best_total = -1
+      growth = []
+      for i in range(n):
+          row = table[i]
+          total = sum(row)
+          top_q = row.index(max(row)) + 1
+          print(f"{names[i]}: 합계 {total}, 평균 {total / 4:.1f}, 최고 분기 {top_q}분기")
+          for q in range(4):
+              quarter_sum[q] += row[q]
+          if total >= best_total:
+              best_total = total
+              best_name = names[i]
+          if row[3] > row[0]:
+              growth.append(names[i])
+      print(f"분기 합계: {quarter_sum}")
+      print(f"최고 지점: {best_name}")
+      print(f"성장 지점: {growth}")
+  - name: 최고 분기가 여럿이면 뒤 분기를 고름
+    code: |
+      n = int(input("지점 수: "))
+      names = []
+      table = []
+      for i in range(n):
+          parts = input("지점: ").split()
+          names.append(parts[0])
+          table.append([int(x) for x in parts[1:]])
+      quarter_sum = [0, 0, 0, 0]
+      best_name = ""
+      best_total = -1
+      growth = []
+      for i in range(n):
+          row = table[i]
+          total = sum(row)
+          top_q = 1
+          for q in range(4):
+              if row[q] >= row[top_q - 1]:
+                  top_q = q + 1
+          print(f"{names[i]}: 합계 {total}, 평균 {total / 4:.1f}, 최고 분기 {top_q}분기")
+          for q in range(4):
+              quarter_sum[q] += row[q]
+          if total > best_total:
+              best_total = total
+              best_name = names[i]
+          if row[3] > row[0]:
+              growth.append(names[i])
+      print(f"분기 합계: {quarter_sum}")
+      print(f"최고 지점: {best_name}")
+      print(f"성장 지점: {growth}")
+  - name: 평균을 몫(//)으로 계산
+    code: |
+      n = int(input("지점 수: "))
+      names = []
+      table = []
+      for i in range(n):
+          parts = input("지점: ").split()
+          names.append(parts[0])
+          table.append([int(x) for x in parts[1:]])
+      quarter_sum = [0, 0, 0, 0]
+      best_name = ""
+      best_total = -1
+      growth = []
+      for i in range(n):
+          row = table[i]
+          total = sum(row)
+          top_q = row.index(max(row)) + 1
+          print(f"{names[i]}: 합계 {total}, 평균 {total // 4:.1f}, 최고 분기 {top_q}분기")
+          for q in range(4):
+              quarter_sum[q] += row[q]
+          if total > best_total:
+              best_total = total
+              best_name = names[i]
+          if row[3] > row[0]:
+              growth.append(names[i])
+      print(f"분기 합계: {quarter_sum}")
+      print(f"최고 지점: {best_name}")
+      print(f"성장 지점: {growth}")
+  - name: 4분기와 1분기가 같아도 성장으로 봄
+    code: |
+      n = int(input("지점 수: "))
+      names = []
+      table = []
+      for i in range(n):
+          parts = input("지점: ").split()
+          names.append(parts[0])
+          table.append([int(x) for x in parts[1:]])
+      quarter_sum = [0, 0, 0, 0]
+      best_name = ""
+      best_total = -1
+      growth = []
+      for i in range(n):
+          row = table[i]
+          total = sum(row)
+          top_q = row.index(max(row)) + 1
+          print(f"{names[i]}: 합계 {total}, 평균 {total / 4:.1f}, 최고 분기 {top_q}분기")
+          for q in range(4):
+              quarter_sum[q] += row[q]
+          if total > best_total:
+              best_total = total
+              best_name = names[i]
+          if row[3] >= row[0]:
+              growth.append(names[i])
+      print(f"분기 합계: {quarter_sum}")
+      print(f"최고 지점: {best_name}")
+      print(f"성장 지점: {growth}")
+tests:
+  - stdin: "3\n강남 120 150 130 160\n홍대 200 180 170 190\n잠실 90 110 140 100\n"
+    public: true
+  - stdin: "2\nA 10 20 20 10\nB 15 15 15 15\n"
+    note: 합계·최고 분기 동점, 성장 없음
+  - stdin: "1\nC 1 2 3 4\n"
+    note: 평균이 정수가 아님
+  - stdin: "2\n서면 0 0 0 0\n동성로 0 0 0 2\n"
+hints:
+  - "`row.index(max(row))`는 최댓값이 처음 나오는 위치입니다. 분기 번호는 여기에 1을 더합니다."
+  - "분기 합계는 `[0, 0, 0, 0]`에서 시작해 지점마다 같은 자리끼리 더합니다."
+explanation: |
+  2차원 리스트에서 **행 방향**(지점별 합계·평균·최고 분기)과 **열 방향**(분기 합계)을 모두 계산하는 문제입니다.
+  '같으면 먼저 나온 것'은 `>`로 비교해 갱신하거나, 처음 위치를 돌려주는 `index()`를 쓰면 자연스럽게 됩니다.

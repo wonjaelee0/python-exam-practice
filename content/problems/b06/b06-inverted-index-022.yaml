@@ -1,0 +1,115 @@
+id: b06-inverted-index-022
+title: 단어가 나온 줄 번호 찾기 (역색인)
+unit: b06
+difficulty: 5
+tags: [dict.set-values, loop.while-sentinel, str.clean-pipeline]
+statement: |
+  문장을 한 줄에 하나씩 `끝`이 입력될 때까지 입력받는다. 첫 문장이 1번 줄이다.
+  각 문장은 `,.!?`를 지우고 소문자로 바꾼 뒤 공백으로 나눠 단어로 본다.
+
+  그다음 검색어를 `종료`가 입력될 때까지 입력받아, 검색어(소문자로 바꾼 것)가 나온 줄 번호를 출력하시오.
+
+  - 입력 프롬프트: 문장은 `문장: `, 검색어는 `검색: `
+  - 출력 형식: `python: [1, 3]` (오름차순, 한 줄에 여러 번 나와도 한 번만), 없으면 `python: 없음`
+  - 출력할 때 검색어는 소문자로 바꾼 형태로 쓴다.
+starter: |
+  index = {}
+  line_no = 0
+solution: |
+  index = {}
+  line_no = 0
+  while True:
+      line = input("문장: ")
+      if line == "끝":
+          break
+      line_no += 1
+      for mark in ",.!?":
+          line = line.replace(mark, "")
+      for w in line.lower().split():
+          index.setdefault(w, set()).add(line_no)
+  while True:
+      q = input("검색: ")
+      if q == "종료":
+          break
+      key = q.lower()
+      if key in index:
+          print(f"{key}: {sorted(index[key])}")
+      else:
+          print(f"{key}: 없음")
+alt_solutions:
+  - |
+    lines = []
+    s = input("문장: ")
+    while s != "끝":
+        for mark in ",.!?":
+            s = s.replace(mark, "")
+        lines.append(s.lower().split())
+        s = input("문장: ")
+    q = input("검색: ")
+    while q != "종료":
+        key = q.lower()
+        found = []
+        for i in range(len(lines)):
+            if key in lines[i]:
+                found.append(i + 1)
+        if found:
+            print(key + ":", found)
+        else:
+            print(key + ": 없음")
+        q = input("검색: ")
+mutants:
+  - name: 한 줄에 여러 번 나오면 번호가 중복됨
+    code: |
+      index = {}
+      line_no = 0
+      while True:
+          line = input("문장: ")
+          if line == "끝":
+              break
+          line_no += 1
+          for mark in ",.!?":
+              line = line.replace(mark, "")
+          for w in line.lower().split():
+              index.setdefault(w, []).append(line_no)
+      while True:
+          q = input("검색: ")
+          if q == "종료":
+              break
+          key = q.lower()
+          if key in index:
+              print(f"{key}: {index[key]}")
+          else:
+              print(f"{key}: 없음")
+  - name: 문장부호를 지우지 않음
+    code: |
+      index = {}
+      line_no = 0
+      while True:
+          line = input("문장: ")
+          if line == "끝":
+              break
+          line_no += 1
+          for w in line.lower().split():
+              index.setdefault(w, set()).add(line_no)
+      while True:
+          q = input("검색: ")
+          if q == "종료":
+              break
+          key = q.lower()
+          if key in index:
+              print(f"{key}: {sorted(index[key])}")
+          else:
+              print(f"{key}: 없음")
+tests:
+  - stdin: "Python is fun.\nI like cats, not dogs!\nPYTHON python everywhere?\n끝\npython\ncats\njava\n종료\n"
+    public: true
+  - stdin: "끝\nhello\n종료\n"
+    note: 문장이 하나도 없음
+  - stdin: "a b a\nb\n끝\nA\nB\n종료\n"
+    note: 검색어도 소문자로 바꿔 찾고 출력
+  - stdin: "Hi! hi, HI.\n끝\nhi\n종료\n"
+hints:
+  - "단어 → 줄 번호 **집합** 딕셔너리를 만들면 한 줄에 여러 번 나와도 번호가 한 번만 들어갑니다."
+  - "입력이 두 단계(문장 → 검색어)이고 끝내는 단어가 서로 다릅니다 (`끝`, `종료`)."
+explanation: |
+  검색 엔진이 쓰는 '역색인'의 축소판입니다. `setdefault(단어, set()).add(번호)`로 만들고, 출력할 때 `sorted()`로 정렬합니다.

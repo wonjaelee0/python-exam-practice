@@ -1,0 +1,58 @@
+id: b02-reverse-digits-018
+title: 네 자리 수 뒤집기 (산술 연산만)
+unit: b02
+difficulty: 3
+tags: [op.floordiv, op.mod, io.input-cast]
+statement: |
+  네 자리 자연수 n(1000 이상 9999 이하)을 입력받아, 자릿수를 거꾸로 배열한 수와 두 수의 합을 출력하시오.
+  문자열로 바꾸지 말고 `//`, `%`, `*`, `+`만으로 계산한다. 뒤집은 수 맨 앞의 0은 사라진다 (`1200` → `21`).
+
+  - 입력 프롬프트: `네 자리 수: `
+  - 출력 형식: `뒤집은 수: 4321`, `합: 5555`
+starter: |
+  n = int(input("네 자리 수: "))
+solution: |
+  n = int(input("네 자리 수: "))
+  a = n // 1000
+  b = n // 100 % 10
+  c = n // 10 % 10
+  d = n % 10
+  rev = d * 1000 + c * 100 + b * 10 + a
+  print(f"뒤집은 수: {rev}")
+  print(f"합: {n + rev}")
+alt_solutions:
+  - |
+    n = int(input("네 자리 수: "))
+    rev = int(str(n)[::-1])
+    print("뒤집은 수:", rev)
+    print("합:", n + rev)
+mutants:
+  - name: 문자열로 뒤집어 앞의 0이 남음
+    code: |
+      n = int(input("네 자리 수: "))
+      rev = str(n)[::-1]
+      print(f"뒤집은 수: {rev}")
+      print(f"합: {n + int(rev)}")
+  - name: 백의 자리를 n // 100으로
+    code: |
+      n = int(input("네 자리 수: "))
+      a = n // 1000
+      b = n // 100
+      c = n // 10 % 10
+      d = n % 10
+      rev = d * 1000 + c * 100 + b * 10 + a
+      print(f"뒤집은 수: {rev}")
+      print(f"합: {n + rev}")
+tests:
+  - stdin: "1234\n"
+    public: true
+  - stdin: "1200\n"
+    note: 뒤집으면 0021 → 21
+  - stdin: "9999\n"
+  - stdin: "1000\n"
+  - stdin: "5070\n"
+hints:
+  - "천의 자리 `n // 1000`, 백의 자리 `n // 100 % 10`, 십의 자리 `n // 10 % 10`, 일의 자리 `n % 10`"
+  - "뒤집은 수 = 일의 자리 × 1000 + 십의 자리 × 100 + 백의 자리 × 10 + 천의 자리"
+explanation: |
+  숫자로 계산하면 앞자리 0은 자연스럽게 사라집니다. 문자열로 뒤집으면 `'0021'`이 그대로 남는 차이가 있습니다.

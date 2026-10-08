@@ -1,0 +1,98 @@
+id: b05-matrix-mult-025
+title: 행렬 곱셈
+unit: b05
+difficulty: 5
+tags: [list.2d, loop.nested, io.split-map]
+statement: |
+  행렬 A와 B를 입력받아 곱 A × B를 출력하시오.
+
+  - 입력 순서: `A 크기: ` (행 수와 열 수, 예: `2 3`) → A의 각 행 `A 행: ` → `B 크기: ` → B의 각 행 `B 행: `
+    (각 행은 공백으로 구분된 정수. 입력은 항상 이 순서대로 모두 받는다)
+  - A의 열 수와 B의 행 수가 다르면 `곱할 수 없습니다`를 출력한다.
+  - 곱할 수 있으면 결과 행렬의 각 행을 공백 하나로 구분해 한 줄씩 출력한다 (줄 끝 공백 없음).
+  - 결과의 i행 j열 = A의 i행과 B의 j열에서 같은 위치끼리 곱한 값들의 합
+starter: |
+  r, k = map(int, input("A 크기: ").split())
+solution: |
+  r, k = map(int, input("A 크기: ").split())
+  A = []
+  for i in range(r):
+      A.append(list(map(int, input("A 행: ").split())))
+  k2, c = map(int, input("B 크기: ").split())
+  B = []
+  for i in range(k2):
+      B.append(list(map(int, input("B 행: ").split())))
+  if k != k2:
+      print("곱할 수 없습니다")
+  else:
+      for i in range(r):
+          row = []
+          for j in range(c):
+              s = 0
+              for t in range(k):
+                  s += A[i][t] * B[t][j]
+              row.append(str(s))
+          print(" ".join(row))
+alt_solutions:
+  - |
+    r, k = map(int, input("A 크기: ").split())
+    A = [list(map(int, input("A 행: ").split())) for _ in range(r)]
+    k2, c = map(int, input("B 크기: ").split())
+    B = [list(map(int, input("B 행: ").split())) for _ in range(k2)]
+    if k == k2:
+        cols = [[B[t][j] for t in range(k2)] for j in range(c)]
+        for row in A:
+            values = []
+            for col in cols:
+                total = 0
+                for x, y in zip(row, col):
+                    total += x * y
+                values.append(str(total))
+            print(" ".join(values))
+    else:
+        print("곱할 수 없습니다")
+mutants:
+  - name: 같은 위치끼리만 곱함
+    code: |
+      r, k = map(int, input("A 크기: ").split())
+      A = [list(map(int, input("A 행: ").split())) for _ in range(r)]
+      k2, c = map(int, input("B 크기: ").split())
+      B = [list(map(int, input("B 행: ").split())) for _ in range(k2)]
+      if k != k2:
+          print("곱할 수 없습니다")
+      else:
+          for i in range(r):
+              print(" ".join([str(A[i][j] * B[i][j]) for j in range(min(c, k))]))
+  - name: 행과 열을 바꿔 곱함 (B[j][t])
+    code: |
+      r, k = map(int, input("A 크기: ").split())
+      A = [list(map(int, input("A 행: ").split())) for _ in range(r)]
+      k2, c = map(int, input("B 크기: ").split())
+      B = [list(map(int, input("B 행: ").split())) for _ in range(k2)]
+      if k != k2:
+          print("곱할 수 없습니다")
+      else:
+          for i in range(r):
+              row = []
+              for j in range(c):
+                  s = 0
+                  for t in range(min(k, c)):
+                      if j < k2 and t < len(B[j]):
+                          s += A[i][t] * B[j][t]
+                  row.append(str(s))
+              print(" ".join(row))
+tests:
+  - stdin: "2 3\n1 2 3\n4 5 6\n3 2\n7 8\n9 10\n11 12\n"
+    public: true
+  - stdin: "1 1\n5\n1 1\n-3\n"
+  - stdin: "2 2\n1 2\n3 4\n2 2\n1 0\n0 1\n"
+    note: 단위행렬을 곱하면 그대로
+  - stdin: "2 3\n1 2 3\n4 5 6\n2 2\n1 0\n0 1\n"
+    note: 크기가 맞지 않음
+  - stdin: "1 3\n1 2 3\n3 1\n4\n5\n6\n"
+    note: 결과가 1×1
+hints:
+  - "결과의 크기는 (A의 행 수) × (B의 열 수)입니다."
+  - "삼중 반복문: i(결과 행), j(결과 열), t(더할 항)"
+explanation: |
+  (i, j) 원소 = Σ A[i][t] × B[t][j]. 같은 위치끼리 곱하는 것(원소별 곱)과 다르다는 점을 꼭 구별하세요.

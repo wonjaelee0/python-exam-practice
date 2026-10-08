@@ -1,0 +1,73 @@
+id: b02-time-add-017
+title: 몇 초 뒤의 시각 (날짜 넘김 포함)
+unit: b02
+difficulty: 3
+tags: [op.floordiv, op.mod, io.input-cast]
+statement: |
+  현재 시각(시·분·초, 24시간제)과 더할 초(0 이상의 정수)를 입력받아, 그만큼 지난 뒤의 시각을 출력하시오.
+  자정(24시)을 넘기면 다음 날로 넘어가며, 며칠 뒤인지도 함께 출력한다. 조건문 없이 `//`와 `%`만으로 풀 수 있다.
+
+  - 입력 프롬프트: `시: `, `분: `, `초: `, `더할 초: `
+  - 출력 형식: `결과: 0시 0분 15초 (1일 뒤)` — 같은 날이면 `(0일 뒤)`
+starter: |
+  h = int(input("시: "))
+  m = int(input("분: "))
+  s = int(input("초: "))
+  add = int(input("더할 초: "))
+solution: |
+  h = int(input("시: "))
+  m = int(input("분: "))
+  s = int(input("초: "))
+  add = int(input("더할 초: "))
+  total = h * 3600 + m * 60 + s + add
+  days = total // 86400
+  rest = total % 86400
+  print(f"결과: {rest // 3600}시 {rest % 3600 // 60}분 {rest % 60}초 ({days}일 뒤)")
+alt_solutions:
+  - |
+    h = int(input("시: "))
+    m = int(input("분: "))
+    s = int(input("초: "))
+    add = int(input("더할 초: "))
+    sec_total = s + add
+    s = sec_total % 60
+    min_total = m + sec_total // 60
+    m = min_total % 60
+    hour_total = h + min_total // 60
+    h = hour_total % 24
+    d = hour_total // 24
+    print("결과: " + str(h) + "시 " + str(m) + "분 " + str(s) + "초 (" + str(d) + "일 뒤)")
+mutants:
+  - name: 24시를 넘겨도 날짜를 넘기지 않음
+    code: |
+      h = int(input("시: "))
+      m = int(input("분: "))
+      s = int(input("초: "))
+      add = int(input("더할 초: "))
+      total = h * 3600 + m * 60 + s + add
+      print(f"결과: {total // 3600}시 {total % 3600 // 60}분 {total % 60}초 (0일 뒤)")
+  - name: 분을 % 60 하지 않음
+    code: |
+      h = int(input("시: "))
+      m = int(input("분: "))
+      s = int(input("초: "))
+      add = int(input("더할 초: "))
+      total = h * 3600 + m * 60 + s + add
+      days = total // 86400
+      rest = total % 86400
+      print(f"결과: {rest // 3600}시 {rest // 60}분 {rest % 60}초 ({days}일 뒤)")
+tests:
+  - stdin: "23\n59\n30\n45\n"
+    public: true
+  - stdin: "10\n0\n0\n0\n"
+    note: 더할 초가 0
+  - stdin: "0\n0\n0\n90061\n"
+    note: 하루 + 1시간 1분 1초
+  - stdin: "12\n30\n45\n200000\n"
+    note: 이틀 넘게
+  - stdin: "5\n5\n5\n3600\n"
+hints:
+  - "먼저 전부 초로 바꿔 더하세요: `h * 3600 + m * 60 + s + add`"
+  - "하루는 86400초입니다. `// 86400`이 지난 날 수, `% 86400`이 그날의 초입니다."
+explanation: |
+  큰 단위부터 몫과 나머지로 나누면 시·분·초를 차례로 구할 수 있습니다. 하루를 넘는 부분은 `// 86400`으로 따로 셉니다.

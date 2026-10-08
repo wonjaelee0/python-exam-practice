@@ -1,0 +1,193 @@
+id: mixed-rle-013
+title: 런 길이 압축과 해제
+unit: mixed
+difficulty: 4
+tags: [str.iterate, str.isdigit, loop.index]
+statement: |
+  같은 글자가 연속되는 구간을 `글자+개수`로 줄이는 런 길이 압축(RLE)을 만드시오.
+
+  - 입력 프롬프트: `모드(1: 압축, 2: 해제): `, `문자열: `
+  - **1번 (압축)**: `aaabccdddd` → `a3b1c2d4` (개수가 1이어도 적는다)
+    - 출력: `결과: a3b1c2d4`, `압축률: 80.0%` (압축 결과 길이 ÷ 원래 길이 × 100, 소수 첫째 자리까지)
+  - **2번 (해제)**: `x12y1` → `xxxxxxxxxxxxy` (개수는 두 자리 이상일 수 있다)
+    - 출력: `결과: xxxxxxxxxxxxy`, `길이: 13`
+  - 모드가 1, 2가 아니면 `문자열: `을 입력받지 않고 `잘못된 모드입니다`를 출력한다.
+  - 압축할 문자열은 숫자가 없는 한 글자 이상의 문자열이고, 해제할 문자열은 항상 `글자+개수`의 반복이다.
+starter: |
+  mode = input("모드(1: 압축, 2: 해제): ")
+solution: |
+  mode = input("모드(1: 압축, 2: 해제): ")
+  if mode == "1":
+      s = input("문자열: ")
+      result = ""
+      count = 1
+      for i in range(1, len(s)):
+          if s[i] == s[i - 1]:
+              count += 1
+          else:
+              result += s[i - 1] + str(count)
+              count = 1
+      result += s[-1] + str(count)
+      print(f"결과: {result}")
+      print(f"압축률: {len(result) / len(s) * 100:.1f}%")
+  elif mode == "2":
+      s = input("문자열: ")
+      result = ""
+      ch = ""
+      num = ""
+      for c in s:
+          if c.isdigit():
+              num += c
+          else:
+              if ch != "":
+                  result += ch * int(num)
+              ch = c
+              num = ""
+      result += ch * int(num)
+      print(f"결과: {result}")
+      print(f"길이: {len(result)}")
+  else:
+      print("잘못된 모드입니다")
+alt_solutions:
+  - |
+    mode = input("모드(1: 압축, 2: 해제): ")
+    if mode not in ["1", "2"]:
+        print("잘못된 모드입니다")
+    else:
+        s = input("문자열: ")
+        if mode == "1":
+            parts = []
+            i = 0
+            while i < len(s):
+                j = i
+                while j < len(s) and s[j] == s[i]:
+                    j += 1
+                parts.append(s[i] + str(j - i))
+                i = j
+            out = "".join(parts)
+            print("결과:", out)
+            print("압축률: {:.1f}%".format(len(out) / len(s) * 100))
+        else:
+            out = ""
+            i = 0
+            while i < len(s):
+                ch = s[i]
+                i += 1
+                num = ""
+                while i < len(s) and s[i].isdigit():
+                    num += s[i]
+                    i += 1
+                out += ch * int(num)
+            print("결과:", out)
+            print("길이:", len(out))
+mutants:
+  - name: 해제할 때 개수를 한 자리로만 읽음
+    code: |
+      mode = input("모드(1: 압축, 2: 해제): ")
+      if mode == "1":
+          s = input("문자열: ")
+          result = ""
+          count = 1
+          for i in range(1, len(s)):
+              if s[i] == s[i - 1]:
+                  count += 1
+              else:
+                  result += s[i - 1] + str(count)
+                  count = 1
+          result += s[-1] + str(count)
+          print(f"결과: {result}")
+          print(f"압축률: {len(result) / len(s) * 100:.1f}%")
+      elif mode == "2":
+          s = input("문자열: ")
+          result = ""
+          for i in range(0, len(s), 2):
+              result += s[i] * int(s[i + 1])
+          print(f"결과: {result}")
+          print(f"길이: {len(result)}")
+      else:
+          print("잘못된 모드입니다")
+  - name: 연속 구간이 아니라 전체 개수를 셈
+    code: |
+      mode = input("모드(1: 압축, 2: 해제): ")
+      if mode == "1":
+          s = input("문자열: ")
+          counts = {}
+          for ch in s:
+              counts[ch] = counts.get(ch, 0) + 1
+          result = ""
+          for ch in counts:
+              result += ch + str(counts[ch])
+          print(f"결과: {result}")
+          print(f"압축률: {len(result) / len(s) * 100:.1f}%")
+      elif mode == "2":
+          s = input("문자열: ")
+          result = ""
+          ch = ""
+          num = ""
+          for c in s:
+              if c.isdigit():
+                  num += c
+              else:
+                  if ch != "":
+                      result += ch * int(num)
+                  ch = c
+                  num = ""
+          result += ch * int(num)
+          print(f"결과: {result}")
+          print(f"길이: {len(result)}")
+      else:
+          print("잘못된 모드입니다")
+  - name: 마지막 구간을 빠뜨림
+    code: |
+      mode = input("모드(1: 압축, 2: 해제): ")
+      if mode == "1":
+          s = input("문자열: ")
+          result = ""
+          count = 1
+          for i in range(1, len(s)):
+              if s[i] == s[i - 1]:
+                  count += 1
+              else:
+                  result += s[i - 1] + str(count)
+                  count = 1
+          print(f"결과: {result}")
+          print(f"압축률: {len(result) / len(s) * 100:.1f}%")
+      elif mode == "2":
+          s = input("문자열: ")
+          result = ""
+          ch = ""
+          num = ""
+          for c in s:
+              if c.isdigit():
+                  num += c
+              else:
+                  if ch != "":
+                      result += ch * int(num)
+                  ch = c
+                  num = ""
+          print(f"결과: {result}")
+          print(f"길이: {len(result)}")
+      else:
+          print("잘못된 모드입니다")
+tests:
+  - stdin: "1\naaabccdddd\n"
+    public: true
+  - stdin: "2\nx12y1\n"
+    public: true
+  - stdin: "2\na3b1c2d4\n"
+  - stdin: "2\nk10m2\n"
+    note: 두 자리 개수
+  - stdin: "1\nabc\n"
+    note: 압축률이 100%를 넘음
+  - stdin: "1\naabaa\n"
+    note: 같은 글자가 떨어져서 다시 나옴
+  - stdin: "3\n"
+    note: 잘못된 모드
+  - stdin: "1\nzzzzzzzzzzzz\n"
+    note: 개수가 두 자리
+hints:
+  - "압축: 앞 글자와 같으면 개수를 늘리고, 다르면 지금까지의 구간을 결과에 붙입니다. 반복이 끝난 뒤 **마지막 구간**도 붙여야 합니다."
+  - "해제: 숫자가 아닌 글자를 만나면 그 전까지 모은 숫자 문자열(`num`)로 앞 글자를 늘립니다."
+explanation: |
+  `aabaa`는 `a2b1a2`이지 `a4b1`이 아닙니다. 딕셔너리로 '전체 개수'를 세면 연속 구간이 사라집니다.
+  해제할 때 개수가 `12`처럼 여러 자리일 수 있으므로 두 글자씩 끊어 읽으면 안 됩니다.
