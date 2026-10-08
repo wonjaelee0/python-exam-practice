@@ -1,0 +1,103 @@
+id: b03-rides-003
+title: 탈 수 있는 놀이기구 모두 출력하기
+unit: b03
+difficulty: 3
+tags: [cond.multi-if, cond.logic-and, cond.boundary]
+statement: |
+  놀이공원 놀이기구의 탑승 조건은 다음과 같다.
+
+  | 놀이기구 | 조건 |
+  |---|---|
+  | 회전목마 | 키 100 이상 |
+  | 바이킹 | 키 130 이상이고 나이 10세 이상 |
+  | 자이로드롭 | 키 140 이상 200 이하이고 나이 13세 이상 |
+
+  키(cm)와 나이를 정수로 입력받아 탑승 가능한 놀이기구를 **모두** 출력하시오.
+
+  - 입력 프롬프트: `키(cm): `, `나이: `
+  - 첫 줄에 `탑승 가능:`을 출력하고, 다음 줄부터 탈 수 있는 놀이기구를 표의 순서대로 한 줄에 하나씩 출력한다.
+  - 탈 수 있는 놀이기구가 하나도 없으면 `탑승 가능:` 다음 줄에 `없음`을 출력한다.
+starter: |
+  height = int(input("키(cm): "))
+  age = int(input("나이: "))
+solution: |
+  height = int(input("키(cm): "))
+  age = int(input("나이: "))
+  print("탑승 가능:")
+  count = 0
+  if height >= 100:
+      print("회전목마")
+      count += 1
+  if height >= 130 and age >= 10:
+      print("바이킹")
+      count += 1
+  if 140 <= height <= 200 and age >= 13:
+      print("자이로드롭")
+      count += 1
+  if count == 0:
+      print("없음")
+alt_solutions:
+  - |
+    height = int(input("키(cm): "))
+    age = int(input("나이: "))
+    print("탑승 가능:")
+    if height < 100:
+        print("없음")
+    else:
+        print("회전목마")
+        if height >= 130:
+            if age >= 10:
+                print("바이킹")
+            if height <= 200 and height >= 140 and age >= 13:
+                print("자이로드롭")
+mutants:
+  - name: elif로 연결해 하나만 출력
+    code: |
+      height = int(input("키(cm): "))
+      age = int(input("나이: "))
+      print("탑승 가능:")
+      if 140 <= height <= 200 and age >= 13:
+          print("자이로드롭")
+      elif height >= 130 and age >= 10:
+          print("바이킹")
+      elif height >= 100:
+          print("회전목마")
+      else:
+          print("없음")
+  - name: 200 '이하'를 미만(<)으로
+    code: |
+      height = int(input("키(cm): "))
+      age = int(input("나이: "))
+      print("탑승 가능:")
+      count = 0
+      if height >= 100:
+          print("회전목마")
+          count += 1
+      if height >= 130 and age >= 10:
+          print("바이킹")
+          count += 1
+      if 140 <= height < 200 and age >= 13:
+          print("자이로드롭")
+          count += 1
+      if count == 0:
+          print("없음")
+tests:
+  - stdin: "150\n15\n"
+    public: true
+  - stdin: "135\n12\n"
+    note: 자이로드롭은 키 140 이상
+  - stdin: "95\n20\n"
+    note: 탈 수 있는 것이 없음
+  - stdin: "205\n30\n"
+    note: 자이로드롭은 키 200 이하
+  - stdin: "200\n13\n"
+    note: 경계값 200, 13
+  - stdin: "130\n9\n"
+    note: 바이킹은 나이 10세 이상
+hints:
+  - "여러 개를 동시에 출력해야 하므로 `elif`가 아니라 독립된 `if`를 여러 개 씁니다."
+  - "`140 <= height <= 200`처럼 비교를 이어 쓸 수 있습니다."
+  - "하나도 출력하지 않았는지 알려면 출력할 때마다 개수를 세어 두세요."
+explanation: |
+  `if-elif`는 조건 중 하나만 실행합니다. 조건마다 결과가 따로 필요하면 독립된 `if`를 씁니다.
+  (강의의 '수영장 시설 추천'과 같은 구조)

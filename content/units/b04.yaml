@@ -1,0 +1,5 @@
+id: b04
+short: 4주차
+title: 반복문
+order: 4
+summary: for와 range, while과 '종료' 입력, break / continue, 중첩 반복과 별 찍기

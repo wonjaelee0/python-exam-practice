@@ -1,0 +1,103 @@
+id: b03-dice-guess-004
+title: 주사위 홀짝 맞히기 (random.seed(1))
+unit: b03
+difficulty: 3
+tags: [cond.if-else, random.seed, op.mod]
+statement: |
+  주사위 두 개를 굴려 두 눈의 합이 홀수인지 짝수인지 맞히는 게임을 만드시오.
+
+  - 프로그램 맨 앞에서 `random.seed(1)`로 시드를 고정한다.
+  - 사용자에게 `홀` 또는 `짝`을 입력받은 뒤, `random.randint(1, 6)`으로 주사위 1, 주사위 2를 차례로 굴린다.
+  - 입력 프롬프트: `홀 또는 짝: `
+  - 출력 형식
+    - `주사위: d1, d2` (예: `주사위: 3, 6`)
+    - `합: s`
+    - 홀짝을 맞히면 `정답입니다!`, 틀리면 `틀렸습니다.`
+  - `홀`, `짝`이 아닌 값을 입력하면 위 세 줄 대신 `잘못된 입력입니다.` 한 줄만 출력한다.
+starter: |
+  import random
+  random.seed(1)
+solution: |
+  import random
+  random.seed(1)
+  guess = input("홀 또는 짝: ")
+  d1 = random.randint(1, 6)
+  d2 = random.randint(1, 6)
+  if guess != "홀" and guess != "짝":
+      print("잘못된 입력입니다.")
+  else:
+      total = d1 + d2
+      print(f"주사위: {d1}, {d2}")
+      print(f"합: {total}")
+      if total % 2 == 1:
+          answer = "홀"
+      else:
+          answer = "짝"
+      if guess == answer:
+          print("정답입니다!")
+      else:
+          print("틀렸습니다.")
+alt_solutions:
+  - |
+    import random
+    random.seed(1)
+    dice1 = random.randint(1, 6)
+    dice2 = random.randint(1, 6)
+    guess = input("홀 또는 짝: ")
+    if guess == "홀" or guess == "짝":
+        s = dice1 + dice2
+        print("주사위:", str(dice1) + ",", dice2)
+        print("합:", s)
+        if (s % 2 == 0 and guess == "짝") or (s % 2 == 1 and guess == "홀"):
+            print("정답입니다!")
+        else:
+            print("틀렸습니다.")
+    else:
+        print("잘못된 입력입니다.")
+mutants:
+  - name: 홀짝 판단을 반대로
+    code: |
+      import random
+      random.seed(1)
+      guess = input("홀 또는 짝: ")
+      d1 = random.randint(1, 6)
+      d2 = random.randint(1, 6)
+      if guess != "홀" and guess != "짝":
+          print("잘못된 입력입니다.")
+      else:
+          total = d1 + d2
+          print(f"주사위: {d1}, {d2}")
+          print(f"합: {total}")
+          if total % 2 == 0:
+              answer = "홀"
+          else:
+              answer = "짝"
+          if guess == answer:
+              print("정답입니다!")
+          else:
+              print("틀렸습니다.")
+  - name: 잘못된 입력 검사에 or 사용
+    code: |
+      import random
+      random.seed(1)
+      guess = input("홀 또는 짝: ")
+      d1 = random.randint(1, 6)
+      d2 = random.randint(1, 6)
+      if guess != "홀" or guess != "짝":
+          print("잘못된 입력입니다.")
+      else:
+          print(f"주사위: {d1}, {d2}")
+tests:
+  - stdin: "홀\n"
+    public: true
+  - stdin: "짝\n"
+  - stdin: "하나\n"
+    note: 홀/짝이 아닌 입력
+  - stdin: "홀수\n"
+    note: '정확히 "홀"이어야 한다'
+hints:
+  - "시드를 고정하면 매번 같은 순서로 난수가 나옵니다. 시험에서도 `random.seed(1)`은 꼭 넣으세요."
+  - "'홀도 아니고 짝도 아니다'는 `guess != \"홀\" and guess != \"짝\"`입니다. `or`를 쓰면 항상 참이 돼요."
+explanation: |
+  `random.seed(1)` 이후의 `randint` 결과는 항상 같으므로 출력이 정해집니다.
+  `A가 아니고 B도 아니다`는 `and`로 묶어야 합니다 (드모르간 법칙).

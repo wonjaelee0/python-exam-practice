@@ -1,0 +1,56 @@
+id: b04-stairs-right-003
+title: 오른쪽 정렬 별 계단
+unit: b04
+difficulty: 2
+tags: [loop.nested, str.repeat]
+statement: |
+  1 이상의 정수 n을 입력받아 오른쪽으로 정렬된 별(`*`) 계단을 n줄 출력하시오.
+
+  - i번째 줄(i = 1, 2, …, n)에는 공백 `n - i`개 다음에 별 `i`개를 출력한다.
+  - 줄 끝에는 공백을 출력하지 않는다.
+  - 입력 프롬프트: `줄 수: `
+
+  n이 3일 때 프롬프트 다음에 출력되는 별 계단:
+  ```
+    *
+   **
+  ***
+  ```
+starter: |
+  n = int(input("줄 수: "))
+solution: |
+  n = int(input("줄 수: "))
+  for i in range(1, n + 1):
+      print(" " * (n - i) + "*" * i)
+alt_solutions:
+  - |
+    n = int(input("줄 수: "))
+    for i in range(n):
+        for j in range(n):
+            if j >= n - 1 - i:
+                print("*", end="")
+            else:
+                print(" ", end="")
+        print()
+mutants:
+  - name: 왼쪽 정렬
+    code: |
+      n = int(input("줄 수: "))
+      for i in range(1, n + 1):
+          print("*" * i)
+  - name: 줄 끝에 공백까지 채움
+    code: |
+      n = int(input("줄 수: "))
+      for i in range(1, n + 1):
+          print(" " * (n - i) + "*" * i + " ")
+tests:
+  - stdin: "3\n"
+    public: true
+  - stdin: "1\n"
+  - stdin: "5\n"
+  - stdin: "4\n"
+hints:
+  - "`\" \" * 3`은 공백 3개, `\"*\" * 2`는 별 2개입니다."
+  - "i번째 줄의 공백 개수는 `n - i`입니다."
+explanation: |
+  문자열 곱셈으로 한 줄을 만들 수 있습니다. 중첩 반복문으로 칸마다 출력해도 같은 결과입니다.

@@ -1,0 +1,64 @@
+id: b05-score-stats-001
+title: 점수 목록의 최고점·최저점·평균
+unit: b05
+difficulty: 2
+tags: [list.create, io.split-map, io.fstring-format]
+statement: |
+  공백으로 구분된 정수 점수들을 한 줄로 입력받아 최고점, 최저점, 평균을 출력하시오. 점수는 1개 이상이다.
+
+  - 입력 프롬프트: `점수들: `
+  - 출력 형식 (세 줄)
+    - `최고점: 95`
+    - `최저점: 60`
+    - `평균: 80.00` (소수점 둘째 자리까지)
+starter: |
+  scores = list(map(int, input("점수들: ").split()))
+solution: |
+  scores = list(map(int, input("점수들: ").split()))
+  print(f"최고점: {max(scores)}")
+  print(f"최저점: {min(scores)}")
+  print(f"평균: {sum(scores) / len(scores):.2f}")
+alt_solutions:
+  - |
+    scores = input("점수들: ").split()
+    best = int(scores[0])
+    worst = int(scores[0])
+    total = 0
+    for s in scores:
+        v = int(s)
+        if v > best:
+            best = v
+        if v < worst:
+            worst = v
+        total += v
+    print("최고점:", best)
+    print("최저점:", worst)
+    print("평균:", format(total / len(scores), ".2f"))
+mutants:
+  - name: 문자열 그대로 비교 (형변환 누락)
+    code: |
+      scores = input("점수들: ").split()
+      print(f"최고점: {max(scores)}")
+      print(f"최저점: {min(scores)}")
+      print(f"평균: {sum(map(int, scores)) / len(scores):.2f}")
+  - name: 평균을 몫(//)으로
+    code: |
+      scores = list(map(int, input("점수들: ").split()))
+      print(f"최고점: {max(scores)}")
+      print(f"최저점: {min(scores)}")
+      print(f"평균: {sum(scores) // len(scores):.2f}")
+tests:
+  - stdin: "80 90 75 60 95\n"
+    public: true
+  - stdin: "100\n"
+    note: 점수가 하나
+  - stdin: "9 10 100\n"
+    note: 문자열로 비교하면 '9'가 '100'보다 큼
+  - stdin: "55 65\n"
+    note: 평균 60.00
+  - stdin: "70 85 90 100 45 61\n"
+hints:
+  - "`input().split()`은 문자열 리스트입니다. `list(map(int, ...))`로 정수 리스트로 바꾸세요."
+  - "`max()`, `min()`, `sum()`, `len()`을 쓰면 간단합니다."
+explanation: |
+  문자열 `'9'`와 `'100'`을 비교하면 첫 글자끼리 비교해서 `'9'`가 더 큽니다. 숫자로 바꾼 다음 비교해야 합니다.

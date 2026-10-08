@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Python 시험 연습장</title>
+  <script>
+    // 해시 라우팅을 쓰므로, 잘못된 경로로 들어오면 사이트 첫 화면으로 보낸다.
+    // 프로젝트 사이트(/<repo>/...)면 첫 경로 조각까지를 사이트 루트로 본다.
+    (function () {
+      var parts = location.pathname.split('/').filter(Boolean);
+      var root = location.hostname.endsWith('github.io') && parts.length ? '/' + parts[0] + '/' : '/';
+      location.replace(root + '#/');
+    })();
+  </script>
+</head>
+<body><p>페이지를 찾을 수 없어 첫 화면으로 이동합니다…</p></body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "site",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": [
+        "run",
+        "tools/serve.py",
+        "--port",
+        "8000"
+      ],
+      "port": 8000,
+      "url": "http://localhost:8000"
+    },
+    {
+      "name": "site-dev",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": [
+        "run",
+        "tools/serve.py",
+        "--port",
+        "8001",
+        "--dev"
+      ],
+      "port": 8001,
+      "url": "http://localhost:8001"
+    }
+  ]
+}

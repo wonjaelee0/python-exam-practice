@@ -1,0 +1,60 @@
+id: b05-dedup-order-002
+title: 순서를 지키며 중복 제거
+unit: b05
+difficulty: 2
+tags: [list.append, list.in, loop.for-each]
+statement: |
+  공백으로 구분된 단어들을 한 줄로 입력받아, **처음 나온 순서를 유지하면서** 중복을 제거한 리스트와 그 개수를 출력하시오.
+
+  - 입력 프롬프트: `단어들: `
+  - 출력 형식
+    - `중복 제거: ['apple', 'banana', 'cherry']` (리스트를 그대로 출력)
+    - `개수: 3`
+starter: |
+  words = input("단어들: ").split()
+  unique = []
+solution: |
+  words = input("단어들: ").split()
+  unique = []
+  for w in words:
+      if w not in unique:
+          unique.append(w)
+  print(f"중복 제거: {unique}")
+  print(f"개수: {len(unique)}")
+alt_solutions:
+  - |
+    words = input("단어들: ").split()
+    unique = list(dict.fromkeys(words))
+    print("중복 제거:", unique)
+    print("개수:", len(unique))
+mutants:
+  - name: set으로 바꾼 뒤 정렬 (순서가 바뀜)
+    code: |
+      words = input("단어들: ").split()
+      unique = sorted(set(words))
+      print(f"중복 제거: {unique}")
+      print(f"개수: {len(unique)}")
+  - name: 나중에 나온 것을 남김
+    code: |
+      words = input("단어들: ").split()
+      unique = []
+      for w in words:
+          if w in unique:
+              unique.remove(w)
+          unique.append(w)
+      print(f"중복 제거: {unique}")
+      print(f"개수: {len(unique)}")
+tests:
+  - stdin: "apple banana apple cherry banana\n"
+    public: true
+  - stdin: "a a a\n"
+    note: 모두 같은 단어
+  - stdin: "x\n"
+  - stdin: "b a b c a d\n"
+    note: 정렬 순서와 다른 입력 순서
+  - stdin: "사과 배 사과 감\n"
+hints:
+  - "결과를 담을 빈 리스트를 만들고, 아직 없는 단어(`not in`)만 `append` 하세요."
+  - "`set()`은 중복을 없애 주지만 순서를 지키지 않습니다."
+explanation: |
+  `if w not in unique: unique.append(w)` 패턴은 처음 나온 순서대로 하나씩만 남깁니다.

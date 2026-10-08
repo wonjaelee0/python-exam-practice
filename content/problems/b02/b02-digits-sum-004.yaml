@@ -1,0 +1,70 @@
+id: b02-digits-sum-004
+title: 세 자리 수의 각 자리 숫자
+unit: b02
+difficulty: 2
+tags: [op.floordiv, op.mod, io.input-cast]
+statement: |
+  세 자리 자연수 n을 입력받아 백의 자리, 십의 자리, 일의 자리 숫자와 세 숫자의 합을 출력하시오.
+  문자열로 바꾸지 말고 `//`와 `%` 연산으로 구한다.
+
+  - 입력 프롬프트: `세 자리 수: `
+  - 출력 형식 (네 줄)
+    - `백의 자리: 3`
+    - `십의 자리: 7`
+    - `일의 자리: 5`
+    - `자릿수 합: 15`
+starter: |
+  # n // 100, n // 10 % 10, n % 10
+solution: |
+  n = int(input("세 자리 수: "))
+  h = n // 100
+  t = n // 10 % 10
+  o = n % 10
+  print(f"백의 자리: {h}")
+  print(f"십의 자리: {t}")
+  print(f"일의 자리: {o}")
+  print(f"자릿수 합: {h + t + o}")
+alt_solutions:
+  - |
+    n = int(input("세 자리 수: "))
+    h, rest = divmod(n, 100)
+    t, o = divmod(rest, 10)
+    print("백의 자리:", h)
+    print("십의 자리:", t)
+    print("일의 자리:", o)
+    print("자릿수 합:", h + t + o)
+mutants:
+  - name: 십의 자리를 n % 100으로 계산
+    code: |
+      n = int(input("세 자리 수: "))
+      h = n // 100
+      t = n % 100
+      o = n % 10
+      print(f"백의 자리: {h}")
+      print(f"십의 자리: {t}")
+      print(f"일의 자리: {o}")
+      print(f"자릿수 합: {h + t + o}")
+  - name: 십의 자리를 n // 10으로 계산
+    code: |
+      n = int(input("세 자리 수: "))
+      h = n // 100
+      t = n // 10
+      o = n % 10
+      print(f"백의 자리: {h}")
+      print(f"십의 자리: {t}")
+      print(f"일의 자리: {o}")
+      print(f"자릿수 합: {h + t + o}")
+tests:
+  - stdin: "375\n"
+    public: true
+  - stdin: "100\n"
+    note: 0이 들어간 수
+  - stdin: "999\n"
+  - stdin: "507\n"
+    note: 십의 자리가 0
+  - stdin: "840\n"
+hints:
+  - "백의 자리는 `n // 100`입니다."
+  - "십의 자리는 먼저 `n // 10`으로 일의 자리를 없앤 다음 `% 10`으로 마지막 자리만 남깁니다."
+explanation: |
+  `n // 10 % 10`은 왼쪽부터 계산되어 `(n // 10) % 10`과 같습니다. 375 → 37 → 7.

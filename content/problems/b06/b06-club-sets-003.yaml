@@ -1,0 +1,81 @@
+id: b06-club-sets-003
+title: 두 동아리 회원 비교 (집합 연산)
+unit: b06
+difficulty: 2
+tags: [set.ops, list.sort]
+statement: |
+  두 동아리 A, B의 회원 이름을 각각 한 줄에 공백으로 구분해 입력받아 다음을 출력하시오.
+  한 동아리 목록에 같은 이름이 여러 번 적혀 있을 수 있다.
+
+  - 입력 프롬프트: `A 동아리: `, `B 동아리: `
+  - 이름 목록은 **사전순으로 정렬한 리스트**로 출력한다 (`sorted()`).
+  - 출력 형식 (네 줄)
+    - `두 동아리 모두: ['지민', '하준']`
+    - `A만: ['서연', '수아']`
+    - `B만: ['민서']`
+    - `전체 인원: 5` (중복 없이 센 사람 수)
+starter: |
+  a = set(input("A 동아리: ").split())
+  b = set(input("B 동아리: ").split())
+solution: |
+  a = set(input("A 동아리: ").split())
+  b = set(input("B 동아리: ").split())
+  print(f"두 동아리 모두: {sorted(a & b)}")
+  print(f"A만: {sorted(a - b)}")
+  print(f"B만: {sorted(b - a)}")
+  print(f"전체 인원: {len(a | b)}")
+alt_solutions:
+  - |
+    a = input("A 동아리: ").split()
+    b = input("B 동아리: ").split()
+    both, only_a, only_b, everyone = [], [], [], []
+    for x in a:
+        if x in b and x not in both:
+            both.append(x)
+        if x not in b and x not in only_a:
+            only_a.append(x)
+        if x not in everyone:
+            everyone.append(x)
+    for x in b:
+        if x not in a and x not in only_b:
+            only_b.append(x)
+        if x not in everyone:
+            everyone.append(x)
+    both.sort()
+    only_a.sort()
+    only_b.sort()
+    print("두 동아리 모두:", both)
+    print("A만:", only_a)
+    print("B만:", only_b)
+    print("전체 인원:", len(everyone))
+mutants:
+  - name: 교집합 대신 대칭차집합(^)
+    code: |
+      a = set(input("A 동아리: ").split())
+      b = set(input("B 동아리: ").split())
+      print(f"두 동아리 모두: {sorted(a ^ b)}")
+      print(f"A만: {sorted(a - b)}")
+      print(f"B만: {sorted(b - a)}")
+      print(f"전체 인원: {len(a | b)}")
+  - name: 전체 인원을 단순 합으로
+    code: |
+      a = set(input("A 동아리: ").split())
+      b = set(input("B 동아리: ").split())
+      print(f"두 동아리 모두: {sorted(a & b)}")
+      print(f"A만: {sorted(a - b)}")
+      print(f"B만: {sorted(b - a)}")
+      print(f"전체 인원: {len(a) + len(b)}")
+tests:
+  - stdin: "지민 수아 하준 서연\n하준 민서 지민\n"
+    public: true
+  - stdin: "가 나\n다 라\n"
+    note: 겹치는 사람이 없음
+  - stdin: "철수 철수 영희\n영희\n"
+    note: 한 동아리 안의 중복 이름
+  - stdin: "Amy Bob Cara\nCara Bob Amy\n"
+    note: 회원이 완전히 같음
+hints:
+  - "교집합 `&`, 차집합 `-`, 합집합 `|` 입니다."
+  - "집합은 순서가 없으므로 출력하기 전에 `sorted()`로 정렬된 리스트로 바꾸세요."
+explanation: |
+  `set()`으로 바꾸면 중복이 사라지고 집합 연산을 쓸 수 있습니다. 집합을 그대로 출력하면 순서가 매번 달라질 수 있어 `sorted()`로 정렬해 출력합니다.

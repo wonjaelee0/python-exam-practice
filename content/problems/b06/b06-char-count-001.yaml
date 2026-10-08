@@ -1,0 +1,87 @@
+id: b06-char-count-001
+title: 문자 빈도와 가장 많이 나온 문자
+unit: b06
+difficulty: 2
+tags: [dict.count-get, dict.items, loop.for-each]
+statement: |
+  문자열을 입력받아 각 문자가 몇 번 나오는지 딕셔너리로 만들어 출력하고, 가장 많이 나온 문자와 그 횟수를 출력하시오.
+
+  - 공백도 하나의 문자로 센다. 대문자와 소문자는 다른 문자로 본다.
+  - 딕셔너리는 문자가 **처음 나온 순서대로** 만들고 그대로 출력한다.
+  - 가장 많이 나온 문자가 여러 개면 **먼저 나온** 문자를 고른다.
+  - 입력 프롬프트: `문자열: `
+  - 출력 형식
+    - `{'h': 1, 'e': 1, 'l': 3, ...}`
+    - `최빈 문자: l (3번)`
+starter: |
+  text = input("문자열: ")
+  counts = {}
+solution: |
+  text = input("문자열: ")
+  counts = {}
+  for ch in text:
+      counts[ch] = counts.get(ch, 0) + 1
+  print(counts)
+  best = ""
+  best_n = 0
+  for ch, n in counts.items():
+      if n > best_n:
+          best = ch
+          best_n = n
+  print(f"최빈 문자: {best} ({best_n}번)")
+alt_solutions:
+  - |
+    text = input("문자열: ")
+    counts = {}
+    for ch in text:
+        if ch in counts:
+            counts[ch] += 1
+        else:
+            counts[ch] = 1
+    print(counts)
+    best = max(counts, key=counts.get)
+    print("최빈 문자: " + best + " (" + str(counts[best]) + "번)")
+mutants:
+  - name: 동률이면 나중 문자를 고름 (>=)
+    code: |
+      text = input("문자열: ")
+      counts = {}
+      for ch in text:
+          counts[ch] = counts.get(ch, 0) + 1
+      print(counts)
+      best = ""
+      best_n = 0
+      for ch, n in counts.items():
+          if n >= best_n:
+              best = ch
+              best_n = n
+      print(f"최빈 문자: {best} ({best_n}번)")
+  - name: 공백을 세지 않음
+    code: |
+      text = input("문자열: ")
+      counts = {}
+      for ch in text.replace(" ", ""):
+          counts[ch] = counts.get(ch, 0) + 1
+      print(counts)
+      best = ""
+      best_n = 0
+      for ch, n in counts.items():
+          if n > best_n:
+              best = ch
+              best_n = n
+      print(f"최빈 문자: {best} ({best_n}번)")
+tests:
+  - stdin: "hello world\n"
+    public: true
+  - stdin: "aaa\n"
+  - stdin: "abcabc\n"
+    note: 동률이면 먼저 나온 a
+  - stdin: "Mississippi\n"
+    note: i와 s가 4번씩 — 먼저 나온 i
+  - stdin: "ab ba\n"
+hints:
+  - "`counts[ch] = counts.get(ch, 0) + 1`은 처음 보는 문자면 0에서 시작해 1을 더합니다."
+  - "최댓값을 찾을 때 `>`를 쓰면 같은 값이 나와도 처음 것을 유지합니다."
+explanation: |
+  `get(키, 기본값)`은 키가 없을 때 기본값을 돌려주므로 KeyError 없이 셀 수 있습니다.
+  파이썬 딕셔너리는 넣은 순서를 기억하므로 출력도 처음 나온 순서입니다.

@@ -1,0 +1,50 @@
+id: b02-circle-format-003
+title: 원의 넓이와 둘레 (소수점 둘째 자리)
+unit: b02
+difficulty: 2
+tags: [io.input-cast, io.fstring-format, op.arith]
+statement: |
+  원의 반지름 r(실수)을 입력받아 원의 넓이와 둘레를 **소수점 둘째 자리까지** 출력하시오.
+
+  - 원주율은 `3.14`를 사용한다.
+  - 넓이 = 3.14 × r × r, 둘레 = 2 × 3.14 × r
+  - 입력 프롬프트: `반지름: `
+  - 출력 형식: `넓이: 12.56`, `둘레: 12.56` (두 줄)
+starter: |
+  # f-string의 :.2f 형식을 사용해 보세요
+solution: |
+  r = float(input("반지름: "))
+  area = 3.14 * r * r
+  circum = 2 * 3.14 * r
+  print(f"넓이: {area:.2f}")
+  print(f"둘레: {circum:.2f}")
+alt_solutions:
+  - |
+    r = float(input("반지름: "))
+    print("넓이:", format(3.14 * r * r, ".2f"))
+    print("둘레:", format(2 * 3.14 * r, ".2f"))
+mutants:
+  - name: 소수점 형식 지정 누락
+    code: |
+      r = float(input("반지름: "))
+      print(f"넓이: {3.14 * r * r}")
+      print(f"둘레: {2 * 3.14 * r}")
+  - name: int()로 입력 변환
+    code: |
+      r = int(float(input("반지름: ")))
+      print(f"넓이: {3.14 * r * r:.2f}")
+      print(f"둘레: {2 * 3.14 * r:.2f}")
+tests:
+  - stdin: "2\n"
+    public: true
+  - stdin: "1\n"
+  - stdin: "10\n"
+    note: 소수점 아래가 00이어도 두 자리까지 출력 (314.00)
+  - stdin: "3.5\n"
+    note: 실수 반지름
+  - stdin: "0.1\n"
+hints:
+  - "반지름이 실수이므로 `float(input(...))`으로 바꿉니다."
+  - "`f\"{값:.2f}\"`는 소수점 둘째 자리까지 반올림해서 보여 줍니다. `314`도 `314.00`이 돼요."
+explanation: |
+  `:.2f`는 소수점 아래 두 자리로 맞춰 출력하는 형식 지정자입니다. `format(값, ".2f")`도 같은 결과를 냅니다.

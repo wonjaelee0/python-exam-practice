@@ -1,0 +1,5 @@
+id: b02
+short: 2주차
+title: 기본 문법 · 자료형 · 연산 · 입출력
+order: 2
+summary: print, input과 형변환, 산술 연산자(// % **), f-string 포맷, split/map

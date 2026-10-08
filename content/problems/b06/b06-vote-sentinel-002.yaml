@@ -1,0 +1,110 @@
+id: b06-vote-sentinel-002
+title: "'종료'까지 투표 집계하기"
+unit: b06
+difficulty: 3
+tags: [dict.count-get, loop.while-sentinel, dict.in]
+statement: |
+  후보는 `철수`, `영희`, `민수` 세 명이다. 투표 용지에 적힌 이름을 `종료`가 입력될 때까지 한 줄에 하나씩 입력받아 집계하시오.
+
+  - 입력 프롬프트: `이름: ` (매번 같은 프롬프트)
+  - 후보가 아닌 이름이 입력되면 `없는 후보입니다`를 출력하고 집계하지 않는다.
+  - `종료`가 입력되면 후보별 득표를 `철수: 2표` 형식으로 **철수, 영희, 민수 순서**로 출력한다.
+  - 마지막 줄에 `당선: 이름`을 출력한다. 최다 득표자가 두 명 이상이면 `당선: 동점`을 출력한다.
+starter: |
+  votes = {"철수": 0, "영희": 0, "민수": 0}
+solution: |
+  votes = {"철수": 0, "영희": 0, "민수": 0}
+  while True:
+      name = input("이름: ")
+      if name == "종료":
+          break
+      if name in votes:
+          votes[name] += 1
+      else:
+          print("없는 후보입니다")
+  for name, n in votes.items():
+      print(f"{name}: {n}표")
+  top = max(votes.values())
+  winners = []
+  for name, n in votes.items():
+      if n == top:
+          winners.append(name)
+  if len(winners) == 1:
+      print(f"당선: {winners[0]}")
+  else:
+      print("당선: 동점")
+alt_solutions:
+  - |
+    candidates = ["철수", "영희", "민수"]
+    votes = {}
+    name = input("이름: ")
+    while name != "종료":
+        if name in candidates:
+            votes[name] = votes.get(name, 0) + 1
+        else:
+            print("없는 후보입니다")
+        name = input("이름: ")
+    best = -1
+    count_best = 0
+    winner = ""
+    for c in candidates:
+        n = votes.get(c, 0)
+        print(c + ": " + str(n) + "표")
+        if n > best:
+            best = n
+            winner = c
+            count_best = 1
+        elif n == best:
+            count_best += 1
+    if count_best == 1:
+        print("당선: " + winner)
+    else:
+        print("당선: 동점")
+mutants:
+  - name: 동점 처리 없이 첫 최다 득표자
+    code: |
+      votes = {"철수": 0, "영희": 0, "민수": 0}
+      while True:
+          name = input("이름: ")
+          if name == "종료":
+              break
+          if name in votes:
+              votes[name] += 1
+          else:
+              print("없는 후보입니다")
+      for name, n in votes.items():
+          print(f"{name}: {n}표")
+      best = max(votes, key=votes.get)
+      print(f"당선: {best}")
+  - name: 없는 후보도 집계
+    code: |
+      votes = {"철수": 0, "영희": 0, "민수": 0}
+      while True:
+          name = input("이름: ")
+          if name == "종료":
+              break
+          votes[name] = votes.get(name, 0) + 1
+      for name, n in votes.items():
+          print(f"{name}: {n}표")
+      top = max(votes.values())
+      winners = [k for k, v in votes.items() if v == top]
+      if len(winners) == 1:
+          print(f"당선: {winners[0]}")
+      else:
+          print("당선: 동점")
+tests:
+  - stdin: "철수\n영희\n철수\n종료\n"
+    public: true
+  - stdin: "종료\n"
+    note: 표가 하나도 없으면 모두 0표 — 동점
+  - stdin: "민수\n길동\n민수\n영희\n종료\n"
+    note: 없는 후보 포함
+  - stdin: "영희\n철수\n종료\n"
+    note: 1표씩 동점
+  - stdin: "민수\n종료\n"
+hints:
+  - "후보 딕셔너리를 0표로 만들어 두면 `in`으로 후보인지 바로 확인할 수 있습니다."
+  - "최다 득표 수(`max(votes.values())`)를 구한 다음, 그 수와 같은 후보가 몇 명인지 세어 보세요."
+explanation: |
+  `while True` + `break`로 `종료`까지 입력을 받고, 딕셔너리에 표를 누적합니다.
+  당선자는 최다 득표 수와 같은 후보를 모두 모아서 한 명인지 확인합니다.

@@ -1,0 +1,44 @@
+id: b04-gugudan-002
+title: 구구단 n단
+unit: b04
+difficulty: 1
+tags: [loop.for-range, io.fstring]
+statement: |
+  2 이상 9 이하의 정수 n을 입력받아 구구단 n단을 출력하시오.
+
+  - 입력 프롬프트: `단: `
+  - 출력 형식: `n * i = 결과` (i는 1부터 9까지, 한 줄에 하나)
+starter: |
+  n = int(input("단: "))
+solution: |
+  n = int(input("단: "))
+  for i in range(1, 10):
+      print(f"{n} * {i} = {n * i}")
+alt_solutions:
+  - |
+    n = int(input("단: "))
+    i = 1
+    while i <= 9:
+        print(n, "*", i, "=", n * i)
+        i += 1
+mutants:
+  - name: range 끝값 실수 (1~8)
+    code: |
+      n = int(input("단: "))
+      for i in range(1, 9):
+          print(f"{n} * {i} = {n * i}")
+  - name: 0부터 시작
+    code: |
+      n = int(input("단: "))
+      for i in range(10):
+          print(f"{n} * {i} = {n * i}")
+tests:
+  - stdin: "2\n"
+    public: true
+  - stdin: "9\n"
+  - stdin: "5\n"
+  - stdin: "7\n"
+hints:
+  - "`range(1, 10)`은 1부터 9까지입니다. 끝값은 포함되지 않아요."
+explanation: |
+  `range(start, end)`는 `end`를 포함하지 않으므로 9까지 반복하려면 `range(1, 10)`을 씁니다.

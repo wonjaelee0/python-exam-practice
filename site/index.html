@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 검색 노출 차단: 프로젝트 사이트는 도메인 루트 robots.txt를 가질 수 없어 메타 태그로 처리 -->
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="elice 시험 화면처럼 Run·Submit으로 연습하는 비공식 Python 연습장">
+  <title>Python 시험 연습장</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%8D%3C/text%3E%3C/svg%3E">
+  <!-- GitHub Pages는 응답 헤더를 바꿀 수 없으므로, 서비스워커가 COOP/COEP를 넣어 교차 출처 격리를 켠다.
+       (첫 방문 때 한 번 자동 새로고침된다. 실패하면 앱이 호환 모드로 동작한다) -->
+  <script src="coi-serviceworker.js"></script>
+  <link rel="stylesheet" href="vendor/xterm/xterm.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div id="app"><div class="boot">불러오는 중…</div></div>
+  <noscript>이 사이트는 JavaScript가 필요합니다.</noscript>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

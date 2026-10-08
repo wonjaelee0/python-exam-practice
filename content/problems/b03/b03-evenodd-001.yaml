@@ -1,0 +1,54 @@
+id: b03-evenodd-001
+title: 짝수와 홀수
+unit: b03
+difficulty: 1
+tags: [cond.if-else, op.mod]
+statement: |
+  정수 n을 입력받아 짝수이면 `n: 짝수`, 홀수이면 `n: 홀수`를 출력하시오. (0은 짝수, 음수도 입력될 수 있다)
+
+  - 입력 프롬프트: `정수: `
+  - 출력 예: `4: 짝수`, `-3: 홀수`
+starter: |
+  n = int(input("정수: "))
+solution: |
+  n = int(input("정수: "))
+  if n % 2 == 0:
+      print(f"{n}: 짝수")
+  else:
+      print(f"{n}: 홀수")
+alt_solutions:
+  - |
+    n = int(input("정수: "))
+    if n % 2 == 1:
+        print(str(n) + ": 홀수")
+    else:
+        print(str(n) + ": 짝수")
+mutants:
+  - name: 짝수/홀수를 반대로 판단
+    code: |
+      n = int(input("정수: "))
+      if n % 2:
+          print(f"{n}: 짝수")
+      else:
+          print(f"{n}: 홀수")
+  - name: 콜론 앞뒤 공백 실수
+    code: |
+      n = int(input("정수: "))
+      if n % 2 == 0:
+          print(n, ": 짝수")
+      else:
+          print(n, ": 홀수")
+tests:
+  - stdin: "4\n"
+    public: true
+  - stdin: "7\n"
+  - stdin: "0\n"
+    note: 0은 짝수
+  - stdin: "-3\n"
+    note: 음수 홀수 (파이썬에서 -3 % 2는 1)
+  - stdin: "-8\n"
+hints:
+  - "2로 나눈 나머지가 0이면 짝수입니다: `n % 2 == 0`"
+  - "`print(n, \": 짝수\")`는 `4 : 짝수`처럼 공백이 생깁니다. f-string을 쓰세요."
+explanation: |
+  `%`는 나머지 연산자입니다. 파이썬에서는 음수도 `-3 % 2 == 1`이라서 같은 식으로 판단할 수 있습니다.

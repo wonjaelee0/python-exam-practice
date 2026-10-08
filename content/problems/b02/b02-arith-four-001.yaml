@@ -1,0 +1,60 @@
+id: b02-arith-four-001
+title: 두 정수의 사칙연산
+unit: b02
+difficulty: 1
+tags: [io.input-cast, op.arith, io.fstring]
+format: write
+style: elice-main
+statement: |
+  두 정수 a와 b를 한 줄에 하나씩 입력받아 덧셈, 뺄셈, 곱셈, 나눗셈 결과를 출력하는 프로그램을 작성하시오.
+
+  - 입력 프롬프트: `a: `, `b: `
+  - 출력 형식: 한 줄에 하나씩 `a + b = 결과`, `a - b = 결과`, `a * b = 결과`, `a / b = 결과`
+  - 나눗셈은 `/` 연산 결과를 그대로 출력한다. (b는 0이 아니다)
+starter: |
+  # 두 정수를 입력받아 사칙연산 결과를 출력하세요
+solution: |
+  a = int(input("a: "))
+  b = int(input("b: "))
+  print(f"{a} + {b} = {a + b}")
+  print(f"{a} - {b} = {a - b}")
+  print(f"{a} * {b} = {a * b}")
+  print(f"{a} / {b} = {a / b}")
+alt_solutions:
+  - |
+    a = int(input("a: "))
+    b = int(input("b: "))
+    print(a, "+", b, "=", a + b)
+    print(a, "-", b, "=", a - b)
+    print(a, "*", b, "=", a * b)
+    print(a, "/", b, "=", a / b)
+mutants:
+  - name: 몫 연산(//)으로 나눗셈
+    code: |
+      a = int(input("a: "))
+      b = int(input("b: "))
+      print(f"{a} + {b} = {a + b}")
+      print(f"{a} - {b} = {a - b}")
+      print(f"{a} * {b} = {a * b}")
+      print(f"{a} / {b} = {a // b}")
+  - name: 형변환 누락
+    code: |
+      a = input("a: ")
+      b = input("b: ")
+      print(f"{a} + {b} = {a + b}")
+tests:
+  - stdin: "7\n2\n"
+    public: true
+  - stdin: "10\n5\n"
+    note: 나누어떨어져도 /의 결과는 실수(2.0)
+  - stdin: "-3\n4\n"
+    note: 음수
+  - stdin: "0\n9\n"
+  - stdin: "100\n3\n"
+hints:
+  - "`input()`은 문자열을 돌려줍니다. `int()`로 바꿔야 계산할 수 있어요."
+  - "`/`는 항상 실수(float) 결과를 냅니다. `10 / 5`는 `2.0`이에요."
+  - "f-string을 쓰면 `f\"{a} + {b} = {a + b}\"`처럼 형식을 맞추기 쉬워요."
+explanation: |
+  `input()`으로 받은 값은 문자열이므로 `int()`로 바꾼 뒤 계산합니다.
+  나눗셈 `/`는 나누어떨어져도 실수가 되므로 `10 / 5`는 `2.0`으로 출력됩니다.

@@ -1,0 +1,5 @@
+id: b06
+short: 6주차
+title: 딕셔너리 · 집합 · 문자열
+order: 6
+summary: 딕셔너리 카운트(get), 집합 연산, 문자열 정제(strip/lower/split/replace/join)

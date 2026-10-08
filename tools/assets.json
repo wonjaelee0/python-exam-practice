@@ -1,0 +1,69 @@
+{
+  "_comment": "외부 파일은 git에 넣지 않고 이 목록(버전·SHA-256 고정)대로 내려받는다: uv run tools/fetch_assets.py",
+  "pyodide": {
+    "version": "314.0.7",
+    "url": "https://github.com/pyodide/pyodide/releases/download/314.0.7/pyodide-core-314.0.7.tar.bz2",
+    "sha256": "2abdcc2e35208af406e07724cffa85bc582ced97e9028383ecf5462541393f95",
+    "dest": "site/pyodide/314.0.7",
+    "files": {
+      "pyodide/pyodide.mjs": "pyodide.mjs",
+      "pyodide/pyodide.asm.mjs": "pyodide.asm.mjs",
+      "pyodide/pyodide.asm.wasm": "pyodide.asm.wasm",
+      "pyodide/python_stdlib.zip": "python_stdlib.zip",
+      "pyodide/pyodide-lock.json": "pyodide-lock.json",
+      "pyodide/package.json": "package.json"
+    }
+  },
+  "npm": [
+    {
+      "name": "monaco-editor",
+      "version": "0.57.0",
+      "sha256": "3ea1712fbacd3290cf4751007e3a5b57cc279767607812d4c3e57925fb0b05c2",
+      "dest": "site/vendor/monaco",
+      "dirs": {"package/min/vs/": "min/vs/"},
+      "files": {"package/LICENSE": "LICENSE"}
+    },
+    {
+      "name": "@xterm/xterm",
+      "version": "6.0.0",
+      "sha256": "908e66e04af6c8dc6b00dd3b54de088e2e81e5ed866284fd6c2fb3c2d1c7a3f6",
+      "dest": "site/vendor/xterm",
+      "files": {"package/lib/xterm.mjs": "xterm.mjs", "package/css/xterm.css": "xterm.css", "package/LICENSE": "LICENSE"}
+    },
+    {
+      "name": "@xterm/addon-fit",
+      "version": "0.11.0",
+      "sha256": "26003b4517a132b64e4ff228fd88a5fda3fff5e606c76093f6dcff772e9ecec0",
+      "dest": "site/vendor/xterm",
+      "files": {"package/lib/addon-fit.mjs": "addon-fit.mjs"}
+    },
+    {
+      "name": "htm",
+      "version": "3.1.1",
+      "sha256": "2425b9bee11409177bcabc7f32e319926fc6690c1701c0b257c88bdff2d5ba90",
+      "dest": "site/vendor/htm",
+      "files": {"package/preact/standalone.module.js": "standalone.module.js", "package/LICENSE": "LICENSE"}
+    },
+    {
+      "name": "marked",
+      "version": "18.1.0",
+      "sha256": "39a404686c55fc2d862216e0cbb70f6bedc456adaeb5fe57b642036455f9ffc0",
+      "dest": "site/vendor/marked",
+      "files": {"package/lib/marked.esm.js": "marked.esm.js", "package/LICENSE": "LICENSE"}
+    },
+    {
+      "name": "dompurify",
+      "version": "3.4.16",
+      "sha256": "d288ced25e6bda3e5fc76d1fc9bca899260cf886e005e84f232e686ada57f1b4",
+      "dest": "site/vendor/dompurify",
+      "files": {"package/dist/purify.es.mjs": "purify.es.mjs", "package/LICENSE": "LICENSE"}
+    },
+    {
+      "name": "coi-serviceworker",
+      "version": "0.1.7",
+      "sha256": "6a546d4748e215220de923cf5dbb887104cec1aa7bb9afc2e925ba376a229616",
+      "dest": "site",
+      "files": {"package/coi-serviceworker.js": "coi-serviceworker.js"}
+    }
+  ]
+}

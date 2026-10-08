@@ -1,0 +1,43 @@
+id: b02-divmod-time-002
+title: 초를 분과 초로 바꾸기
+unit: b02
+difficulty: 1
+tags: [op.floordiv, op.mod, io.input-cast]
+statement: |
+  초 단위 시간(0 이상의 정수)을 입력받아 몇 분 몇 초인지 출력하는 프로그램을 작성하시오.
+
+  - 입력 프롬프트: `초 입력: `
+  - 출력 형식: `M분 S초` (예: `2분 5초`)
+starter: |
+  # 몫(//)과 나머지(%) 연산을 사용해 보세요
+solution: |
+  sec = int(input("초 입력: "))
+  print(f"{sec // 60}분 {sec % 60}초")
+alt_solutions:
+  - |
+    sec = int(input("초 입력: "))
+    m, s = divmod(sec, 60)
+    print(str(m) + "분", str(s) + "초")
+mutants:
+  - name: 몫 대신 나눗셈(/)
+    code: |
+      sec = int(input("초 입력: "))
+      print(f"{sec / 60}분 {sec % 60}초")
+  - name: 분과 초를 반대로 계산
+    code: |
+      sec = int(input("초 입력: "))
+      print(f"{sec % 60}분 {sec // 60}초")
+tests:
+  - stdin: "125\n"
+    public: true
+  - stdin: "59\n"
+    note: 1분이 안 되는 경우
+  - stdin: "60\n"
+    note: 정확히 1분
+  - stdin: "0\n"
+  - stdin: "3599\n"
+hints:
+  - "60초가 1분입니다. 분은 `초 // 60`, 남은 초는 `초 % 60`으로 구할 수 있어요."
+  - "`/`를 쓰면 `2.0833...`처럼 실수가 나옵니다. 몫은 `//`입니다."
+explanation: |
+  `//`는 나눗셈의 몫, `%`는 나머지입니다. `divmod(sec, 60)`을 쓰면 두 값을 한 번에 얻을 수 있습니다.

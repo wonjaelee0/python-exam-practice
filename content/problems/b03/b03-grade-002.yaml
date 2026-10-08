@@ -1,0 +1,92 @@
+id: b03-grade-002
+title: 점수로 학점 구하기
+unit: b03
+difficulty: 2
+tags: [cond.elif-order, cond.boundary]
+statement: |
+  0 이상 100 이하의 정수 점수를 입력받아 학점을 출력하시오.
+
+  | 점수 | 학점 |
+  |---|---|
+  | 90 이상 | A |
+  | 80 이상 90 미만 | B |
+  | 70 이상 80 미만 | C |
+  | 60 이상 70 미만 | D |
+  | 60 미만 | F |
+
+  - 입력 프롬프트: `점수: `
+  - 출력 형식: `학점: A`
+starter: |
+  score = int(input("점수: "))
+solution: |
+  score = int(input("점수: "))
+  if score >= 90:
+      grade = "A"
+  elif score >= 80:
+      grade = "B"
+  elif score >= 70:
+      grade = "C"
+  elif score >= 60:
+      grade = "D"
+  else:
+      grade = "F"
+  print(f"학점: {grade}")
+alt_solutions:
+  - |
+    score = int(input("점수: "))
+    if score < 60:
+        print("학점: F")
+    elif score < 70:
+        print("학점: D")
+    elif score < 80:
+        print("학점: C")
+    elif score < 90:
+        print("학점: B")
+    else:
+        print("학점: A")
+mutants:
+  - name: 경계값을 초과(>)로 비교
+    code: |
+      score = int(input("점수: "))
+      if score > 90:
+          grade = "A"
+      elif score > 80:
+          grade = "B"
+      elif score > 70:
+          grade = "C"
+      elif score > 60:
+          grade = "D"
+      else:
+          grade = "F"
+      print(f"학점: {grade}")
+  - name: 조건 순서가 거꾸로
+    code: |
+      score = int(input("점수: "))
+      if score >= 60:
+          grade = "D"
+      elif score >= 70:
+          grade = "C"
+      elif score >= 80:
+          grade = "B"
+      elif score >= 90:
+          grade = "A"
+      else:
+          grade = "F"
+      print(f"학점: {grade}")
+tests:
+  - stdin: "85\n"
+    public: true
+  - stdin: "90\n"
+    note: 경계값 90은 A
+  - stdin: "89\n"
+  - stdin: "70\n"
+    note: 경계값 70은 C
+  - stdin: "60\n"
+  - stdin: "59\n"
+  - stdin: "100\n"
+  - stdin: "0\n"
+hints:
+  - "높은 점수부터 `if → elif → elif …` 순서로 검사하면 앞 조건이 거짓일 때만 다음 조건을 봅니다."
+  - "'90 이상'은 `>= 90`입니다. `> 90`이면 90점이 B가 돼요."
+explanation: |
+  `elif`는 앞의 조건이 모두 거짓일 때만 검사되므로, `elif score >= 80`에는 '90 미만'이라는 조건이 이미 포함되어 있습니다.

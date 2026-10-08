@@ -1,0 +1,63 @@
+name: Build & Deploy (GitHub Pages)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v10
+
+      - name: 비공개 자료 검사 (git)
+        run: uv run tools/leak_guard.py --git
+
+      - name: 테스트 (채점 의미론 · 3.6 호환 검사기 · 규칙 검사기)
+        run: uv run --group dev pytest -q
+
+      - uses: actions/cache@v6
+        with:
+          path: .cache/assets
+          key: assets-${{ hashFiles('tools/assets.json') }}
+
+      - name: 외부 파일 내려받기 (Pyodide · Monaco · xterm …, 버전·SHA-256 고정)
+        run: uv run tools/fetch_assets.py
+
+      - name: 문제 빌드·검증 (python:3.6 컨테이너 = elice와 같은 버전)
+        run: uv run tools/build.py --py36 docker
+
+      - name: 비공개 자료 검사 (배포물)
+        run: uv run tools/leak_guard.py --site site
+
+      - if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v6
+
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

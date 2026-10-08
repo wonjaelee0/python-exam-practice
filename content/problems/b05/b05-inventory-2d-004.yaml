@@ -1,0 +1,118 @@
+id: b05-inventory-2d-004
+title: 기준 가격 이상인 제품과 재고 합계 (2차원 리스트)
+unit: b05
+difficulty: 3
+tags: [list.2d, loop.for-each, cond.if-else]
+style: elice-main
+statement: |
+  전자제품 매장의 재고가 2차원 리스트로 주어진다. 각 항목은 `[제품명, 가격, 재고 수량]`이다.
+
+  ```python
+  products = [
+      ["노트북", 1200, 5],
+      ["모니터", 300, 12],
+      ["키보드", 80, 30],
+      ["마우스", 40, 50],
+      ["태블릿", 600, 8],
+  ]
+  ```
+
+  기준 가격을 정수로 입력받아, 가격이 **기준 가격 이상**인 제품을 목록 순서대로 출력하고 그 제품들의 재고 합계를 출력하시오.
+
+  - 입력 프롬프트: `기준 가격: `
+  - 제품마다 한 줄: `제품명: 노트북, 가격: 1200`
+  - 마지막 줄: `재고 합계: 13`
+  - 해당하는 제품이 없으면 `해당 제품이 없습니다.` 한 줄만 출력한다.
+starter: |
+  products = [
+      ["노트북", 1200, 5],
+      ["모니터", 300, 12],
+      ["키보드", 80, 30],
+      ["마우스", 40, 50],
+      ["태블릿", 600, 8],
+  ]
+  ##############################
+solution: |
+  products = [
+      ["노트북", 1200, 5],
+      ["모니터", 300, 12],
+      ["키보드", 80, 30],
+      ["마우스", 40, 50],
+      ["태블릿", 600, 8],
+  ]
+  ##############################
+  limit = int(input("기준 가격: "))
+  total = 0
+  found = 0
+  for name, price, stock in products:
+      if price >= limit:
+          print(f"제품명: {name}, 가격: {price}")
+          total += stock
+          found += 1
+  if found == 0:
+      print("해당 제품이 없습니다.")
+  else:
+      print(f"재고 합계: {total}")
+alt_solutions:
+  - |
+    products = [
+        ["노트북", 1200, 5],
+        ["모니터", 300, 12],
+        ["키보드", 80, 30],
+        ["마우스", 40, 50],
+        ["태블릿", 600, 8],
+    ]
+    limit = int(input("기준 가격: "))
+    picked = [p for p in products if p[1] >= limit]
+    if len(picked) == 0:
+        print("해당 제품이 없습니다.")
+    else:
+        for p in picked:
+            print("제품명: " + p[0] + ", 가격: " + str(p[1]))
+        print("재고 합계:", sum(p[2] for p in picked))
+mutants:
+  - name: 초과(>)로 비교
+    code: |
+      products = [["노트북", 1200, 5], ["모니터", 300, 12], ["키보드", 80, 30], ["마우스", 40, 50], ["태블릿", 600, 8]]
+      limit = int(input("기준 가격: "))
+      total = 0
+      found = 0
+      for name, price, stock in products:
+          if price > limit:
+              print(f"제품명: {name}, 가격: {price}")
+              total += stock
+              found += 1
+      if found == 0:
+          print("해당 제품이 없습니다.")
+      else:
+          print(f"재고 합계: {total}")
+  - name: 전체 재고를 합산
+    code: |
+      products = [["노트북", 1200, 5], ["모니터", 300, 12], ["키보드", 80, 30], ["마우스", 40, 50], ["태블릿", 600, 8]]
+      limit = int(input("기준 가격: "))
+      total = 0
+      found = 0
+      for name, price, stock in products:
+          total += stock
+          if price >= limit:
+              print(f"제품명: {name}, 가격: {price}")
+              found += 1
+      if found == 0:
+          print("해당 제품이 없습니다.")
+      else:
+          print(f"재고 합계: {total}")
+tests:
+  - stdin: "500\n"
+    public: true
+  - stdin: "1500\n"
+    note: 해당 제품 없음
+  - stdin: "0\n"
+    note: 모든 제품
+  - stdin: "300\n"
+    note: 경계값 (300 이상이면 모니터 포함)
+  - stdin: "1200\n"
+hints:
+  - "`for name, price, stock in products:`처럼 안쪽 리스트를 바로 풀어 쓸 수 있습니다."
+  - "출력한 제품이 있었는지 개수로 기억해 두세요."
+explanation: |
+  2차원 리스트의 각 행은 `[제품명, 가격, 재고]`입니다. 언패킹으로 세 값을 꺼내 조건에 맞는 행만 처리합니다.

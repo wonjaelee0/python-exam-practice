@@ -1,0 +1,5 @@
+id: b03
+short: 3주차
+title: 조건문
+order: 3
+summary: 비교·논리 연산, if / elif / else, 중첩 if, random.seed(1)

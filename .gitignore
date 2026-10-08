@@ -1,0 +1,22 @@
+# 비공개 원자료: 강의 노트북(교수 저작물), elice 실습 원문·회귀 fixture — 공개 저장소에 올리지 않음
+materials/
+midterms/
+*.ipynb
+
+# 내려받는 외부 파일·빌드 산출물 (CI가 매번 다시 만든다)
+.cache/
+site/vendor/
+site/pyodide/
+site/data/
+site/coi-serviceworker.js
+
+# OS / 편집기
+.DS_Store
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
