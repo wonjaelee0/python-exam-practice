@@ -1,0 +1,163 @@
+id: mixed-grade-report-002
+title: 성적 입력과 학점 분포 보고서
+unit: mixed
+difficulty: 4
+tags: [loop.while-sentinel, dict.count-get, cond.elif-order]
+statement: |
+  학생의 이름과 점수를 `이름 점수` 형식으로 한 줄에 하나씩 입력받다가 `종료`가 입력되면 보고서를 출력하시오.
+
+  - 입력 프롬프트: `이름 점수: `
+  - 보고서 (순서대로)
+    - `인원: 4`
+    - `평균: 77.5` (소수점 첫째 자리)
+    - `최고점: 지민 (95점)` (최고점이 여럿이면 먼저 입력된 학생)
+    - 학점 분포 다섯 줄: `A: 1명`, `B: 1명`, `C: 1명`, `D: 0명`, `F: 1명`
+      (90 이상 A, 80 이상 B, 70 이상 C, 60 이상 D, 나머지 F)
+  - 아무도 입력하지 않으면 `입력된 학생이 없습니다` 한 줄만 출력한다.
+starter: |
+  students = []
+solution: |
+  students = []
+  while True:
+      line = input("이름 점수: ")
+      if line == "종료":
+          break
+      name, score = line.split()
+      students.append([name, int(score)])
+  if len(students) == 0:
+      print("입력된 학생이 없습니다")
+  else:
+      total = 0
+      best = students[0]
+      dist = {"A": 0, "B": 0, "C": 0, "D": 0, "F": 0}
+      for name, score in students:
+          total += score
+          if score > best[1]:
+              best = [name, score]
+          if score >= 90:
+              dist["A"] += 1
+          elif score >= 80:
+              dist["B"] += 1
+          elif score >= 70:
+              dist["C"] += 1
+          elif score >= 60:
+              dist["D"] += 1
+          else:
+              dist["F"] += 1
+      print(f"인원: {len(students)}")
+      print(f"평균: {total / len(students):.1f}")
+      print(f"최고점: {best[0]} ({best[1]}점)")
+      for grade, n in dist.items():
+          print(f"{grade}: {n}명")
+alt_solutions:
+  - |
+    names = []
+    scores = []
+    line = input("이름 점수: ")
+    while line != "종료":
+        n, s = line.split()
+        names.append(n)
+        scores.append(int(s))
+        line = input("이름 점수: ")
+    if not names:
+        print("입력된 학생이 없습니다")
+    else:
+        print("인원:", len(names))
+        print("평균:", format(sum(scores) / len(scores), ".1f"))
+        i = scores.index(max(scores))
+        print("최고점: " + names[i] + " (" + str(scores[i]) + "점)")
+        cuts = [("A", 90), ("B", 80), ("C", 70), ("D", 60), ("F", 0)]
+        for g, low in cuts:
+            count = 0
+            for s in scores:
+                grade = "F"
+                for g2, low2 in cuts:
+                    if s >= low2:
+                        grade = g2
+                        break
+                if grade == g:
+                    count += 1
+            print(g + ": " + str(count) + "명")
+mutants:
+  - name: 동점이면 나중 학생
+    code: |
+      students = []
+      while True:
+          line = input("이름 점수: ")
+          if line == "종료":
+              break
+          name, score = line.split()
+          students.append([name, int(score)])
+      if len(students) == 0:
+          print("입력된 학생이 없습니다")
+      else:
+          total = 0
+          best = students[0]
+          dist = {"A": 0, "B": 0, "C": 0, "D": 0, "F": 0}
+          for name, score in students:
+              total += score
+              if score >= best[1]:
+                  best = [name, score]
+              if score >= 90:
+                  dist["A"] += 1
+              elif score >= 80:
+                  dist["B"] += 1
+              elif score >= 70:
+                  dist["C"] += 1
+              elif score >= 60:
+                  dist["D"] += 1
+              else:
+                  dist["F"] += 1
+          print(f"인원: {len(students)}")
+          print(f"평균: {total / len(students):.1f}")
+          print(f"최고점: {best[0]} ({best[1]}점)")
+          for grade, n in dist.items():
+              print(f"{grade}: {n}명")
+  - name: 0명인 학점은 출력하지 않음
+    code: |
+      students = []
+      while True:
+          line = input("이름 점수: ")
+          if line == "종료":
+              break
+          name, score = line.split()
+          students.append([name, int(score)])
+      if len(students) == 0:
+          print("입력된 학생이 없습니다")
+      else:
+          total = 0
+          best = students[0]
+          dist = {}
+          for name, score in students:
+              total += score
+              if score > best[1]:
+                  best = [name, score]
+              if score >= 90:
+                  g = "A"
+              elif score >= 80:
+                  g = "B"
+              elif score >= 70:
+                  g = "C"
+              elif score >= 60:
+                  g = "D"
+              else:
+                  g = "F"
+              dist[g] = dist.get(g, 0) + 1
+          print(f"인원: {len(students)}")
+          print(f"평균: {total / len(students):.1f}")
+          print(f"최고점: {best[0]} ({best[1]}점)")
+          for grade, n in dist.items():
+              print(f"{grade}: {n}명")
+tests:
+  - stdin: "지민 95\n서준 82\n하은 74\n도윤 59\n종료\n"
+    public: true
+  - stdin: "종료\n"
+  - stdin: "가 90\n나 90\n종료\n"
+    note: 최고점 동점 → 먼저 입력된 학생
+  - stdin: "철수 60\n종료\n"
+  - stdin: "a 100\nb 0\nc 79\nd 80\ne 69\n종료\n"
+hints:
+  - "학점 분포는 `{\"A\": 0, \"B\": 0, …}`처럼 0으로 미리 만들어 두면 0명도 출력됩니다."
+  - "최고점은 `>`로 비교해야 동점일 때 먼저 입력된 학생이 남습니다."
+explanation: |
+  반복 입력으로 2차원 리스트를 만들고, 한 번의 순회로 합계·최고점·학점 분포를 모두 구합니다.

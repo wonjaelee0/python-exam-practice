@@ -1,0 +1,103 @@
+id: b06-stock-orders-010
+title: "'종료'까지 주문 처리하고 재고 갱신"
+unit: b06
+difficulty: 3
+tags: [dict.in, dict.update-value, loop.while-sentinel]
+statement: |
+  재고가 딕셔너리로 주어진다.
+
+  ```python
+  stock = {"연필": 10, "지우개": 5, "공책": 3}
+  ```
+
+  주문을 `상품 수량` 형식으로 한 줄에 하나씩 입력받다가 `종료`가 입력되면 멈추시오.
+
+  - 없는 상품이면 `없는 상품입니다`
+  - 재고가 충분하면 재고를 줄이고 `연필 3개 판매`
+  - 재고가 모자라면 판매하지 않고 `재고 부족 (남은 수량: 2)`
+  - `종료` 후 마지막 재고를 `최종 재고: {...}` 형식으로 출력한다.
+  - 입력 프롬프트: `주문: `
+starter: |
+  stock = {"연필": 10, "지우개": 5, "공책": 3}
+solution: |
+  stock = {"연필": 10, "지우개": 5, "공책": 3}
+  while True:
+      line = input("주문: ")
+      if line == "종료":
+          break
+      item, qty = line.split()
+      qty = int(qty)
+      if item not in stock:
+          print("없는 상품입니다")
+      elif stock[item] >= qty:
+          stock[item] -= qty
+          print(f"{item} {qty}개 판매")
+      else:
+          print(f"재고 부족 (남은 수량: {stock[item]})")
+  print(f"최종 재고: {stock}")
+alt_solutions:
+  - |
+    stock = {"연필": 10, "지우개": 5, "공책": 3}
+    line = input("주문: ")
+    while line != "종료":
+        parts = line.split()
+        name = parts[0]
+        n = int(parts[1])
+        left = stock.get(name)
+        if left is None:
+            print("없는 상품입니다")
+        elif n > left:
+            print("재고 부족 (남은 수량: " + str(left) + ")")
+        else:
+            stock[name] = left - n
+            print(name, str(n) + "개 판매")
+        line = input("주문: ")
+    print("최종 재고:", stock)
+mutants:
+  - name: 재고가 딱 맞으면 부족으로 처리 (>)
+    code: |
+      stock = {"연필": 10, "지우개": 5, "공책": 3}
+      while True:
+          line = input("주문: ")
+          if line == "종료":
+              break
+          item, qty = line.split()
+          qty = int(qty)
+          if item not in stock:
+              print("없는 상품입니다")
+          elif stock[item] > qty:
+              stock[item] -= qty
+              print(f"{item} {qty}개 판매")
+          else:
+              print(f"재고 부족 (남은 수량: {stock[item]})")
+      print(f"최종 재고: {stock}")
+  - name: 부족해도 재고를 줄임
+    code: |
+      stock = {"연필": 10, "지우개": 5, "공책": 3}
+      while True:
+          line = input("주문: ")
+          if line == "종료":
+              break
+          item, qty = line.split()
+          qty = int(qty)
+          if item not in stock:
+              print("없는 상품입니다")
+          else:
+              stock[item] -= qty
+              if stock[item] >= 0:
+                  print(f"{item} {qty}개 판매")
+              else:
+                  print(f"재고 부족 (남은 수량: {stock[item] + qty})")
+      print(f"최종 재고: {stock}")
+tests:
+  - stdin: "연필 3\n공책 5\n종료\n"
+    public: true
+  - stdin: "종료\n"
+  - stdin: "지우개 5\n지우개 1\n종료\n"
+    note: 재고가 딱 맞게 팔린 뒤 0개
+  - stdin: "샤프 1\n연필 10\n종료\n"
+hints:
+  - "주문 줄은 `item, qty = line.split()`으로 나누고 수량은 `int()`로 바꿉니다."
+  - "검사 순서: 없는 상품 → 재고 충분 → 재고 부족"
+explanation: |
+  딕셔너리 값은 `stock[item] -= qty`처럼 바로 바꿀 수 있습니다. 판매하지 않을 때는 재고를 건드리지 않아야 합니다.

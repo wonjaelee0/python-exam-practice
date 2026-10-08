@@ -1,0 +1,68 @@
+id: b06-length-groups-019
+title: 글자 수별로 단어 묶기
+unit: b06
+difficulty: 3
+tags: [dict.setdefault, dict.list-values, list.sorted]
+statement: |
+  단어들을 공백으로 구분해 한 줄 입력받아, 글자 수가 같은 단어끼리 묶은 딕셔너리 `{글자 수: [단어, …]}`를 만드시오.
+  같은 단어가 여러 번 나오면 한 번만 넣는다. 글자 수가 작은 것부터 `3글자: ['cat', 'dog']` 형식으로 출력하시오.
+  (각 리스트 안은 처음 나온 순서)
+
+  - 입력 프롬프트: `단어들: `
+starter: |
+  words = input("단어들: ").split()
+  groups = {}
+solution: |
+  words = input("단어들: ").split()
+  groups = {}
+  for w in words:
+      bucket = groups.setdefault(len(w), [])
+      if w not in bucket:
+          bucket.append(w)
+  for length in sorted(groups):
+      print(f"{length}글자: {groups[length]}")
+alt_solutions:
+  - |
+    words = input("단어들: ").split()
+    groups = {}
+    for w in words:
+        n = len(w)
+        if n not in groups:
+            groups[n] = []
+        if w not in groups[n]:
+            groups[n].append(w)
+    keys = list(groups.keys())
+    keys.sort()
+    for k in keys:
+        print(str(k) + "글자:", groups[k])
+mutants:
+  - name: 중복 단어도 넣음
+    code: |
+      words = input("단어들: ").split()
+      groups = {}
+      for w in words:
+          groups.setdefault(len(w), []).append(w)
+      for length in sorted(groups):
+          print(f"{length}글자: {groups[length]}")
+  - name: 정렬하지 않음
+    code: |
+      words = input("단어들: ").split()
+      groups = {}
+      for w in words:
+          bucket = groups.setdefault(len(w), [])
+          if w not in bucket:
+              bucket.append(w)
+      for length in groups:
+          print(f"{length}글자: {groups[length]}")
+tests:
+  - stdin: "apple cat dog banana cat\n"
+    public: true
+  - stdin: "a\n"
+  - stdin: "zz yyy x yyy ww\n"
+    note: 짧은 단어가 뒤에 나와도 글자 수 순서로
+  - stdin: "가나 다 라마바 사아\n"
+hints:
+  - "`groups.setdefault(키, [])`는 키가 없으면 빈 리스트를 넣고, 그 리스트를 돌려줍니다."
+  - "딕셔너리의 값으로 리스트를 쓰면 여러 단어를 모을 수 있습니다."
+explanation: |
+  `setdefault`는 '없으면 기본값으로 만들고, 있으면 기존 값'을 돌려주므로 값 리스트에 바로 `append` 할 수 있습니다.

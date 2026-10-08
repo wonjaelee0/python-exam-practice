@@ -50,6 +50,7 @@ def test_compat36_ignores_plain_syntax_error():
     ("name = input('이름:')", "rule1-prompt"),
     ("x = 1\nprint(f'합계:{x}')", "rule1-colon"),
     ("a, b = 1, 2\nprint(f'{a},{b}')", "rule2-comma"),
+    ("print('사과,배')", "rule2-comma"),
     ("print(1, 2, sep=',')", "rule2-sep"),
     ("x = 1\nprint(x, '.')", "rule4-print-punct"),
     ("print('끝 .')", "rule4-punct"),
@@ -70,6 +71,8 @@ def test_lint_rules_flags(src, code):
     "import random\nrandom.seed(1)\nprint(random.randint(1, 6))",
     "print('Hello, world!')",
     "print(f'{1}.')",
+    "x = input('취미(,로 구분) 또는 종료: ')",
+    "print('1,234,567')",
 ])
 def test_lint_rules_clean(src):
     assert lint_rules.check(src) == [], lint_rules.check(src)

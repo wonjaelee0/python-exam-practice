@@ -1,0 +1,86 @@
+id: b06-hobby-freq-020
+title: "'종료'까지 취미 빈도 세기"
+unit: b06
+difficulty: 3
+tags: [dict.count-get, loop.while-sentinel, str.clean-pipeline]
+statement: |
+  여러 사람에게 취미를 입력받아 빈도를 세는 프로그램을 만드시오. 한 사람이 취미를 여러 개 쉼표(`,`)로 이어 입력할 수 있다.
+  `종료`가 입력될 때까지 반복한다.
+
+  - 쉼표 뒤에 공백이 있을 수도 없을 수도 있다 (`운동,독서` 또는 `운동, 독서`). 앞뒤 공백은 지운다.
+  - 영어는 소문자로 바꿔서 센다 (`Game`과 `game`은 같은 취미).
+  - 입력 프롬프트: `취미(,로 구분) 또는 종료: `
+  - `종료`가 입력되면 `집계 결과` 줄을 출력한 뒤, 취미가 **처음 나온 순서대로** `독서: 2명` 형식으로 출력한다.
+starter: |
+  counts = {}
+solution: |
+  counts = {}
+  while True:
+      line = input("취미(,로 구분) 또는 종료: ")
+      if line == "종료":
+          break
+      for hobby in line.split(","):
+          hobby = hobby.strip().lower()
+          if hobby == "":
+              continue
+          counts[hobby] = counts.get(hobby, 0) + 1
+  print("집계 결과")
+  for hobby, n in counts.items():
+      print(f"{hobby}: {n}명")
+alt_solutions:
+  - |
+    counts = {}
+    line = input("취미(,로 구분) 또는 종료: ")
+    while line != "종료":
+        items = [h.strip().lower() for h in line.split(",")]
+        for h in items:
+            if h:
+                if h in counts:
+                    counts[h] += 1
+                else:
+                    counts[h] = 1
+        line = input("취미(,로 구분) 또는 종료: ")
+    print("집계 결과")
+    for h in counts:
+        print(h + ": " + str(counts[h]) + "명")
+mutants:
+  - name: strip 하지 않음 (' 독서'와 '독서'를 다르게 셈)
+    code: |
+      counts = {}
+      while True:
+          line = input("취미(,로 구분) 또는 종료: ")
+          if line == "종료":
+              break
+          for hobby in line.split(","):
+              hobby = hobby.lower()
+              counts[hobby] = counts.get(hobby, 0) + 1
+      print("집계 결과")
+      for hobby, n in counts.items():
+          print(f"{hobby}: {n}명")
+  - name: 소문자로 바꾸지 않음
+    code: |
+      counts = {}
+      while True:
+          line = input("취미(,로 구분) 또는 종료: ")
+          if line == "종료":
+              break
+          for hobby in line.split(","):
+              hobby = hobby.strip()
+              if hobby == "":
+                  continue
+              counts[hobby] = counts.get(hobby, 0) + 1
+      print("집계 결과")
+      for hobby, n in counts.items():
+          print(f"{hobby}: {n}명")
+tests:
+  - stdin: "독서\n운동, 독서\nGame,game\n종료\n"
+    public: true
+  - stdin: "종료\n"
+    note: 아무도 입력하지 않으면 제목 줄만
+  - stdin: "  요리 ,  요리\n요리\n종료\n"
+  - stdin: "Music, MUSIC, music\nart\n종료\n"
+hints:
+  - "한 줄을 `split(\",\")`로 나누고 각 조각에 `strip().lower()`를 적용하세요."
+  - "개수는 `counts.get(취미, 0) + 1`로 셉니다."
+explanation: |
+  입력 반복(`종료`) + 문자열 정제(split·strip·lower) + 딕셔너리 카운트가 합쳐진, 실습 시험에 자주 나오는 형태입니다.

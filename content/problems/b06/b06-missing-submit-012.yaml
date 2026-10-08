@@ -1,0 +1,77 @@
+id: b06-missing-submit-012
+title: 과제를 내지 않은 학생 찾기 (차집합)
+unit: b06
+difficulty: 2
+tags: [set.ops, list.sort, str.split]
+statement: |
+  반 학생 명단과 과제 제출자 명단을 한 줄씩(공백으로 구분) 입력받아 다음을 출력하시오.
+  제출자 명단에는 같은 이름이 여러 번 있거나, 반 학생이 아닌 이름이 섞여 있을 수 있다.
+
+  - 입력 프롬프트: `반 학생: `, `제출자: `
+  - 출력 형식
+    - `미제출: ['민서', '하준']` (반 학생 중 제출하지 않은 학생, 오름차순 리스트)
+    - `명단 외 제출: ['토끼']` (반 학생이 아닌 제출자, 오름차순 리스트)
+    - `제출률: 60.0%` (제출한 반 학생 수 / 반 학생 수 × 100, 소수점 첫째 자리)
+starter: |
+  students = set(input("반 학생: ").split())
+  submitted = set(input("제출자: ").split())
+solution: |
+  students = set(input("반 학생: ").split())
+  submitted = set(input("제출자: ").split())
+  missing = sorted(students - submitted)
+  outsiders = sorted(submitted - students)
+  done = len(students & submitted)
+  print(f"미제출: {missing}")
+  print(f"명단 외 제출: {outsiders}")
+  print(f"제출률: {done / len(students) * 100:.1f}%")
+alt_solutions:
+  - |
+    students = input("반 학생: ").split()
+    submitted = input("제출자: ").split()
+    missing = []
+    for s in students:
+        if s not in submitted and s not in missing:
+            missing.append(s)
+    outsiders = []
+    for s in submitted:
+        if s not in students and s not in outsiders:
+            outsiders.append(s)
+    missing.sort()
+    outsiders.sort()
+    unique_students = len(set(students))
+    print("미제출:", missing)
+    print("명단 외 제출:", outsiders)
+    print("제출률: " + format((unique_students - len(missing)) / unique_students * 100, ".1f") + "%")
+mutants:
+  - name: 차집합 방향 반대
+    code: |
+      students = set(input("반 학생: ").split())
+      submitted = set(input("제출자: ").split())
+      missing = sorted(submitted - students)
+      outsiders = sorted(students - submitted)
+      done = len(students & submitted)
+      print(f"미제출: {missing}")
+      print(f"명단 외 제출: {outsiders}")
+      print(f"제출률: {done / len(students) * 100:.1f}%")
+  - name: 제출자 수 전체로 제출률 계산
+    code: |
+      students = set(input("반 학생: ").split())
+      submitted = set(input("제출자: ").split())
+      missing = sorted(students - submitted)
+      outsiders = sorted(submitted - students)
+      print(f"미제출: {missing}")
+      print(f"명단 외 제출: {outsiders}")
+      print(f"제출률: {len(submitted) / len(students) * 100:.1f}%")
+tests:
+  - stdin: "지민 서연 하준 민서 도윤\n지민 서연 도윤 토끼 지민\n"
+    public: true
+  - stdin: "a b c\na b c\n"
+    note: 모두 제출
+  - stdin: "a b\nc\n"
+    note: 아무도 제출하지 않음
+  - stdin: "가 나 다 라\n나 나 나\n"
+hints:
+  - "차집합 `A - B`는 A에는 있고 B에는 없는 원소입니다. 방향에 주의하세요."
+  - "제출한 반 학생 수는 교집합 `students & submitted`의 크기입니다."
+explanation: |
+  집합으로 바꾸면 중복이 사라지고, 차집합·교집합으로 '누가 빠졌는지'를 바로 구할 수 있습니다.

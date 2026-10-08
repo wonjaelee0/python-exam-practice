@@ -1,0 +1,70 @@
+id: b06-dict-avg-best-008
+title: 딕셔너리로 평균과 최고 과목
+unit: b06
+difficulty: 1
+tags: [dict.items, dict.values, loop.max-min]
+statement: |
+  한 학생의 과목별 점수가 딕셔너리로 주어진다. 과목 하나의 점수를 새로 입력받아 반영한 뒤 평균과 최고 과목을 출력하시오.
+
+  ```python
+  scores = {"kor": 94, "eng": 91, "math": 89, "sci": 83}
+  ```
+
+  - 먼저 고칠 과목 이름(`kor`, `eng`, `math`, `sci` 중 하나)과 새 점수를 입력받아 딕셔너리 값을 바꾼다.
+  - 입력 프롬프트: `과목: `, `점수: `
+  - 출력 형식: `평균: 89.25` (소수점 둘째 자리), `최고 과목: kor` (같은 점수면 딕셔너리 순서상 앞의 과목)
+starter: |
+  scores = {"kor": 94, "eng": 91, "math": 89, "sci": 83}
+solution: |
+  scores = {"kor": 94, "eng": 91, "math": 89, "sci": 83}
+  subject = input("과목: ")
+  scores[subject] = int(input("점수: "))
+  total = 0
+  for v in scores.values():
+      total += v
+  best = ""
+  best_score = -1
+  for k, v in scores.items():
+      if v > best_score:
+          best = k
+          best_score = v
+  print(f"평균: {total / len(scores):.2f}")
+  print(f"최고 과목: {best}")
+alt_solutions:
+  - |
+    scores = {"kor": 94, "eng": 91, "math": 89, "sci": 83}
+    subject = input("과목: ")
+    new = int(input("점수: "))
+    scores.update({subject: new})
+    print("평균:", format(sum(scores.values()) / len(scores), ".2f"))
+    print("최고 과목:", max(scores, key=scores.get))
+mutants:
+  - name: 평균을 과목 수가 아닌 3으로 나눔
+    code: |
+      scores = {"kor": 94, "eng": 91, "math": 89, "sci": 83}
+      subject = input("과목: ")
+      scores[subject] = int(input("점수: "))
+      total = sum(scores.values())
+      best = max(scores, key=scores.get)
+      print(f"평균: {total / 3:.2f}")
+      print(f"최고 과목: {best}")
+  - name: 최고 '점수'를 출력
+    code: |
+      scores = {"kor": 94, "eng": 91, "math": 89, "sci": 83}
+      subject = input("과목: ")
+      scores[subject] = int(input("점수: "))
+      total = sum(scores.values())
+      print(f"평균: {total / len(scores):.2f}")
+      print(f"최고 과목: {max(scores.values())}")
+tests:
+  - stdin: "sci\n83\n"
+    public: true
+  - stdin: "math\n100\n"
+  - stdin: "kor\n50\n"
+    note: 최고 과목이 바뀜
+  - stdin: "eng\n94\n"
+    note: kor와 동점 → 앞의 kor
+hints:
+  - "`scores.values()`는 값만, `scores.items()`는 (키, 값) 쌍을 차례로 줍니다."
+explanation: |
+  `딕셔너리[키] = 값`은 키가 있으면 수정, 없으면 추가입니다. `items()`로 키와 값을 함께 보며 최댓값을 찾습니다.

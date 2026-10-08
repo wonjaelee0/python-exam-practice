@@ -1,0 +1,70 @@
+id: b06-zip-dict-018
+title: zip으로 이름-점수 딕셔너리 만들기
+unit: b06
+difficulty: 2
+tags: [dict.zip, dict.get, io.split-map]
+statement: |
+  학생 이름들과 점수들을 각각 한 줄(공백 구분, 개수가 같음)로 입력받아 `dict(zip(이름들, 점수들))`로 딕셔너리를 만들어 출력하시오.
+  그다음 찾을 이름을 입력받아 점수를 출력한다.
+
+  - 입력 프롬프트: `이름들: `, `점수들: `, `찾을 이름: `
+  - 출력 형식: `{'민수': 80, '지아': 95}` (딕셔너리 그대로), `지아: 95점`
+  - 없는 이름이면 `지아: 기록 없음`처럼 출력한다 (`get()`의 기본값 활용).
+starter: |
+  names = input("이름들: ").split()
+  scores = list(map(int, input("점수들: ").split()))
+solution: |
+  names = input("이름들: ").split()
+  scores = list(map(int, input("점수들: ").split()))
+  book = dict(zip(names, scores))
+  print(book)
+  target = input("찾을 이름: ")
+  score = book.get(target)
+  if score is None:
+      print(f"{target}: 기록 없음")
+  else:
+      print(f"{target}: {score}점")
+alt_solutions:
+  - |
+    names = input("이름들: ").split()
+    scores = input("점수들: ").split()
+    book = {}
+    for i in range(len(names)):
+        book[names[i]] = int(scores[i])
+    print(book)
+    target = input("찾을 이름: ")
+    if target in book:
+        print(target + ": " + str(book[target]) + "점")
+    else:
+        print(target + ": 기록 없음")
+mutants:
+  - name: 점수를 문자열로 저장
+    code: |
+      names = input("이름들: ").split()
+      scores = input("점수들: ").split()
+      book = dict(zip(names, scores))
+      print(book)
+      target = input("찾을 이름: ")
+      print(f"{target}: {book.get(target, '기록 없음')}점")
+  - name: 이름과 점수 순서를 바꿈
+    code: |
+      names = input("이름들: ").split()
+      scores = list(map(int, input("점수들: ").split()))
+      book = dict(zip(scores, names))
+      print(book)
+      target = input("찾을 이름: ")
+      print(f"{target}: 기록 없음")
+tests:
+  - stdin: "민수 지아\n80 95\n지아\n"
+    public: true
+  - stdin: "a b c\n1 2 3\nd\n"
+    note: 없는 이름
+  - stdin: "철수\n0\n철수\n"
+    note: 점수가 0이어도 기록이 있음
+  - stdin: "x y x\n10 20 30\nx\n"
+    note: 같은 이름이 두 번 → 나중 값으로 덮어씀
+hints:
+  - "`zip(a, b)`는 두 리스트의 같은 위치 원소를 짝지어 줍니다."
+  - "`get(키)`는 키가 없으면 `None`을 돌려줍니다. 점수가 0인 경우와 구별하려면 `is None`으로 확인하세요."
+explanation: |
+  `dict(zip(키 리스트, 값 리스트))`는 짝지은 쌍으로 딕셔너리를 만듭니다. 같은 키가 다시 나오면 나중 값이 남습니다.

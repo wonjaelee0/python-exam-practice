@@ -1,0 +1,92 @@
+id: b06-word-freq-006
+title: 문장의 단어 빈도
+unit: b06
+difficulty: 3
+tags: [dict.count-get, str.clean-pipeline, str.replace]
+statement: |
+  영어 문장을 입력받아 단어별 등장 횟수를 구하시오.
+
+  - 쉼표(`,`), 마침표(`.`), 느낌표(`!`), 물음표(`?`)를 지운다.
+  - 모두 소문자로 바꾼 뒤 공백을 기준으로 단어를 나눈다.
+  - 단어가 **처음 나온 순서대로** `단어: n` 형식으로 한 줄씩 출력한다.
+  - 마지막 줄에 `가장 많은 단어: python (3번)` 형식으로 출력한다 (같으면 먼저 나온 단어).
+  - 입력 프롬프트: `문장: `
+starter: |
+  text = input("문장: ")
+solution: |
+  text = input("문장: ")
+  for mark in ",.!?":
+      text = text.replace(mark, "")
+  words = text.lower().split()
+  counts = {}
+  for w in words:
+      counts[w] = counts.get(w, 0) + 1
+  best = ""
+  best_n = 0
+  for w, n in counts.items():
+      print(f"{w}: {n}")
+      if n > best_n:
+          best = w
+          best_n = n
+  print(f"가장 많은 단어: {best} ({best_n}번)")
+alt_solutions:
+  - |
+    text = input("문장: ")
+    table = str.maketrans("", "", ",.!?")
+    words = text.translate(table).lower().split()
+    counts = {}
+    for w in words:
+        if w in counts:
+            counts[w] += 1
+        else:
+            counts[w] = 1
+    for w in counts:
+        print(w + ": " + str(counts[w]))
+    top = max(counts, key=counts.get)
+    print("가장 많은 단어: " + top + " (" + str(counts[top]) + "번)")
+mutants:
+  - name: 소문자로 바꾸지 않음
+    code: |
+      text = input("문장: ")
+      for mark in ",.!?":
+          text = text.replace(mark, "")
+      words = text.split()
+      counts = {}
+      for w in words:
+          counts[w] = counts.get(w, 0) + 1
+      best = ""
+      best_n = 0
+      for w, n in counts.items():
+          print(f"{w}: {n}")
+          if n > best_n:
+              best = w
+              best_n = n
+      print(f"가장 많은 단어: {best} ({best_n}번)")
+  - name: 문장부호를 지우지 않음
+    code: |
+      text = input("문장: ")
+      words = text.lower().split()
+      counts = {}
+      for w in words:
+          counts[w] = counts.get(w, 0) + 1
+      best = ""
+      best_n = 0
+      for w, n in counts.items():
+          print(f"{w}: {n}")
+          if n > best_n:
+              best = w
+              best_n = n
+      print(f"가장 많은 단어: {best} ({best_n}번)")
+tests:
+  - stdin: "Python is fun, Python is easy. I love Python!\n"
+    public: true
+  - stdin: "Hello hello HELLO\n"
+    note: 대소문자를 합쳐서 센다
+  - stdin: "a b c\n"
+    note: 모두 한 번 → 먼저 나온 a
+  - stdin: "Is it ok? It is, it is.\n"
+hints:
+  - "`for mark in \",.!?\":` 로 문장부호를 하나씩 `replace(mark, \"\")` 하세요."
+  - "`counts[w] = counts.get(w, 0) + 1`로 개수를 셉니다."
+explanation: |
+  문자열 정제(지우기 → 소문자 → 나누기) 후 딕셔너리로 셉니다. 딕셔너리는 넣은 순서를 기억하므로 처음 나온 순서로 출력됩니다.

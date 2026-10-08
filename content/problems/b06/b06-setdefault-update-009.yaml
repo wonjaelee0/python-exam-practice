@@ -1,0 +1,76 @@
+id: b06-setdefault-update-009
+title: setdefault와 update의 차이
+unit: b06
+difficulty: 2
+tags: [dict.setdefault, dict.update, dict.copy]
+statement: |
+  주문 수량 딕셔너리 `order = {"americano": 5, "latte": 3}`가 있다. 메뉴 이름과 수량을 입력받아 다음을 출력하시오.
+
+  1. 원래 딕셔너리를 복사한 `a`에 `a.setdefault(메뉴, 수량)` 실행 → `setdefault: {...}`
+  2. 원래 딕셔너리를 복사한 `b`에 `b.update({메뉴: 수량})` 실행 → `update: {...}`
+  3. 원래 딕셔너리는 그대로 → `원래: {...}`
+
+  - 입력 프롬프트: `메뉴: `, `수량: ` (수량은 정수)
+starter: |
+  order = {"americano": 5, "latte": 3}
+solution: |
+  order = {"americano": 5, "latte": 3}
+  menu = input("메뉴: ")
+  qty = int(input("수량: "))
+  a = order.copy()
+  a.setdefault(menu, qty)
+  b = order.copy()
+  b.update({menu: qty})
+  print(f"setdefault: {a}")
+  print(f"update: {b}")
+  print(f"원래: {order}")
+alt_solutions:
+  - |
+    order = {"americano": 5, "latte": 3}
+    menu = input("메뉴: ")
+    qty = int(input("수량: "))
+    a = dict(order)
+    if menu not in a:
+        a[menu] = qty
+    b = dict(order)
+    b[menu] = qty
+    print("setdefault:", a)
+    print("update:", b)
+    print("원래:", order)
+mutants:
+  - name: setdefault도 값을 바꾼다고 생각함
+    code: |
+      order = {"americano": 5, "latte": 3}
+      menu = input("메뉴: ")
+      qty = int(input("수량: "))
+      a = order.copy()
+      a[menu] = qty
+      b = order.copy()
+      b.update({menu: qty})
+      print(f"setdefault: {a}")
+      print(f"update: {b}")
+      print(f"원래: {order}")
+  - name: 복사하지 않고 할당 (원래 딕셔너리가 바뀜)
+    code: |
+      order = {"americano": 5, "latte": 3}
+      menu = input("메뉴: ")
+      qty = int(input("수량: "))
+      a = order
+      a.setdefault(menu, qty)
+      b = order
+      b.update({menu: qty})
+      print(f"setdefault: {a}")
+      print(f"update: {b}")
+      print(f"원래: {order}")
+tests:
+  - stdin: "latte\n10\n"
+    public: true
+  - stdin: "mocha\n2\n"
+    note: 없는 메뉴 → 둘 다 추가
+  - stdin: "americano\n0\n"
+  - stdin: "tea\n7\n"
+hints:
+  - "`setdefault(키, 값)`은 키가 **없을 때만** 추가하고, 이미 있으면 그대로 둡니다."
+  - "`update()`는 있으면 수정, 없으면 추가합니다."
+explanation: |
+  `setdefault`는 기존 값을 바꾸지 않고, `update`는 덮어씁니다. 딕셔너리도 리스트처럼 `b = a`는 같은 객체이므로 `copy()`가 필요합니다.

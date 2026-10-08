@@ -1,0 +1,122 @@
+id: mixed-log-analysis-003
+title: 접속 로그 분석
+unit: mixed
+difficulty: 4
+tags: [dict.count-get, set.add, loop.while-sentinel]
+statement: |
+  접속 로그를 `사용자 동작` 형식으로 한 줄에 하나씩 입력받다가 `종료`가 입력되면 분석 결과를 출력하시오.
+  (예: `kim login`, `lee view`, `kim logout`)
+
+  - 입력 프롬프트: `로그: `
+  - 출력 (순서대로)
+    - 사용자가 **처음 나온 순서대로** `kim: 3회` (그 사용자의 로그 줄 수)
+    - `가장 활발한 사용자: kim` (횟수가 같으면 먼저 나온 사용자)
+    - `로그인한 사용자: ['kim', 'lee']` (동작이 `login`인 사용자, 중복 없이 알파벳 순 리스트)
+  - 로그가 하나도 없으면 `로그가 없습니다` 한 줄만 출력한다.
+starter: |
+  counts = {}
+  logged_in = set()
+solution: |
+  counts = {}
+  logged_in = set()
+  while True:
+      line = input("로그: ")
+      if line == "종료":
+          break
+      user, action = line.split()
+      counts[user] = counts.get(user, 0) + 1
+      if action == "login":
+          logged_in.add(user)
+  if len(counts) == 0:
+      print("로그가 없습니다")
+  else:
+      best = ""
+      best_n = 0
+      for user, n in counts.items():
+          print(f"{user}: {n}회")
+          if n > best_n:
+              best = user
+              best_n = n
+      print(f"가장 활발한 사용자: {best}")
+      print(f"로그인한 사용자: {sorted(logged_in)}")
+alt_solutions:
+  - |
+    users = []
+    logins = []
+    line = input("로그: ")
+    while line != "종료":
+        u, a = line.split()
+        users.append(u)
+        if a == "login" and u not in logins:
+            logins.append(u)
+        line = input("로그: ")
+    if not users:
+        print("로그가 없습니다")
+    else:
+        order = []
+        for u in users:
+            if u not in order:
+                order.append(u)
+        for u in order:
+            print(u + ": " + str(users.count(u)) + "회")
+        best = order[0]
+        for u in order:
+            if users.count(u) > users.count(best):
+                best = u
+        print("가장 활발한 사용자:", best)
+        logins.sort()
+        print("로그인한 사용자:", logins)
+mutants:
+  - name: 로그인 사용자를 집합 그대로 출력
+    code: |
+      counts = {}
+      logged_in = []
+      while True:
+          line = input("로그: ")
+          if line == "종료":
+              break
+          user, action = line.split()
+          counts[user] = counts.get(user, 0) + 1
+          if action == "login":
+              logged_in.append(user)
+      if len(counts) == 0:
+          print("로그가 없습니다")
+      else:
+          best = max(counts, key=counts.get)
+          for user, n in counts.items():
+              print(f"{user}: {n}회")
+          print(f"가장 활발한 사용자: {best}")
+          print(f"로그인한 사용자: {logged_in}")
+  - name: login 동작만 횟수로 셈
+    code: |
+      counts = {}
+      logged_in = set()
+      while True:
+          line = input("로그: ")
+          if line == "종료":
+              break
+          user, action = line.split()
+          if action == "login":
+              counts[user] = counts.get(user, 0) + 1
+              logged_in.add(user)
+      if len(counts) == 0:
+          print("로그가 없습니다")
+      else:
+          best = max(counts, key=counts.get)
+          for user, n in counts.items():
+              print(f"{user}: {n}회")
+          print(f"가장 활발한 사용자: {best}")
+          print(f"로그인한 사용자: {sorted(logged_in)}")
+tests:
+  - stdin: "kim login\nlee view\nkim view\nlee login\nkim logout\n종료\n"
+    public: true
+  - stdin: "종료\n"
+  - stdin: "park view\npark view\n종료\n"
+    note: 로그인한 사용자가 없음 → 빈 리스트
+  - stdin: "zed login\namy login\nzed login\namy view\n종료\n"
+    note: 동률 → 먼저 나온 zed, 로그인 목록은 알파벳 순
+hints:
+  - "사용자별 횟수는 딕셔너리, 로그인한 사용자는 집합(중복 제거)에 모읍니다."
+  - "집합은 출력 순서가 정해져 있지 않으니 `sorted()`로 리스트를 만들어 출력하세요."
+explanation: |
+  딕셔너리(카운트) + 집합(중복 없는 모음)을 함께 쓰는 전형적인 집계 문제입니다.

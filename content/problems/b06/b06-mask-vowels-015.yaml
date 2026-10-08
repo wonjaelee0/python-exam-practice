@@ -1,0 +1,58 @@
+id: b06-mask-vowels-015
+title: 모음을 *로 가리기 (replace)
+unit: b06
+difficulty: 2
+tags: [str.replace, str.count, str.lower]
+statement: |
+  영어 문장을 입력받아 모음(a, e, i, o, u — 대문자 포함)을 모두 `*`로 바꾼 문장과, 바꾼 글자 수를 출력하시오.
+
+  - 입력 프롬프트: `문장: `
+  - 출력 형식: `결과: H*ll* W*rld`, `바꾼 글자 수: 3`
+starter: |
+  text = input("문장: ")
+solution: |
+  text = input("문장: ")
+  count = 0
+  for v in "aeiouAEIOU":
+      count += text.count(v)
+      text = text.replace(v, "*")
+  print(f"결과: {text}")
+  print(f"바꾼 글자 수: {count}")
+alt_solutions:
+  - |
+    text = input("문장: ")
+    table = str.maketrans("aeiouAEIOU", "**********")
+    masked = text.translate(table)
+    print("결과:", masked)
+    print("바꾼 글자 수:", masked.count("*") - text.count("*"))
+mutants:
+  - name: 소문자 모음만
+    code: |
+      text = input("문장: ")
+      count = 0
+      for v in "aeiou":
+          count += text.count(v)
+          text = text.replace(v, "*")
+      print(f"결과: {text}")
+      print(f"바꾼 글자 수: {count}")
+  - name: replace 결과를 저장하지 않음
+    code: |
+      text = input("문장: ")
+      count = 0
+      for v in "aeiouAEIOU":
+          count += text.count(v)
+          text.replace(v, "*")
+      print(f"결과: {text}")
+      print(f"바꾼 글자 수: {count}")
+tests:
+  - stdin: "Hello World\n"
+    public: true
+  - stdin: "AEIOU are vowels\n"
+  - stdin: "rhythm\n"
+    note: 모음 없음
+  - stdin: "I am *ok*\n"
+    note: 원래 있던 *는 세지 않는다
+hints:
+  - "문자열은 바뀌지 않는(immutable) 값입니다. `text.replace(...)`의 결과를 다시 `text`에 저장해야 해요."
+explanation: |
+  `replace()`는 새 문자열을 돌려줄 뿐 원래 문자열을 바꾸지 않습니다. `str.maketrans`와 `translate`로 한 번에 바꿀 수도 있습니다.

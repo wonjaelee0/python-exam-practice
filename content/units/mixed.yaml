@@ -1,0 +1,5 @@
+id: mixed
+short: 종합
+title: 시험형 종합 문제
+order: 90
+summary: 입력 반복('종료') + 딕셔너리 집계 + 문자열 정제 + 형식 출력 — elice 본문제·추가문제 스타일

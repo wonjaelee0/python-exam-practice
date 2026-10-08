@@ -1,0 +1,100 @@
+id: b06-grade-dict-007
+title: 과목별 점수를 학점 딕셔너리로
+unit: b06
+difficulty: 2
+tags: [dict.add, dict.items, cond.elif-order]
+statement: |
+  과목 리스트가 `subjects = ["국어", "수학", "과학"]`로 주어진다. 과목 순서대로 점수를 입력받아 `{과목: 점수}` 딕셔너리를 만들고,
+  이를 바탕으로 `{과목: 학점}` 딕셔너리를 만들어 두 딕셔너리를 출력하시오.
+
+  - 학점: 90 이상 A, 80 이상 B, 70 이상 C, 그 외 F
+  - 입력 프롬프트: `국어 점수: `, `수학 점수: `, `과학 점수: ` (과목 이름 + ` 점수: `)
+  - 출력 형식: `점수: {'국어': 95, '수학': 82, '과학': 64}`, `학점: {'국어': 'A', '수학': 'B', '과학': 'F'}`
+starter: |
+  subjects = ["국어", "수학", "과학"]
+  scores = {}
+solution: |
+  subjects = ["국어", "수학", "과학"]
+  scores = {}
+  for s in subjects:
+      scores[s] = int(input(f"{s} 점수: "))
+  grades = {}
+  for s, score in scores.items():
+      if score >= 90:
+          grades[s] = "A"
+      elif score >= 80:
+          grades[s] = "B"
+      elif score >= 70:
+          grades[s] = "C"
+      else:
+          grades[s] = "F"
+  print(f"점수: {scores}")
+  print(f"학점: {grades}")
+alt_solutions:
+  - |
+    subjects = ["국어", "수학", "과학"]
+    scores = dict()
+    grades = dict()
+    for s in subjects:
+        v = int(input(s + " 점수: "))
+        scores[s] = v
+        g = "F"
+        if v >= 70:
+            g = "C"
+        if v >= 80:
+            g = "B"
+        if v >= 90:
+            g = "A"
+        grades[s] = g
+    print("점수:", scores)
+    print("학점:", grades)
+mutants:
+  - name: 점수를 문자열로 저장
+    code: |
+      subjects = ["국어", "수학", "과학"]
+      scores = {}
+      for s in subjects:
+          scores[s] = input(f"{s} 점수: ")
+      grades = {}
+      for s, score in scores.items():
+          score_i = int(score)
+          if score_i >= 90:
+              grades[s] = "A"
+          elif score_i >= 80:
+              grades[s] = "B"
+          elif score_i >= 70:
+              grades[s] = "C"
+          else:
+              grades[s] = "F"
+      print(f"점수: {scores}")
+      print(f"학점: {grades}")
+  - name: 프롬프트에 공백 누락
+    code: |
+      subjects = ["국어", "수학", "과학"]
+      scores = {}
+      for s in subjects:
+          scores[s] = int(input(f"{s}점수: "))
+      grades = {}
+      for s, score in scores.items():
+          if score >= 90:
+              grades[s] = "A"
+          elif score >= 80:
+              grades[s] = "B"
+          elif score >= 70:
+              grades[s] = "C"
+          else:
+              grades[s] = "F"
+      print(f"점수: {scores}")
+      print(f"학점: {grades}")
+tests:
+  - stdin: "95\n82\n64\n"
+    public: true
+  - stdin: "90\n80\n70\n"
+    note: 경계값
+  - stdin: "0\n100\n79\n"
+  - stdin: "88\n91\n69\n"
+hints:
+  - "프롬프트도 출력에 포함되므로 `f\"{s} 점수: \"`처럼 과목 이름 뒤 공백까지 정확히 맞추세요."
+  - "`int()`로 바꿔서 저장하면 딕셔너리에 `95`처럼 따옴표 없이 출력됩니다."
+explanation: |
+  딕셔너리를 출력하면 `{'국어': 95}`처럼 나옵니다. 문자열로 저장하면 `{'국어': '95'}`가 되어 출력이 달라집니다.

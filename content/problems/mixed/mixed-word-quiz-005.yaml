@@ -1,0 +1,97 @@
+id: mixed-word-quiz-005
+title: 영단어 퀴즈 (random.seed(1))
+unit: mixed
+difficulty: 3
+tags: [random.seed, dict.lookup, loop.for-range]
+statement: |
+  영단어와 뜻이 딕셔너리로 주어진다.
+
+  ```python
+  words = {"apple": "사과", "book": "책", "cat": "고양이", "dog": "개", "egg": "달걀"}
+  ```
+
+  `random.seed(1)`로 시드를 고정한 뒤, 문제를 3번 낸다. 매번 `random.choice(list(words))`로 영단어를 하나 고른다 (같은 단어가 다시 나올 수 있다).
+
+  - 입력 프롬프트: `book의 뜻: ` (고른 영단어 + `의 뜻: `)
+  - 답이 맞으면 `정답`, 틀리면 `오답 (정답: 책)`을 출력한다. 답의 앞뒤 공백은 무시한다.
+  - 마지막 줄에 `점수: 2/3`
+starter: |
+  import random
+  random.seed(1)
+  words = {"apple": "사과", "book": "책", "cat": "고양이", "dog": "개", "egg": "달걀"}
+solution: |
+  import random
+  random.seed(1)
+  words = {"apple": "사과", "book": "책", "cat": "고양이", "dog": "개", "egg": "달걀"}
+  score = 0
+  for i in range(3):
+      eng = random.choice(list(words))
+      answer = input(f"{eng}의 뜻: ").strip()
+      if answer == words[eng]:
+          print("정답")
+          score += 1
+      else:
+          print(f"오답 (정답: {words[eng]})")
+  print(f"점수: {score}/3")
+alt_solutions:
+  - |
+    import random
+    random.seed(1)
+    words = {"apple": "사과", "book": "책", "cat": "고양이", "dog": "개", "egg": "달걀"}
+    keys = list(words.keys())
+    correct = 0
+    count = 0
+    while count < 3:
+        q = random.choice(keys)
+        a = input(q + "의 뜻: ")
+        if a.strip() != words[q]:
+            print("오답 (정답: " + words[q] + ")")
+        else:
+            print("정답")
+            correct += 1
+        count += 1
+    print("점수: " + str(correct) + "/3")
+mutants:
+  - name: 다른 시드(2) 사용
+    code: |
+      import random
+      random.seed(2)
+      words = {"apple": "사과", "book": "책", "cat": "고양이", "dog": "개", "egg": "달걀"}
+      score = 0
+      for i in range(3):
+          eng = random.choice(list(words))
+          answer = input(f"{eng}의 뜻: ").strip()
+          if answer == words[eng]:
+              print("정답")
+              score += 1
+          else:
+              print(f"오답 (정답: {words[eng]})")
+      print(f"점수: {score}/3")
+  - name: 답의 공백을 지우지 않음
+    code: |
+      import random
+      random.seed(1)
+      words = {"apple": "사과", "book": "책", "cat": "고양이", "dog": "개", "egg": "달걀"}
+      score = 0
+      for i in range(3):
+          eng = random.choice(list(words))
+          answer = input(f"{eng}의 뜻: ")
+          if answer == words[eng]:
+              print("정답")
+              score += 1
+          else:
+              print(f"오답 (정답: {words[eng]})")
+      print(f"점수: {score}/3")
+tests:
+  - stdin: "책\n계란\n사과\n"
+    public: true
+  - stdin: "책\n달걀\n사과\n"
+    note: 모두 정답
+  - stdin: "몰라\n몰라\n몰라\n"
+  - stdin: " 책 \n달걀  \n  사과\n"
+    note: 앞뒤 공백은 무시
+hints:
+  - "시드를 고정하면 문제 순서가 항상 같습니다. Run으로 어떤 단어가 나오는지 확인해 보세요."
+  - "프롬프트에 단어를 넣으려면 `input(f\"{eng}의 뜻: \")`처럼 f-string을 씁니다."
+explanation: |
+  `random.choice(리스트)`는 리스트에서 하나를 무작위로 고릅니다. `random.seed(1)` 덕분에 채점할 때도 같은 단어가 나옵니다.

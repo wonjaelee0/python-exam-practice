@@ -1,0 +1,102 @@
+id: mixed-top3-words-008
+title: 가장 많이 나온 단어 TOP 3
+unit: mixed
+difficulty: 4
+tags: [dict.count-get, dict.pop, loop.max-min]
+statement: |
+  영어 문장을 입력받아 가장 많이 나온 단어 세 개를 순위대로 출력하시오.
+
+  - 쉼표, 마침표, 느낌표, 물음표(`,.!?`)를 지우고 소문자로 바꾼 뒤 공백으로 단어를 나눈다.
+  - 횟수가 같으면 문장에서 **먼저 나온 단어**가 높은 순위다.
+  - `1위: python (3번)` 형식으로 출력하며, 서로 다른 단어가 3개보다 적으면 있는 만큼만 출력한다.
+  - 입력 프롬프트: `문장: `
+starter: |
+  text = input("문장: ")
+solution: |
+  text = input("문장: ")
+  for mark in ",.!?":
+      text = text.replace(mark, "")
+  counts = {}
+  for w in text.lower().split():
+      counts[w] = counts.get(w, 0) + 1
+  rank = 1
+  while rank <= 3 and len(counts) > 0:
+      best = ""
+      best_n = 0
+      for w, n in counts.items():
+          if n > best_n:
+              best = w
+              best_n = n
+      print(f"{rank}위: {best} ({best_n}번)")
+      counts.pop(best)
+      rank += 1
+alt_solutions:
+  - |
+    text = input("문장: ")
+    clean = ""
+    for ch in text:
+        if ch not in ",.!?":
+            clean += ch
+    words = clean.lower().split()
+    order = []
+    for w in words:
+        if w not in order:
+            order.append(w)
+    picked = []
+    for r in range(1, 4):
+        best = None
+        for w in order:
+            if w in picked:
+                continue
+            if best is None or words.count(w) > words.count(best):
+                best = w
+        if best is None:
+            break
+        picked.append(best)
+        print(str(r) + "위: " + best + " (" + str(words.count(best)) + "번)")
+mutants:
+  - name: 동률이면 나중 단어 (>=)
+    code: |
+      text = input("문장: ")
+      for mark in ",.!?":
+          text = text.replace(mark, "")
+      counts = {}
+      for w in text.lower().split():
+          counts[w] = counts.get(w, 0) + 1
+      rank = 1
+      while rank <= 3 and len(counts) > 0:
+          best = ""
+          best_n = 0
+          for w, n in counts.items():
+              if n >= best_n:
+                  best = w
+                  best_n = n
+          print(f"{rank}위: {best} ({best_n}번)")
+          counts.pop(best)
+          rank += 1
+  - name: 단어가 3개 미만일 때 오류
+    code: |
+      text = input("문장: ")
+      for mark in ",.!?":
+          text = text.replace(mark, "")
+      counts = {}
+      for w in text.lower().split():
+          counts[w] = counts.get(w, 0) + 1
+      for rank in range(1, 4):
+          best = max(counts, key=counts.get)
+          print(f"{rank}위: {best} ({counts[best]}번)")
+          counts.pop(best)
+tests:
+  - stdin: "I like Python. Python is fun, and I like fun Python!\n"
+    public: true
+  - stdin: "Hi\n"
+    note: 단어가 하나뿐
+  - stdin: "b a b a c\n"
+    note: 동률 → 먼저 나온 b가 1위
+  - stdin: "one two three four five\n"
+    note: 모두 1번 → 앞의 세 단어
+hints:
+  - "정렬 없이도 '최댓값 찾기 → 출력 → 딕셔너리에서 지우기(`pop`)'를 세 번 반복하면 순위를 구할 수 있습니다."
+  - "`>`로 비교해야 동률일 때 먼저 나온 단어가 뽑힙니다."
+explanation: |
+  `pop(키)`로 이미 뽑은 단어를 지우면 다음 반복에서 그다음 순위를 찾을 수 있습니다. 단어가 모자랄 때를 위해 `len(counts) > 0`도 확인합니다.

@@ -1,0 +1,75 @@
+id: b06-common-multiples-011
+title: 집합으로 공배수 구하기
+unit: b06
+difficulty: 2
+tags: [set.ops, set.add, list.sort]
+statement: |
+  정수 n, a, b를 입력받아 1부터 n까지의 수 중 a의 배수 집합과 b의 배수 집합을 만들고, 두 집합의 교집합(공배수)을 구하시오.
+
+  - 입력 프롬프트: `n: `, `a: `, `b: `
+  - 출력 형식: `공배수: [15, 30]` (오름차순 리스트), `개수: 2`
+  - 공배수가 없으면 `공배수: []`, `개수: 0`
+starter: |
+  n = int(input("n: "))
+  a = int(input("a: "))
+  b = int(input("b: "))
+  set_a = set()
+  set_b = set()
+solution: |
+  n = int(input("n: "))
+  a = int(input("a: "))
+  b = int(input("b: "))
+  set_a = set()
+  set_b = set()
+  for i in range(1, n + 1):
+      if i % a == 0:
+          set_a.add(i)
+      if i % b == 0:
+          set_b.add(i)
+  common = sorted(set_a & set_b)
+  print(f"공배수: {common}")
+  print(f"개수: {len(common)}")
+alt_solutions:
+  - |
+    n = int(input("n: "))
+    a = int(input("a: "))
+    b = int(input("b: "))
+    set_a = set(range(a, n + 1, a))
+    set_b = set(range(b, n + 1, b))
+    common = sorted(set_a.intersection(set_b))
+    print("공배수:", common)
+    print("개수:", len(common))
+mutants:
+  - name: 합집합(|)을 구함
+    code: |
+      n = int(input("n: "))
+      a = int(input("a: "))
+      b = int(input("b: "))
+      set_a = set(range(a, n + 1, a))
+      set_b = set(range(b, n + 1, b))
+      common = sorted(set_a | set_b)
+      print(f"공배수: {common}")
+      print(f"개수: {len(common)}")
+  - name: n을 포함하지 않음
+    code: |
+      n = int(input("n: "))
+      a = int(input("a: "))
+      b = int(input("b: "))
+      set_a = set(range(a, n, a))
+      set_b = set(range(b, n, b))
+      common = sorted(set_a & set_b)
+      print(f"공배수: {common}")
+      print(f"개수: {len(common)}")
+tests:
+  - stdin: "30\n3\n5\n"
+    public: true
+  - stdin: "10\n4\n6\n"
+    note: 공배수 없음
+  - stdin: "24\n4\n6\n"
+    note: n이 공배수
+  - stdin: "100\n7\n7\n"
+hints:
+  - "빈 집합은 `{}`가 아니라 `set()`입니다 (`{}`는 빈 딕셔너리)."
+  - "교집합은 `&` 또는 `intersection()`입니다. 출력 전에 `sorted()`로 정렬하세요."
+explanation: |
+  집합은 순서가 없으므로 그대로 출력하면 순서가 보장되지 않습니다. `sorted()`는 정렬된 **리스트**를 돌려줍니다.

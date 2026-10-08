@@ -1,0 +1,126 @@
+id: mixed-attendance-006
+title: 출석부 집계와 개근자
+unit: mixed
+difficulty: 4
+tags: [dict.set-values, set.add, loop.while-sentinel]
+statement: |
+  출석 기록을 `날짜 이름` 형식으로 한 줄에 하나씩 입력받다가 `종료`가 입력되면 집계하시오.
+  같은 날 같은 사람이 여러 번 기록될 수 있으며, 이 경우 한 번만 센다.
+
+  - 입력 프롬프트: `기록: `
+  - 출력 (순서대로)
+    - `수업 일수: 3` (서로 다른 날짜 수)
+    - 이름의 가나다(사전)순으로 `민수: 2일` 형식
+    - `개근: ['지민']` (모든 날짜에 출석한 사람, 사전순 리스트. 없으면 `[]`)
+  - 기록이 하나도 없으면 `기록이 없습니다` 한 줄만 출력한다.
+starter: |
+  days = set()
+  attend = {}
+solution: |
+  days = set()
+  attend = {}
+  while True:
+      line = input("기록: ")
+      if line == "종료":
+          break
+      day, name = line.split()
+      days.add(day)
+      attend.setdefault(name, set()).add(day)
+  if len(days) == 0:
+      print("기록이 없습니다")
+  else:
+      print(f"수업 일수: {len(days)}")
+      perfect = []
+      for name in sorted(attend):
+          count = len(attend[name])
+          print(f"{name}: {count}일")
+          if count == len(days):
+              perfect.append(name)
+      print(f"개근: {perfect}")
+alt_solutions:
+  - |
+    records = []
+    line = input("기록: ")
+    while line != "종료":
+        d, n = line.split()
+        if [d, n] not in records:
+            records.append([d, n])
+        line = input("기록: ")
+    if not records:
+        print("기록이 없습니다")
+    else:
+        all_days = []
+        names = []
+        for d, n in records:
+            if d not in all_days:
+                all_days.append(d)
+            if n not in names:
+                names.append(n)
+        names.sort()
+        print("수업 일수:", len(all_days))
+        perfect = []
+        for n in names:
+            c = 0
+            for d, who in records:
+                if who == n:
+                    c += 1
+            print(n + ": " + str(c) + "일")
+            if c == len(all_days):
+                perfect.append(n)
+        print("개근:", perfect)
+mutants:
+  - name: 같은 날 중복 기록도 셈
+    code: |
+      days = set()
+      attend = {}
+      while True:
+          line = input("기록: ")
+          if line == "종료":
+              break
+          day, name = line.split()
+          days.add(day)
+          attend[name] = attend.get(name, 0) + 1
+      if len(days) == 0:
+          print("기록이 없습니다")
+      else:
+          print(f"수업 일수: {len(days)}")
+          perfect = []
+          for name in sorted(attend):
+              print(f"{name}: {attend[name]}일")
+              if attend[name] >= len(days):
+                  perfect.append(name)
+          print(f"개근: {perfect}")
+  - name: 입력 순서대로 출력
+    code: |
+      days = set()
+      attend = {}
+      while True:
+          line = input("기록: ")
+          if line == "종료":
+              break
+          day, name = line.split()
+          days.add(day)
+          attend.setdefault(name, set()).add(day)
+      if len(days) == 0:
+          print("기록이 없습니다")
+      else:
+          print(f"수업 일수: {len(days)}")
+          perfect = []
+          for name in attend:
+              print(f"{name}: {len(attend[name])}일")
+              if len(attend[name]) == len(days):
+                  perfect.append(name)
+          print(f"개근: {perfect}")
+tests:
+  - stdin: "10/01 지민\n10/01 민수\n10/02 지민\n10/03 지민\n10/03 민수\n종료\n"
+    public: true
+  - stdin: "종료\n"
+  - stdin: "1일 하나\n1일 하나\n2일 둘\n종료\n"
+    note: 같은 날 중복 기록, 개근자 없음
+  - stdin: "d1 Zoe\nd1 Amy\n종료\n"
+    note: 하루뿐이면 모두 개근
+hints:
+  - "날짜는 집합에 모으면 중복 없이 셀 수 있습니다."
+  - "사람마다 출석한 날짜의 집합을 저장하세요: `attend.setdefault(이름, set()).add(날짜)`"
+explanation: |
+  딕셔너리의 값으로 집합을 쓰면 '사람별 출석 날짜'를 중복 없이 모을 수 있습니다. 개근은 출석 일수가 전체 수업 일수와 같은 사람입니다.

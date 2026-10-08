@@ -1,0 +1,58 @@
+id: b06-alpha-freq-017
+title: 단어 빈도를 알파벳 순으로
+unit: b06
+difficulty: 3
+tags: [dict.count-get, list.sorted, str.lower]
+statement: |
+  영어 단어들을 공백으로 구분해 한 줄 입력받아, 대소문자를 구분하지 않고 단어별 개수를 센 뒤 **단어의 알파벳 순서대로** 출력하시오.
+
+  - 입력 프롬프트: `단어들: `
+  - 출력 형식: 한 줄에 하나씩 `apple: 2`
+  - 마지막 줄에 `서로 다른 단어 수: 3`
+starter: |
+  words = input("단어들: ").lower().split()
+  counts = {}
+solution: |
+  words = input("단어들: ").lower().split()
+  counts = {}
+  for w in words:
+      counts[w] = counts.get(w, 0) + 1
+  for w in sorted(counts):
+      print(f"{w}: {counts[w]}")
+  print(f"서로 다른 단어 수: {len(counts)}")
+alt_solutions:
+  - |
+    words = input("단어들: ").lower().split()
+    unique = sorted(set(words))
+    for w in unique:
+        print(w + ": " + str(words.count(w)))
+    print("서로 다른 단어 수:", len(unique))
+mutants:
+  - name: 정렬하지 않음 (나온 순서)
+    code: |
+      words = input("단어들: ").lower().split()
+      counts = {}
+      for w in words:
+          counts[w] = counts.get(w, 0) + 1
+      for w in counts:
+          print(f"{w}: {counts[w]}")
+      print(f"서로 다른 단어 수: {len(counts)}")
+  - name: 개수 내림차순으로 오해
+    code: |
+      words = input("단어들: ").lower().split()
+      counts = {}
+      for w in words:
+          counts[w] = counts.get(w, 0) + 1
+      for w in sorted(counts, key=counts.get, reverse=True):
+          print(f"{w}: {counts[w]}")
+      print(f"서로 다른 단어 수: {len(counts)}")
+tests:
+  - stdin: "banana Apple apple cherry\n"
+    public: true
+  - stdin: "z y x\n"
+  - stdin: "go Go GO\n"
+  - stdin: "b a b c a b\n"
+hints:
+  - "`sorted(딕셔너리)`는 키를 정렬한 리스트를 돌려줍니다."
+explanation: |
+  딕셔너리 자체는 넣은 순서를 기억합니다. 다른 순서로 출력하려면 `sorted()`로 키를 정렬한 뒤 그 순서대로 꺼냅니다.

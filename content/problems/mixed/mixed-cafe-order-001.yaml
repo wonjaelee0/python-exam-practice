@@ -1,0 +1,148 @@
+id: mixed-cafe-order-001
+title: 카페 주문 계산기
+unit: mixed
+difficulty: 3
+tags: [dict.count-get, loop.while-sentinel, io.fstring]
+statement: |
+  카페 메뉴판이 딕셔너리로 주어진다.
+
+  ```python
+  menu = {"아메리카노": 2000, "라떼": 3000, "케이크": 4500}
+  ```
+
+  주문을 `메뉴 수량` 형식으로 한 줄에 하나씩 입력받다가 `주문 끝`이 입력되면 영수증을 출력하시오.
+
+  - 메뉴판에 없는 메뉴면 `없는 메뉴입니다`를 출력하고 넘어간다. 같은 메뉴를 여러 번 주문하면 수량을 합친다.
+  - 영수증은 **메뉴판 순서대로**, 주문된 메뉴만 `라떼 x2: 6000원` 형식으로 출력한다.
+  - 다음 줄에 `합계: 8000원`
+  - 합계가 20000원 이상이면 `할인: 2000원`(합계의 10%, `// 100` 정수 연산)을 출력하고 할인된 금액으로 결제한다.
+  - 마지막 줄에 `결제 금액: 8000원`
+  - 주문이 하나도 없으면 `주문 내역이 없습니다` 한 줄만 출력한다 (없는 메뉴 메시지는 그대로 출력).
+  - 입력 프롬프트: `주문: `
+starter: |
+  menu = {"아메리카노": 2000, "라떼": 3000, "케이크": 4500}
+  order = {}
+solution: |
+  menu = {"아메리카노": 2000, "라떼": 3000, "케이크": 4500}
+  order = {}
+  while True:
+      line = input("주문: ")
+      if line == "주문 끝":
+          break
+      name, qty = line.split()
+      if name not in menu:
+          print("없는 메뉴입니다")
+          continue
+      order[name] = order.get(name, 0) + int(qty)
+  if len(order) == 0:
+      print("주문 내역이 없습니다")
+  else:
+      total = 0
+      for name in menu:
+          if name in order:
+              cost = menu[name] * order[name]
+              total += cost
+              print(f"{name} x{order[name]}: {cost}원")
+      print(f"합계: {total}원")
+      if total >= 20000:
+          discount = total * 10 // 100
+          print(f"할인: {discount}원")
+          total -= discount
+      print(f"결제 금액: {total}원")
+alt_solutions:
+  - |
+    menu = {"아메리카노": 2000, "라떼": 3000, "케이크": 4500}
+    counts = dict.fromkeys(menu, 0)
+    line = input("주문: ")
+    while line != "주문 끝":
+        parts = line.split()
+        if parts[0] in menu:
+            counts[parts[0]] += int(parts[1])
+        else:
+            print("없는 메뉴입니다")
+        line = input("주문: ")
+    if sum(counts.values()) == 0:
+        print("주문 내역이 없습니다")
+    else:
+        total = 0
+        for name, n in counts.items():
+            if n > 0:
+                print(name + " x" + str(n) + ": " + str(menu[name] * n) + "원")
+                total += menu[name] * n
+        print("합계: " + str(total) + "원")
+        pay = total
+        if total >= 20000:
+            print("할인: " + str(total // 10) + "원")
+            pay = total - total // 10
+        print("결제 금액: " + str(pay) + "원")
+mutants:
+  - name: 주문한 순서대로 출력
+    code: |
+      menu = {"아메리카노": 2000, "라떼": 3000, "케이크": 4500}
+      order = {}
+      while True:
+          line = input("주문: ")
+          if line == "주문 끝":
+              break
+          name, qty = line.split()
+          if name not in menu:
+              print("없는 메뉴입니다")
+              continue
+          order[name] = order.get(name, 0) + int(qty)
+      if len(order) == 0:
+          print("주문 내역이 없습니다")
+      else:
+          total = 0
+          for name in order:
+              cost = menu[name] * order[name]
+              total += cost
+              print(f"{name} x{order[name]}: {cost}원")
+          print(f"합계: {total}원")
+          if total >= 20000:
+              discount = total * 10 // 100
+              print(f"할인: {discount}원")
+              total -= discount
+          print(f"결제 금액: {total}원")
+  - name: 같은 메뉴를 합치지 않고 덮어씀
+    code: |
+      menu = {"아메리카노": 2000, "라떼": 3000, "케이크": 4500}
+      order = {}
+      while True:
+          line = input("주문: ")
+          if line == "주문 끝":
+              break
+          name, qty = line.split()
+          if name not in menu:
+              print("없는 메뉴입니다")
+              continue
+          order[name] = int(qty)
+      if len(order) == 0:
+          print("주문 내역이 없습니다")
+      else:
+          total = 0
+          for name in menu:
+              if name in order:
+                  cost = menu[name] * order[name]
+                  total += cost
+                  print(f"{name} x{order[name]}: {cost}원")
+          print(f"합계: {total}원")
+          if total >= 20000:
+              discount = total * 10 // 100
+              print(f"할인: {discount}원")
+              total -= discount
+          print(f"결제 금액: {total}원")
+tests:
+  - stdin: "라떼 2\n아메리카노 1\n주문 끝\n"
+    public: true
+  - stdin: "주문 끝\n"
+  - stdin: "케이크 3\n라떼 2\n케이크 1\n주문 끝\n"
+    note: 같은 메뉴 합치기 + 할인
+  - stdin: "녹차 1\n아메리카노 10\n주문 끝\n"
+    note: 합계가 정확히 20000원
+  - stdin: "모카 2\n주문 끝\n"
+    note: 없는 메뉴만 주문
+hints:
+  - "`주문 끝`은 띄어쓰기가 있으므로 `split()`하기 **전에** 비교하세요."
+  - "영수증은 메뉴판 순서이므로 `for name in menu:`로 돌면서 주문된 메뉴만 출력합니다."
+explanation: |
+  주문 수량은 딕셔너리에 누적(`get(name, 0) + 수량`)하고, 출력할 때는 메뉴판 딕셔너리의 순서를 따릅니다.

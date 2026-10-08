@@ -1,0 +1,70 @@
+id: b06-capital-add-005
+title: 수도 검색과 새 정보 추가
+unit: b06
+difficulty: 2
+tags: [dict.in, dict.add, dict.get]
+statement: |
+  국가와 수도가 딕셔너리로 주어진다.
+
+  ```python
+  capitals = {"한국": "서울", "일본": "도쿄", "프랑스": "파리", "이탈리아": "로마"}
+  ```
+
+  국가 이름을 입력받아 딕셔너리에 있으면 `한국의 수도는 서울입니다`를 출력하시오.
+  없으면 수도를 추가로 입력받아 딕셔너리에 넣고 `캐나다을(를) 추가했습니다`를 출력한다.
+  마지막 줄에는 항상 `국가 수: 5` 형식으로 딕셔너리에 있는 국가 수를 출력한다.
+
+  - 입력 프롬프트: `국가: `, (없을 때만) `수도: `
+starter: |
+  capitals = {"한국": "서울", "일본": "도쿄", "프랑스": "파리", "이탈리아": "로마"}
+solution: |
+  capitals = {"한국": "서울", "일본": "도쿄", "프랑스": "파리", "이탈리아": "로마"}
+  country = input("국가: ")
+  if country in capitals:
+      print(f"{country}의 수도는 {capitals[country]}입니다")
+  else:
+      city = input("수도: ")
+      capitals[country] = city
+      print(f"{country}을(를) 추가했습니다")
+  print(f"국가 수: {len(capitals)}")
+alt_solutions:
+  - |
+    capitals = {"한국": "서울", "일본": "도쿄", "프랑스": "파리", "이탈리아": "로마"}
+    country = input("국가: ")
+    city = capitals.get(country)
+    if city is None:
+        capitals.update({country: input("수도: ")})
+        print(country + "을(를) 추가했습니다")
+    else:
+        print(country + "의 수도는 " + city + "입니다")
+    print("국가 수:", len(capitals))
+mutants:
+  - name: 없는 국가를 바로 조회 (KeyError)
+    code: |
+      capitals = {"한국": "서울", "일본": "도쿄", "프랑스": "파리", "이탈리아": "로마"}
+      country = input("국가: ")
+      print(f"{country}의 수도는 {capitals[country]}입니다")
+      print(f"국가 수: {len(capitals)}")
+  - name: 추가하지 않고 수도만 입력받음
+    code: |
+      capitals = {"한국": "서울", "일본": "도쿄", "프랑스": "파리", "이탈리아": "로마"}
+      country = input("국가: ")
+      if country in capitals:
+          print(f"{country}의 수도는 {capitals[country]}입니다")
+      else:
+          city = input("수도: ")
+          print(f"{country}을(를) 추가했습니다")
+      print(f"국가 수: {len(capitals)}")
+tests:
+  - stdin: "한국\n"
+    public: true
+  - stdin: "캐나다\n오타와\n"
+    note: 없는 국가 → 수도를 입력받아 추가
+  - stdin: "이탈리아\n"
+  - stdin: "korea\n서울\n"
+    note: 키는 글자가 정확히 같아야 한다
+hints:
+  - "`키 in 딕셔너리`로 키가 있는지 먼저 확인합니다."
+  - "새 항목은 `딕셔너리[키] = 값`으로 추가합니다."
+explanation: |
+  없는 키로 `capitals[country]`를 조회하면 KeyError가 납니다. `in`이나 `get()`으로 먼저 확인하세요.

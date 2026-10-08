@@ -1,0 +1,60 @@
+id: b06-csv-fields-014
+title: 쉼표로 구분된 정보 정리하기
+unit: b06
+difficulty: 2
+tags: [str.split, str.strip, io.input-cast]
+statement: |
+  `이름, 나이, 도시` 형식의 문자열을 한 줄 입력받는다. 각 항목 앞뒤에 불필요한 공백이 있을 수 있다.
+  공백을 정리해서 출력하고, 나이에 1을 더한 내년 나이도 출력하시오.
+
+  - 입력 프롬프트: `정보: `
+  - 출력 형식: `이름: 홍길동`, `나이: 20`, `도시: 서울`, `내년 나이: 21`
+starter: |
+  line = input("정보: ")
+solution: |
+  line = input("정보: ")
+  name, age, city = line.split(",")
+  name = name.strip()
+  age = int(age.strip())
+  city = city.strip()
+  print(f"이름: {name}")
+  print(f"나이: {age}")
+  print(f"도시: {city}")
+  print(f"내년 나이: {age + 1}")
+alt_solutions:
+  - |
+    parts = [p.strip() for p in input("정보: ").split(",")]
+    print("이름:", parts[0])
+    print("나이:", parts[1])
+    print("도시:", parts[2])
+    print("내년 나이:", int(parts[1]) + 1)
+mutants:
+  - name: strip 하지 않음
+    code: |
+      line = input("정보: ")
+      name, age, city = line.split(",")
+      print(f"이름: {name}")
+      print(f"나이: {age}")
+      print(f"도시: {city}")
+      print(f"내년 나이: {int(age) + 1}")
+  - name: 공백으로 나눔
+    code: |
+      line = input("정보: ")
+      parts = line.replace(",", " ").split()
+      print(f"이름: {parts[0]}")
+      print(f"나이: {parts[1]}")
+      print(f"도시: {parts[-1]}")
+      print(f"내년 나이: {int(parts[1]) + 1}")
+tests:
+  - stdin: "  홍길동, 20 ,서울 \n"
+    public: true
+  - stdin: "Kim,7,Busan\n"
+    note: 공백 없음
+  - stdin: "  Lee Jun ,  33,   New York  \n"
+    note: 이름과 도시에 공백이 들어 있음
+  - stdin: "가,0,나\n"
+hints:
+  - "`split(\",\")`로 나눈 뒤 각 항목에 `strip()`을 하면 앞뒤 공백만 지워집니다."
+  - "`int()`는 앞뒤 공백이 있어도 변환되지만, 출력할 문자열은 직접 정리해야 합니다."
+explanation: |
+  공백 기준 `split()`은 'New York'처럼 공백이 든 값을 쪼개 버립니다. 쉼표로 나눈 뒤 `strip()`이 정확합니다.

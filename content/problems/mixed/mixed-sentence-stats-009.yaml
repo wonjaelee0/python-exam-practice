@@ -1,0 +1,90 @@
+id: mixed-sentence-stats-009
+title: 영어 문장 통계
+unit: mixed
+difficulty: 3
+tags: [str.split, str.replace, loop.max-min]
+statement: |
+  영어 문장을 입력받아 다음 네 줄을 출력하시오. 단어는 공백으로 나눈 조각이다 (문장부호도 단어에 포함).
+
+  - `글자 수(공백 제외): 18`
+  - `단어 수: 5`
+  - `가장 긴 단어: Python!` (길이가 같으면 먼저 나온 단어)
+  - `대문자로 시작하는 단어: 2개` (첫 글자가 `A`~`Z`인 단어 수)
+  - 입력 프롬프트: `문장: `
+starter: |
+  text = input("문장: ")
+solution: |
+  text = input("문장: ")
+  words = text.split()
+  letters = len(text.replace(" ", ""))
+  longest = ""
+  upper = 0
+  for w in words:
+      if len(w) > len(longest):
+          longest = w
+      if "A" <= w[0] <= "Z":
+          upper += 1
+  print(f"글자 수(공백 제외): {letters}")
+  print(f"단어 수: {len(words)}")
+  print(f"가장 긴 단어: {longest}")
+  print(f"대문자로 시작하는 단어: {upper}개")
+alt_solutions:
+  - |
+    text = input("문장: ")
+    words = text.split()
+    count = 0
+    for ch in text:
+        if ch != " ":
+            count += 1
+    lengths = [len(w) for w in words]
+    longest = words[lengths.index(max(lengths))]
+    caps = len([w for w in words if w[0] in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"])
+    print("글자 수(공백 제외):", count)
+    print("단어 수:", len(words))
+    print("가장 긴 단어:", longest)
+    print("대문자로 시작하는 단어: " + str(caps) + "개")
+mutants:
+  - name: 공백까지 글자 수에 포함
+    code: |
+      text = input("문장: ")
+      words = text.split()
+      longest = ""
+      upper = 0
+      for w in words:
+          if len(w) > len(longest):
+              longest = w
+          if "A" <= w[0] <= "Z":
+              upper += 1
+      print(f"글자 수(공백 제외): {len(text)}")
+      print(f"단어 수: {len(words)}")
+      print(f"가장 긴 단어: {longest}")
+      print(f"대문자로 시작하는 단어: {upper}개")
+  - name: 길이가 같으면 나중 단어
+    code: |
+      text = input("문장: ")
+      words = text.split()
+      letters = len(text.replace(" ", ""))
+      longest = ""
+      upper = 0
+      for w in words:
+          if len(w) >= len(longest):
+              longest = w
+          if "A" <= w[0] <= "Z":
+              upper += 1
+      print(f"글자 수(공백 제외): {letters}")
+      print(f"단어 수: {len(words)}")
+      print(f"가장 긴 단어: {longest}")
+      print(f"대문자로 시작하는 단어: {upper}개")
+tests:
+  - stdin: "I love Python! so much\n"
+    public: true
+  - stdin: "cat dog\n"
+    note: 길이가 같으면 먼저 나온 단어
+  - stdin: "  Hello   World  \n"
+    note: 공백이 여러 개
+  - stdin: "a\n"
+hints:
+  - "`split()`은 공백이 여러 개여도 단어만 잘라 줍니다."
+  - "대문자 확인은 문자열 비교로 할 수 있어요: `\"A\" <= w[0] <= \"Z\"`"
+explanation: |
+  글자 수는 공백을 지운 문자열의 길이로, 가장 긴 단어는 '지금까지의 최장 단어'를 갱신하는 패턴으로 구합니다.

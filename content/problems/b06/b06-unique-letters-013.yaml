@@ -1,0 +1,53 @@
+id: b06-unique-letters-013
+title: 서로 다른 글자 모으기
+unit: b06
+difficulty: 1
+tags: [set.create, list.sort, str.replace]
+statement: |
+  문자열을 입력받아 공백을 제외한 **서로 다른 글자**를 정렬된 리스트로 출력하고, 그 개수를 출력하시오.
+
+  - 입력 프롬프트: `문자열: `
+  - 출력 형식: `글자: ['a', 'b', 'n']`, `개수: 3`
+starter: |
+  text = input("문자열: ")
+solution: |
+  text = input("문자열: ")
+  letters = set(text.replace(" ", ""))
+  result = sorted(letters)
+  print(f"글자: {result}")
+  print(f"개수: {len(result)}")
+alt_solutions:
+  - |
+    text = input("문자열: ")
+    seen = []
+    for ch in text:
+        if ch != " " and ch not in seen:
+            seen.append(ch)
+    seen.sort()
+    print("글자:", seen)
+    print("개수:", len(seen))
+mutants:
+  - name: 공백도 포함
+    code: |
+      text = input("문자열: ")
+      result = sorted(set(text))
+      print(f"글자: {result}")
+      print(f"개수: {len(result)}")
+  - name: 중복을 제거하지 않음
+    code: |
+      text = input("문자열: ")
+      result = sorted(text.replace(" ", ""))
+      print(f"글자: {result}")
+      print(f"개수: {len(result)}")
+tests:
+  - stdin: "banana\n"
+    public: true
+  - stdin: "hello world\n"
+    note: 공백 제외
+  - stdin: "aaa\n"
+  - stdin: "Bb Aa\n"
+    note: 대문자가 소문자보다 앞
+hints:
+  - "`set(문자열)`은 글자 하나하나를 원소로 하는 집합입니다. 중복이 자동으로 사라져요."
+explanation: |
+  `set()`으로 중복을 없애고 `sorted()`로 정렬된 리스트를 만듭니다. 정렬은 문자 코드 순서라 대문자가 먼저 옵니다.

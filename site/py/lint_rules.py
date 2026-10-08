@@ -12,7 +12,8 @@ import ast
 import re
 
 _LETTER_BEFORE_COLON = re.compile(r"[A-Za-z가-힣)\]]:(?=[^\s:=/])")
-_COMMA_NO_SPACE = re.compile(r",(?=[^\s\d'\"])|(?<=\D),(?=\d)")
+# 글자 바로 뒤의 쉼표에 공백이 없을 때만 (예: 'a,b'). '1,000'이나 '(,로 구분)' 같은 쉼표 자체 설명은 제외
+_COMMA_NO_SPACE = re.compile(r"(?<=[A-Za-z가-힣)\]]),(?=[^\s'\")\]])")
 _SPACE_BEFORE_PUNCT = re.compile(r"\s[.!?](?:\s|$)")
 
 

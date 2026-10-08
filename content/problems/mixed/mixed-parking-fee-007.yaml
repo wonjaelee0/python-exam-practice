@@ -1,0 +1,87 @@
+id: mixed-parking-fee-007
+title: 주차 요금 계산
+unit: mixed
+difficulty: 3
+tags: [str.split, op.floordiv, cond.elif-order]
+statement: |
+  같은 날의 입차 시각과 출차 시각을 `HH:MM` 형식으로 입력받아 주차 시간과 요금을 출력하시오. (출차 ≥ 입차)
+
+  - 주차 시간(분) = 출차 시각 − 입차 시각
+  - 요금: 처음 30분은 무료, 그 뒤로 10분마다 500원. 10분이 안 되는 시간도 10분으로 친다(올림).
+  - 하루 최대 요금은 15000원이다.
+  - 입력 프롬프트: `입차 시각: `, `출차 시각: `
+  - 출력 형식: `주차 시간: 95분`, `요금: 3500원`
+starter: |
+  start = input("입차 시각: ")
+  end = input("출차 시각: ")
+solution: |
+  start = input("입차 시각: ")
+  end = input("출차 시각: ")
+  sh, sm = map(int, start.split(":"))
+  eh, em = map(int, end.split(":"))
+  minutes = (eh * 60 + em) - (sh * 60 + sm)
+  if minutes <= 30:
+      fee = 0
+  else:
+      units = (minutes - 30 + 9) // 10
+      fee = units * 500
+  if fee > 15000:
+      fee = 15000
+  print(f"주차 시간: {minutes}분")
+  print(f"요금: {fee}원")
+alt_solutions:
+  - |
+    s = input("입차 시각: ").split(":")
+    e = input("출차 시각: ").split(":")
+    minutes = int(e[0]) * 60 + int(e[1]) - int(s[0]) * 60 - int(s[1])
+    extra = minutes - 30
+    fee = 0
+    if extra > 0:
+        units = extra // 10
+        if extra % 10 != 0:
+            units += 1
+        fee = min(units * 500, 15000)
+    print("주차 시간: " + str(minutes) + "분")
+    print("요금: " + str(fee) + "원")
+mutants:
+  - name: 올림 없이 내림
+    code: |
+      start = input("입차 시각: ")
+      end = input("출차 시각: ")
+      sh, sm = map(int, start.split(":"))
+      eh, em = map(int, end.split(":"))
+      minutes = (eh * 60 + em) - (sh * 60 + sm)
+      fee = 0
+      if minutes > 30:
+          fee = (minutes - 30) // 10 * 500
+      if fee > 15000:
+          fee = 15000
+      print(f"주차 시간: {minutes}분")
+      print(f"요금: {fee}원")
+  - name: 최대 요금 제한 누락
+    code: |
+      start = input("입차 시각: ")
+      end = input("출차 시각: ")
+      sh, sm = map(int, start.split(":"))
+      eh, em = map(int, end.split(":"))
+      minutes = (eh * 60 + em) - (sh * 60 + sm)
+      fee = 0
+      if minutes > 30:
+          fee = (minutes - 30 + 9) // 10 * 500
+      print(f"주차 시간: {minutes}분")
+      print(f"요금: {fee}원")
+tests:
+  - stdin: "09:10\n10:45\n"
+    public: true
+  - stdin: "13:00\n13:30\n"
+    note: 정확히 30분 → 무료
+  - stdin: "13:00\n13:31\n"
+    note: 1분 초과 → 10분으로 올림
+  - stdin: "08:00\n18:00\n"
+    note: 최대 요금
+  - stdin: "23:55\n23:59\n"
+hints:
+  - "`\"09:10\".split(\":\")`은 `['09', '10']`입니다. 시와 분을 정수로 바꿔 분 단위로 계산하세요."
+  - "올림 나눗셈: `(x + 9) // 10`은 x를 10으로 나눈 몫을 올림합니다."
+explanation: |
+  시각을 '자정부터 몇 분인지'로 바꾸면 빼기만으로 경과 시간을 구할 수 있습니다. 정수 올림은 `(x + 9) // 10` 패턴을 씁니다.
