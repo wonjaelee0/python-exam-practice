@@ -11,7 +11,10 @@ const enc = new TextEncoder();
 
 export class PyRunner {
   constructor() {
-    this.tier = globalThis.crossOriginIsolated && typeof SharedArrayBuffer !== 'undefined' ? 'A' : 'B';
+    const isolated = globalThis.crossOriginIsolated && typeof SharedArrayBuffer !== 'undefined';
+    // 디버그: 주소에 ?tier=B 를 붙이면 호환 모드를 강제로 시험할 수 있다
+    const forced = new URLSearchParams(globalThis.location?.search || '').get('tier');
+    this.tier = forced === 'B' || !isolated ? 'B' : 'A';
     this.state = 'idle'; // idle | loading | ready | error
     this.python = null;
     this.error = null;

@@ -1,5 +1,17 @@
 # 🐍 elice 스타일 Python 시험 연습 사이트 — 상세 구축 계획서
 
+> ## 결정 기록 (2026-10-08, 구현 후 갱신) — 아래 본문보다 이 기록이 우선한다
+> - **저장소·사이트**: `wonjaelee0/python-exam-practice` (public) → https://wonjaelee0.github.io/python-exam-practice/
+> - **시간 제한(모의고사 타이머)은 넣지 않는다.** 우선순위는 *문제 양 + 연습*. 실제 시험의 '결과 비공개'는 설정의 **시험처럼 모드**(Submit 결과 숨김)로 대신한다. → 6.3절·9장의 시험 모드는 보류
+> - **기술 스택 변경**: 로컬에 Node.js가 없어 Vite/React 대신 **빌드 도구 없는 정적 구성**으로 바꿨다. `site/` 폴더가 그대로 배포된다.
+>   Preact + htm(ESM), Monaco 0.57(AMD `min/vs`), xterm 6(ESM), marked, DOMPurify, coi-serviceworker — 모두 `tools/assets.json`에 버전·SHA-256 고정, CI가 내려받아 same-origin으로 서빙
+> - **Pyodide 314.0.7 (Python 3.14.2)** 고정, 모듈 워커(`site/js/runtime/py-worker.js`)
+> - **폴더 구조 변경**: 채점 의미론·검사기는 `site/py/`(CI의 Python 3.6과 브라우저가 공유), 화면은 `site/js/`, 도구는 `tools/` → 7.1절의 `web/`, `tools/runner/` 구조를 대체
+> - **검증 완료**: Pages 실서버에서 `crossOriginIsolated === true`(계층 A), `?tier=B`로 계층 B(재실행 입력·워커 재시작) 확인,
+>   CI(python:3.6.15)와 로컬(3.12)의 기대출력 20문제 모두 일치(`random.seed(1)` 포함), 브라우저(3.14)에서 3.6 기대출력으로 PASS
+> - **캐시 대응**: 실행 엔진 파일(워커·`site/py/*.py`)은 내용 해시(`manifest.runtime.assetVersion`)를 주소에 붙인다. 문제 데이터는 단원별 해시 파일명
+> - **현재 문제 수**: 20 (b02~b06 각 4) → 5.2절 목표(코딩 ≈315 + 퀴즈 ≈60)까지 배치로 추가
+
 > 작성 2026-10-08(목) · 중간고사 **2026-10-20(화, D-12)** · 기말고사 2026-12-08(화)
 > 과목: 2026-2 컴퓨팅 기초: 처음 만나는 컴퓨팅 (011) — eTL `코딩수업` → elice testroom
 > 근거: 강의자료 `midterms/b_01~b_06.ipynb` 전수 분석 + elice **6주차 실습 testroom 직접 조작**(2026-10-08) + GitHub Pages 공식 문서·실제 응답 헤더 확인
