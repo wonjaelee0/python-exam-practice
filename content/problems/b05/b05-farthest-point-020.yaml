@@ -1,0 +1,81 @@
+id: b05-farthest-point-020
+title: 원점에서 가장 먼 점 (튜플 리스트)
+unit: b05
+difficulty: 3
+tags: [tuple.create, list.2d, loop.max-min]
+statement: |
+  점의 개수 n을 입력받고, 이어서 n줄에 걸쳐 점의 좌표 `x y`(정수)를 입력받아 `(x, y)` 튜플의 리스트로 저장하시오.
+  그다음 원점 (0, 0)에서 가장 먼 점과 가장 가까운 점을 출력하시오.
+
+  - 거리는 `x * x + y * y`로 비교한다 (제곱근을 구할 필요 없음).
+  - 거리가 같으면 먼저 입력된 점을 고른다.
+  - 입력 프롬프트: `점의 개수: `, 각 점은 `점: `
+  - 출력 형식: `점들: [(1, 2), (-3, 4)]`, `가장 먼 점: (-3, 4)`, `가장 가까운 점: (1, 2)`
+starter: |
+  n = int(input("점의 개수: "))
+  points = []
+solution: |
+  n = int(input("점의 개수: "))
+  points = []
+  for i in range(n):
+      x, y = map(int, input("점: ").split())
+      points.append((x, y))
+  far = points[0]
+  near = points[0]
+  for p in points:
+      d = p[0] * p[0] + p[1] * p[1]
+      if d > far[0] * far[0] + far[1] * far[1]:
+          far = p
+      if d < near[0] * near[0] + near[1] * near[1]:
+          near = p
+  print(f"점들: {points}")
+  print(f"가장 먼 점: {far}")
+  print(f"가장 가까운 점: {near}")
+alt_solutions:
+  - |
+    n = int(input("점의 개수: "))
+    points = [tuple(map(int, input("점: ").split())) for _ in range(n)]
+    dist = [x * x + y * y for x, y in points]
+    print("점들:", points)
+    print("가장 먼 점:", points[dist.index(max(dist))])
+    print("가장 가까운 점:", points[dist.index(min(dist))])
+mutants:
+  - name: x 좌표만으로 비교
+    code: |
+      n = int(input("점의 개수: "))
+      points = []
+      for i in range(n):
+          x, y = map(int, input("점: ").split())
+          points.append((x, y))
+      far = points[0]
+      near = points[0]
+      for p in points:
+          if p[0] > far[0]:
+              far = p
+          if p[0] < near[0]:
+              near = p
+      print(f"점들: {points}")
+      print(f"가장 먼 점: {far}")
+      print(f"가장 가까운 점: {near}")
+  - name: 리스트로 저장 (출력 모양이 다름)
+    code: |
+      n = int(input("점의 개수: "))
+      points = []
+      for i in range(n):
+          points.append(list(map(int, input("점: ").split())))
+      dist = [p[0] * p[0] + p[1] * p[1] for p in points]
+      print(f"점들: {points}")
+      print(f"가장 먼 점: {points[dist.index(max(dist))]}")
+      print(f"가장 가까운 점: {points[dist.index(min(dist))]}")
+tests:
+  - stdin: "2\n1 2\n-3 4\n"
+    public: true
+  - stdin: "1\n0 0\n"
+  - stdin: "3\n3 4\n-5 0\n0 -1\n"
+    note: 거리가 같은 점 — 먼저 입력된 (3, 4)
+  - stdin: "4\n-10 1\n2 2\n1 -1\n7 7\n"
+hints:
+  - "`(x, y)`처럼 괄호로 묶으면 튜플입니다. 리스트에 `append((x, y))`로 넣으세요."
+  - "제곱근은 크기 순서를 바꾸지 않으므로 `x*x + y*y`만 비교해도 됩니다."
+explanation: |
+  튜플은 출력할 때 `(1, 2)`처럼 괄호로 나옵니다. 최댓값·최솟값 찾기는 첫 원소로 시작해 하나씩 비교하는 패턴입니다.

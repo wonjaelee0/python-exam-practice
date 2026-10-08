@@ -1,0 +1,108 @@
+id: b05-cart-total-019
+title: "'종료'까지 장바구니 담고 계산하기"
+unit: b05
+difficulty: 3
+tags: [list.2d, loop.while-sentinel, io.split-map]
+statement: |
+  장바구니에 담을 상품을 `상품명 가격 수량` 형식으로 한 줄에 하나씩 입력받다가 `종료`가 입력되면 계산하시오.
+
+  - 입력 프롬프트: `상품: `
+  - 담은 순서대로 상품마다 `상품명: 소계원` 출력 (소계 = 가격 × 수량)
+  - 다음 줄에 `총액: 12000원`
+  - 마지막 줄에 소계가 가장 큰 상품 `가장 비싼 항목: 상품명` (같으면 먼저 담은 상품)
+  - 아무것도 담지 않고 `종료`하면 `장바구니가 비었습니다` 한 줄만 출력한다.
+starter: |
+  cart = []
+solution: |
+  cart = []
+  while True:
+      line = input("상품: ")
+      if line == "종료":
+          break
+      name, price, qty = line.split()
+      cart.append([name, int(price) * int(qty)])
+  if len(cart) == 0:
+      print("장바구니가 비었습니다")
+  else:
+      total = 0
+      best = cart[0]
+      for item in cart:
+          print(f"{item[0]}: {item[1]}원")
+          total += item[1]
+          if item[1] > best[1]:
+              best = item
+      print(f"총액: {total}원")
+      print(f"가장 비싼 항목: {best[0]}")
+alt_solutions:
+  - |
+    names = []
+    subtotals = []
+    line = input("상품: ")
+    while line != "종료":
+        parts = line.split()
+        names.append(parts[0])
+        subtotals.append(int(parts[1]) * int(parts[2]))
+        line = input("상품: ")
+    if not names:
+        print("장바구니가 비었습니다")
+    else:
+        for i in range(len(names)):
+            print(names[i] + ": " + str(subtotals[i]) + "원")
+        print("총액: " + str(sum(subtotals)) + "원")
+        print("가장 비싼 항목: " + names[subtotals.index(max(subtotals))])
+mutants:
+  - name: 수량을 곱하지 않음
+    code: |
+      cart = []
+      while True:
+          line = input("상품: ")
+          if line == "종료":
+              break
+          name, price, qty = line.split()
+          cart.append([name, int(price)])
+      if len(cart) == 0:
+          print("장바구니가 비었습니다")
+      else:
+          total = 0
+          best = cart[0]
+          for item in cart:
+              print(f"{item[0]}: {item[1]}원")
+              total += item[1]
+              if item[1] > best[1]:
+                  best = item
+          print(f"총액: {total}원")
+          print(f"가장 비싼 항목: {best[0]}")
+  - name: 동점이면 나중 상품 (>=)
+    code: |
+      cart = []
+      while True:
+          line = input("상품: ")
+          if line == "종료":
+              break
+          name, price, qty = line.split()
+          cart.append([name, int(price) * int(qty)])
+      if len(cart) == 0:
+          print("장바구니가 비었습니다")
+      else:
+          total = 0
+          best = cart[0]
+          for item in cart:
+              print(f"{item[0]}: {item[1]}원")
+              total += item[1]
+              if item[1] >= best[1]:
+                  best = item
+          print(f"총액: {total}원")
+          print(f"가장 비싼 항목: {best[0]}")
+tests:
+  - stdin: "사과 1000 3\n우유 2500 2\n종료\n"
+    public: true
+  - stdin: "종료\n"
+  - stdin: "펜 500 4\n공책 1000 2\n종료\n"
+    note: 소계가 같으면 먼저 담은 상품
+  - stdin: "노트북 1200000 1\n종료\n"
+  - stdin: "a 1 1\nb 2 2\nc 3 1\n종료\n"
+hints:
+  - "`name, price, qty = line.split()`처럼 언패킹하면 세 값을 한 번에 받을 수 있습니다. 숫자는 `int()`로 바꾸세요."
+  - "최댓값 항목은 `>`로 비교해야 같은 값일 때 먼저 담은 상품이 남습니다."
+explanation: |
+  `[상품명, 소계]`를 원소로 갖는 2차원 리스트를 만들면 출력·합계·최댓값 찾기를 한 번의 반복으로 처리할 수 있습니다.

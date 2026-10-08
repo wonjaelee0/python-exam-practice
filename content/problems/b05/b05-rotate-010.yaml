@@ -1,0 +1,57 @@
+id: b05-rotate-010
+title: 리스트를 왼쪽으로 k칸 회전
+unit: b05
+difficulty: 2
+tags: [list.slice, op.mod]
+statement: |
+  공백으로 구분된 정수들과 정수 k(0 이상)를 입력받아, 리스트를 왼쪽으로 k칸 회전한 결과를 출력하시오.
+  k가 리스트 길이보다 크면 길이로 나눈 나머지만큼 회전한다. 슬라이싱을 사용해 보자.
+
+  - 예: `[1, 2, 3, 4, 5]`를 왼쪽으로 2칸 → `[3, 4, 5, 1, 2]`
+  - 입력 프롬프트: `정수들: `, `k: `
+  - 출력 형식: `결과: [3, 4, 5, 1, 2]`
+starter: |
+  nums = list(map(int, input("정수들: ").split()))
+  k = int(input("k: "))
+solution: |
+  nums = list(map(int, input("정수들: ").split()))
+  k = int(input("k: "))
+  k = k % len(nums)
+  print(f"결과: {nums[k:] + nums[:k]}")
+alt_solutions:
+  - |
+    nums = list(map(int, input("정수들: ").split()))
+    k = int(input("k: "))
+    for _ in range(k % len(nums)):
+        first = nums.pop(0)
+        nums.append(first)
+    print("결과:", nums)
+mutants:
+  - name: 오른쪽으로 회전
+    code: |
+      nums = list(map(int, input("정수들: ").split()))
+      k = int(input("k: "))
+      k = k % len(nums)
+      print(f"결과: {nums[-k:] + nums[:-k]}")
+  - name: k를 길이로 나누지 않음
+    code: |
+      nums = list(map(int, input("정수들: ").split()))
+      k = int(input("k: "))
+      print(f"결과: {nums[k:] + nums[:k]}")
+tests:
+  - stdin: "1 2 3 4 5\n2\n"
+    public: true
+  - stdin: "1 2 3\n0\n"
+    note: 회전 없음
+  - stdin: "1 2 3\n3\n"
+    note: 한 바퀴
+  - stdin: "1 2 3 4\n6\n"
+    note: 길이보다 큰 k
+  - stdin: "9\n5\n"
+  - stdin: "1 2 3 4 5\n1\n"
+    note: 왼쪽으로 한 칸
+hints:
+  - "왼쪽으로 k칸 회전 = 뒷부분 `nums[k:]` + 앞부분 `nums[:k]`"
+  - "`k % len(nums)`로 k를 리스트 길이보다 작게 만듭니다."
+explanation: |
+  슬라이싱은 범위를 벗어나도 오류가 나지 않고 빈 리스트가 됩니다. 그래서 k를 길이로 나눈 나머지로 줄여야 정확합니다.

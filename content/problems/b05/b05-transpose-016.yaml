@@ -1,0 +1,59 @@
+id: b05-transpose-016
+title: 행렬 뒤집기 (전치)
+unit: b05
+difficulty: 3
+tags: [list.2d, loop.nested, str.join]
+statement: |
+  행 수 r을 입력받고, 이어서 r줄에 걸쳐 행렬의 각 행(공백으로 구분된 정수, 모든 행의 길이가 같음)을 입력받아
+  행과 열을 바꾼 **전치 행렬**을 출력하시오.
+
+  - 입력 프롬프트: `행 수: `, 각 행은 `행: `
+  - 출력: 전치 행렬의 각 행을, 숫자 사이에 공백 하나를 넣어 한 줄씩 출력한다. (줄 끝 공백 없음)
+
+  예) 입력 행렬이 `1 2 3` / `4 5 6`이면 출력은 `1 4` / `2 5` / `3 6`
+starter: |
+  r = int(input("행 수: "))
+  matrix = []
+solution: |
+  r = int(input("행 수: "))
+  matrix = []
+  for i in range(r):
+      matrix.append(input("행: ").split())
+  cols = len(matrix[0])
+  for j in range(cols):
+      line = []
+      for i in range(r):
+          line.append(matrix[i][j])
+      print(" ".join(line))
+alt_solutions:
+  - |
+    r = int(input("행 수: "))
+    m = [list(map(int, input("행: ").split())) for _ in range(r)]
+    for col in zip(*m):
+        print(" ".join(str(x) for x in col))
+mutants:
+  - name: 원래 행렬을 그대로 출력
+    code: |
+      r = int(input("행 수: "))
+      matrix = [input("행: ").split() for _ in range(r)]
+      for row in matrix:
+          print(" ".join(row))
+  - name: 리스트 모양으로 출력
+    code: |
+      r = int(input("행 수: "))
+      matrix = [input("행: ").split() for _ in range(r)]
+      for j in range(len(matrix[0])):
+          print([int(matrix[i][j]) for i in range(r)])
+tests:
+  - stdin: "2\n1 2 3\n4 5 6\n"
+    public: true
+  - stdin: "1\n7 8 9\n"
+    note: 한 행 → 세 줄
+  - stdin: "3\n1\n2\n3\n"
+    note: 한 열 → 한 줄
+  - stdin: "2\n-1 0\n10 20\n"
+hints:
+  - "전치 행렬의 j번째 행은 원래 행렬의 j번째 열입니다: `matrix[0][j], matrix[1][j], …`"
+  - "`\" \".join(문자열 리스트)`로 공백을 넣어 이으면 줄 끝 공백이 생기지 않습니다."
+explanation: |
+  바깥 반복을 열(j), 안쪽 반복을 행(i)으로 바꾸면 열 방향으로 읽을 수 있습니다.

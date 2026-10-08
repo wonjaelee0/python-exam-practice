@@ -1,0 +1,48 @@
+id: b04-countdown-while-007
+title: while로 카운트다운
+unit: b04
+difficulty: 1
+tags: [loop.while, loop.counter]
+statement: |
+  1 이상의 정수 n을 입력받아 n부터 1까지 한 줄에 하나씩 출력한 뒤, 마지막 줄에 `발사!`를 출력하시오. `while` 반복문을 사용한다.
+
+  - 입력 프롬프트: `시작 숫자: `
+starter: |
+  n = int(input("시작 숫자: "))
+solution: |
+  n = int(input("시작 숫자: "))
+  while n >= 1:
+      print(n)
+      n -= 1
+  print("발사!")
+alt_solutions:
+  - |
+    n = int(input("시작 숫자: "))
+    for i in range(n, 0, -1):
+        print(i)
+    print("발사!")
+mutants:
+  - name: 0까지 출력
+    code: |
+      n = int(input("시작 숫자: "))
+      while n >= 0:
+          print(n)
+          n -= 1
+      print("발사!")
+  - name: 1을 빠뜨림
+    code: |
+      n = int(input("시작 숫자: "))
+      while n > 1:
+          print(n)
+          n -= 1
+      print("발사!")
+tests:
+  - stdin: "5\n"
+    public: true
+  - stdin: "1\n"
+  - stdin: "3\n"
+  - stdin: "10\n"
+hints:
+  - "while문은 `초기값 → 조건 → 변화식`이 필요합니다. `n -= 1`을 빼먹으면 무한 반복이에요."
+explanation: |
+  `while 조건:` 안에서 조건에 쓰인 변수를 바꿔야 언젠가 반복이 끝납니다. `range(n, 0, -1)`로도 같은 결과를 얻을 수 있습니다.

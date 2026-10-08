@@ -1,0 +1,65 @@
+id: b04-skip-multiples-011
+title: 3의 배수를 건너뛰는 합 (continue)
+unit: b04
+difficulty: 2
+tags: [loop.continue, loop.accumulate]
+statement: |
+  1 이상의 정수 n을 입력받아 1부터 n까지의 수 중 **3의 배수를 건너뛰고** 나머지 수의 개수와 합을 출력하시오. `continue`를 사용해 보자.
+
+  - 입력 프롬프트: `n: `
+  - 출력 형식: `개수: 7`, `합: 37`
+starter: |
+  n = int(input("n: "))
+solution: |
+  n = int(input("n: "))
+  count = 0
+  total = 0
+  for i in range(1, n + 1):
+      if i % 3 == 0:
+          continue
+      count += 1
+      total += i
+  print(f"개수: {count}")
+  print(f"합: {total}")
+alt_solutions:
+  - |
+    n = int(input("n: "))
+    nums = [i for i in range(1, n + 1) if i % 3 != 0]
+    print("개수:", len(nums))
+    print("합:", sum(nums))
+mutants:
+  - name: continue 대신 break
+    code: |
+      n = int(input("n: "))
+      count = 0
+      total = 0
+      for i in range(1, n + 1):
+          if i % 3 == 0:
+              break
+          count += 1
+          total += i
+      print(f"개수: {count}")
+      print(f"합: {total}")
+  - name: 3의 배수만 더함
+    code: |
+      n = int(input("n: "))
+      count = 0
+      total = 0
+      for i in range(1, n + 1):
+          if i % 3 != 0:
+              continue
+          count += 1
+          total += i
+      print(f"개수: {count}")
+      print(f"합: {total}")
+tests:
+  - stdin: "10\n"
+    public: true
+  - stdin: "1\n"
+  - stdin: "3\n"
+  - stdin: "30\n"
+  - stdin: "2\n"
+hints:
+  - "`continue`는 반복문의 나머지 부분을 건너뛰고 다음 반복으로 넘어갑니다. `break`는 반복문을 아예 끝내요."
+explanation: |
+  `continue`를 만나면 그 아래 문장(`count += 1`, `total += i`)을 실행하지 않고 다음 i로 넘어갑니다.

@@ -1,6 +1,10 @@
 export const VERDICT = {
   PASS: { label: '통과', tone: 'ok' },
-  TRAILING_WS: { label: '줄 끝 공백이 다름', tone: 'bad', tip: '줄 끝에 공백이 더 있거나 빠졌습니다. elice에서도 오답 처리될 수 있어요.' },
+  TRAILING_WS: {
+    label: '줄 끝 공백이 다름',
+    tone: 'bad',
+    tip: '줄 끝에 공백이 더 있거나 빠졌습니다. print(x, end=" ")로 이어 출력하면 마지막에 공백이 남아요. elice에서도 오답 처리될 수 있습니다.',
+  },
   WHITESPACE: { label: '공백·줄바꿈이 다름', tone: 'bad', tip: '글자는 같지만 공백이나 줄바꿈 위치가 다릅니다. print의 sep/end, ": " 공백을 확인하세요.' },
   CASE: { label: '대소문자가 다름', tone: 'bad', tip: '글자는 같지만 대문자/소문자가 다릅니다.' },
   WRONG: { label: '출력이 다름', tone: 'bad' },

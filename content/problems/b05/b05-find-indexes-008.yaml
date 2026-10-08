@@ -1,0 +1,67 @@
+id: b05-find-indexes-008
+title: 찾는 값의 모든 위치
+unit: b05
+difficulty: 2
+tags: [list.index, loop.range-len, list.append]
+statement: |
+  공백으로 구분된 단어들과 찾을 단어를 입력받아, 찾을 단어가 나오는 **모든 인덱스**를 리스트로 출력하시오.
+
+  - 입력 프롬프트: `단어들: `, `찾을 단어: `
+  - 출력 형식: `위치: [1, 4]`
+  - 한 번도 없으면 `찾는 단어가 없습니다`를 출력한다.
+starter: |
+  words = input("단어들: ").split()
+  target = input("찾을 단어: ")
+solution: |
+  words = input("단어들: ").split()
+  target = input("찾을 단어: ")
+  positions = []
+  for i in range(len(words)):
+      if words[i] == target:
+          positions.append(i)
+  if len(positions) == 0:
+      print("찾는 단어가 없습니다")
+  else:
+      print(f"위치: {positions}")
+alt_solutions:
+  - |
+    words = input("단어들: ").split()
+    target = input("찾을 단어: ")
+    positions = [i for i, w in enumerate(words) if w == target]
+    if positions:
+        print("위치:", positions)
+    else:
+        print("찾는 단어가 없습니다")
+mutants:
+  - name: index()로 첫 위치만
+    code: |
+      words = input("단어들: ").split()
+      target = input("찾을 단어: ")
+      if target in words:
+          print(f"위치: {[words.index(target)]}")
+      else:
+          print("찾는 단어가 없습니다")
+  - name: 1부터 센 위치
+    code: |
+      words = input("단어들: ").split()
+      target = input("찾을 단어: ")
+      positions = []
+      for i in range(len(words)):
+          if words[i] == target:
+              positions.append(i + 1)
+      if len(positions) == 0:
+          print("찾는 단어가 없습니다")
+      else:
+          print(f"위치: {positions}")
+tests:
+  - stdin: "a b c a b a\na\n"
+    public: true
+  - stdin: "사과 배 감\n귤\n"
+    note: 없는 단어
+  - stdin: "x\nx\n"
+  - stdin: "cat dog cat dog\ndog\n"
+hints:
+  - "`for i in range(len(words)):`로 인덱스와 원소(`words[i]`)를 함께 볼 수 있습니다."
+  - "`index()`는 첫 번째 위치 하나만 알려 줍니다."
+explanation: |
+  인덱스는 0부터 시작합니다. 모든 위치가 필요하면 `range(len(...))`로 직접 확인하며 모읍니다.

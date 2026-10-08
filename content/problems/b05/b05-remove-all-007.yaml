@@ -1,0 +1,59 @@
+id: b05-remove-all-007
+title: 특정 값 모두 지우기
+unit: b05
+difficulty: 2
+tags: [list.methods, list.count, loop.while]
+statement: |
+  공백으로 구분된 정수들과 지울 값 x를 입력받아, 리스트에서 x를 **모두** 지운 결과를 출력하시오.
+
+  - 입력 프롬프트: `정수들: `, `지울 값: `
+  - 출력 형식: `지운 개수: 2`, `결과: [1, 3, 4]`
+starter: |
+  nums = list(map(int, input("정수들: ").split()))
+  x = int(input("지울 값: "))
+solution: |
+  nums = list(map(int, input("정수들: ").split()))
+  x = int(input("지울 값: "))
+  removed = nums.count(x)
+  while x in nums:
+      nums.remove(x)
+  print(f"지운 개수: {removed}")
+  print(f"결과: {nums}")
+alt_solutions:
+  - |
+    nums = list(map(int, input("정수들: ").split()))
+    x = int(input("지울 값: "))
+    result = [n for n in nums if n != x]
+    print("지운 개수:", len(nums) - len(result))
+    print("결과:", result)
+mutants:
+  - name: remove를 한 번만
+    code: |
+      nums = list(map(int, input("정수들: ").split()))
+      x = int(input("지울 값: "))
+      removed = nums.count(x)
+      if x in nums:
+          nums.remove(x)
+      print(f"지운 개수: {removed}")
+      print(f"결과: {nums}")
+  - name: 지운 뒤에 개수를 셈
+    code: |
+      nums = list(map(int, input("정수들: ").split()))
+      x = int(input("지울 값: "))
+      while x in nums:
+          nums.remove(x)
+      print(f"지운 개수: {nums.count(x)}")
+      print(f"결과: {nums}")
+tests:
+  - stdin: "1 2 3 2 4\n2\n"
+    public: true
+  - stdin: "5 5 5\n5\n"
+    note: 전부 지워져 빈 리스트
+  - stdin: "1 2 3\n9\n"
+    note: 없는 값
+  - stdin: "7 1 7 1 7\n7\n"
+hints:
+  - "`remove(x)`는 처음 나온 x 하나만 지웁니다. 모두 지우려면 `while x in nums:`로 반복하세요."
+  - "지운 개수는 지우기 **전에** `count(x)`로 세어 둡니다."
+explanation: |
+  `remove`는 하나만 지우므로 반복이 필요합니다. 컴프리헨션으로 x가 아닌 것만 남기는 방법도 있습니다.

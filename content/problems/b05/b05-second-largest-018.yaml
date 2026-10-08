@@ -1,0 +1,67 @@
+id: b05-second-largest-018
+title: 두 번째로 큰 수
+unit: b05
+difficulty: 3
+tags: [list.sort, list.dedup, list.index]
+statement: |
+  공백으로 구분된 정수들을 입력받아, **서로 다른 값들 중** 두 번째로 큰 수를 출력하시오.
+
+  - 입력 프롬프트: `정수들: `
+  - 출력 형식: `두 번째로 큰 수: 7`
+  - 서로 다른 값이 하나뿐이면 `두 번째로 큰 수가 없습니다`를 출력한다.
+starter: |
+  nums = list(map(int, input("정수들: ").split()))
+solution: |
+  nums = list(map(int, input("정수들: ").split()))
+  unique = []
+  for n in nums:
+      if n not in unique:
+          unique.append(n)
+  unique.sort(reverse=True)
+  if len(unique) < 2:
+      print("두 번째로 큰 수가 없습니다")
+  else:
+      print(f"두 번째로 큰 수: {unique[1]}")
+alt_solutions:
+  - |
+    nums = list(map(int, input("정수들: ").split()))
+    first = max(nums)
+    rest = [n for n in nums if n != first]
+    if len(rest) == 0:
+        print("두 번째로 큰 수가 없습니다")
+    else:
+        print("두 번째로 큰 수:", max(rest))
+mutants:
+  - name: 중복을 없애지 않고 정렬
+    code: |
+      nums = list(map(int, input("정수들: ").split()))
+      nums.sort(reverse=True)
+      if len(nums) < 2:
+          print("두 번째로 큰 수가 없습니다")
+      else:
+          print(f"두 번째로 큰 수: {nums[1]}")
+  - name: 오름차순으로 정렬해 두 번째
+    code: |
+      nums = list(map(int, input("정수들: ").split()))
+      unique = []
+      for n in nums:
+          if n not in unique:
+              unique.append(n)
+      unique.sort()
+      if len(unique) < 2:
+          print("두 번째로 큰 수가 없습니다")
+      else:
+          print(f"두 번째로 큰 수: {unique[1]}")
+tests:
+  - stdin: "3 9 7 9 1\n"
+    public: true
+  - stdin: "5 5 5\n"
+    note: 서로 다른 값이 하나
+  - stdin: "8\n"
+  - stdin: "-1 -5 -3\n"
+  - stdin: "4 10\n"
+hints:
+  - "가장 큰 수가 여러 번 나오면 정렬만 해서는 두 번째도 같은 수가 됩니다. 먼저 중복을 없애세요."
+  - "`sort(reverse=True)`로 내림차순 정렬하면 인덱스 1이 두 번째로 큰 수입니다."
+explanation: |
+  '서로 다른 값 중'이라는 조건이 핵심입니다. 중복 제거 → 내림차순 정렬 → 길이 확인 → `[1]` 순서로 풉니다.

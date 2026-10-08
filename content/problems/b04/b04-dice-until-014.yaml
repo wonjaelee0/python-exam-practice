@@ -1,0 +1,77 @@
+id: b04-dice-until-014
+title: 목표 숫자가 나올 때까지 주사위 굴리기
+unit: b04
+difficulty: 2
+tags: [loop.while, random.seed]
+statement: |
+  목표 숫자(1~6)를 입력받아, 그 숫자가 나올 때까지 주사위를 굴리시오.
+
+  - 프로그램 맨 앞에서 `random.seed(1)`로 시드를 고정하고, 주사위는 `random.randint(1, 6)`으로 굴린다.
+  - 굴릴 때마다 `1번째: 2` 형식으로 결과를 출력한다.
+  - 목표 숫자가 나오면 반복을 끝내고 `굴린 횟수: 3`을 출력한다.
+  - 입력 프롬프트: `목표 숫자: `
+starter: |
+  import random
+  random.seed(1)
+solution: |
+  import random
+  random.seed(1)
+  target = int(input("목표 숫자: "))
+  count = 0
+  dice = 0
+  while dice != target:
+      dice = random.randint(1, 6)
+      count += 1
+      print(f"{count}번째: {dice}")
+  print(f"굴린 횟수: {count}")
+alt_solutions:
+  - |
+    import random
+    random.seed(1)
+    target = int(input("목표 숫자: "))
+    count = 0
+    while True:
+        count += 1
+        d = random.randint(1, 6)
+        print(str(count) + "번째:", d)
+        if d == target:
+            break
+    print("굴린 횟수:", count)
+mutants:
+  - name: 목표가 나온 결과를 출력하지 않음
+    code: |
+      import random
+      random.seed(1)
+      target = int(input("목표 숫자: "))
+      count = 0
+      while True:
+          dice = random.randint(1, 6)
+          count += 1
+          if dice == target:
+              break
+          print(f"{count}번째: {dice}")
+      print(f"굴린 횟수: {count}")
+  - name: 0부터 6까지 굴림
+    code: |
+      import random
+      random.seed(1)
+      target = int(input("목표 숫자: "))
+      count = 0
+      dice = -1
+      while dice != target:
+          dice = random.randint(0, 6)
+          count += 1
+          print(f"{count}번째: {dice}")
+      print(f"굴린 횟수: {count}")
+tests:
+  - stdin: "3\n"
+    public: true
+  - stdin: "2\n"
+  - stdin: "5\n"
+  - stdin: "1\n"
+  - stdin: "6\n"
+hints:
+  - "몇 번 굴릴지 모르므로 `while`을 씁니다. 조건은 '아직 목표가 안 나왔다'입니다."
+  - "처음에 `dice = 0`처럼 목표와 다른 값을 넣어 두면 첫 반복이 실행됩니다."
+explanation: |
+  강의의 '3이 나올 때까지 주사위 던지기'와 같은 구조입니다. 시드를 고정했으므로 결과가 항상 같습니다.

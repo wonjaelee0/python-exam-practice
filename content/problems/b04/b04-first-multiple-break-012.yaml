@@ -1,0 +1,76 @@
+id: b04-first-multiple-break-012
+title: 처음으로 조건을 만족하는 수 (break)
+unit: b04
+difficulty: 2
+tags: [loop.while-true, loop.break]
+statement: |
+  정수 start와 k(k ≥ 1)를 입력받아, start부터 1씩 늘려 가며 **k의 배수이면서 짝수인 첫 번째 수**를 찾아 출력하시오.
+  찾을 때까지 확인한 수의 개수도 출력한다 (찾은 수 포함).
+
+  - 입력 프롬프트: `시작 수: `, `k: `
+  - 출력 형식: `찾은 수: 14`, `확인한 개수: 5`
+starter: |
+  start = int(input("시작 수: "))
+  k = int(input("k: "))
+solution: |
+  start = int(input("시작 수: "))
+  k = int(input("k: "))
+  n = start
+  checked = 0
+  while True:
+      checked += 1
+      if n % k == 0 and n % 2 == 0:
+          break
+      n += 1
+  print(f"찾은 수: {n}")
+  print(f"확인한 개수: {checked}")
+alt_solutions:
+  - |
+    start = int(input("시작 수: "))
+    k = int(input("k: "))
+    for n in range(start, start + 2 * k + 2):
+        if n % k == 0 and n % 2 == 0:
+            print("찾은 수:", n)
+            print("확인한 개수:", n - start + 1)
+            break
+mutants:
+  - name: 짝수 조건을 or로 연결
+    code: |
+      start = int(input("시작 수: "))
+      k = int(input("k: "))
+      n = start
+      checked = 0
+      while True:
+          checked += 1
+          if n % k == 0 or n % 2 == 0:
+              break
+          n += 1
+      print(f"찾은 수: {n}")
+      print(f"확인한 개수: {checked}")
+  - name: 개수를 break 뒤에서 셈
+    code: |
+      start = int(input("시작 수: "))
+      k = int(input("k: "))
+      n = start
+      checked = 0
+      while True:
+          if n % k == 0 and n % 2 == 0:
+              break
+          n += 1
+          checked += 1
+      print(f"찾은 수: {n}")
+      print(f"확인한 개수: {checked}")
+tests:
+  - stdin: "10\n7\n"
+    public: true
+  - stdin: "6\n3\n"
+    note: 시작 수가 바로 답
+  - stdin: "1\n5\n"
+  - stdin: "-5\n4\n"
+    note: 음수에서 시작
+  - stdin: "100\n1\n"
+hints:
+  - "몇 번 반복할지 모르므로 `while True:`로 돌다가 찾으면 `break` 합니다."
+  - "개수는 검사할 때마다(조건 확인 전에) 1씩 늘리면 찾은 수까지 포함됩니다."
+explanation: |
+  `break`는 가장 가까운 반복문을 즉시 끝냅니다. 그래서 `break` 뒤의 `n += 1`은 실행되지 않고 찾은 수가 그대로 남습니다.

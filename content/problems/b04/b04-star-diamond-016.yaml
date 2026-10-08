@@ -1,0 +1,64 @@
+id: b04-star-diamond-016
+title: 별 다이아몬드
+unit: b04
+difficulty: 4
+tags: [loop.nested, str.repeat, loop.range-reverse]
+statement: |
+  1 이상의 정수 n을 입력받아 위쪽 n줄, 아래쪽 n-1줄로 이루어진 별 다이아몬드를 출력하시오.
+
+  - 위쪽 i번째 줄(i = 1, …, n): 공백 `n - i`개 + 별 `2 × i - 1`개
+  - 아래쪽은 위쪽의 n-1번째 줄부터 1번째 줄까지를 거꾸로 출력한다.
+  - 줄 끝에는 공백을 출력하지 않는다.
+  - 입력 프롬프트: `크기: `
+
+  n이 3일 때 프롬프트 다음에 출력되는 다이아몬드:
+  ```
+    *
+   ***
+  *****
+   ***
+    *
+  ```
+starter: |
+  n = int(input("크기: "))
+solution: |
+  n = int(input("크기: "))
+  for i in range(1, n + 1):
+      print(" " * (n - i) + "*" * (2 * i - 1))
+  for i in range(n - 1, 0, -1):
+      print(" " * (n - i) + "*" * (2 * i - 1))
+alt_solutions:
+  - |
+    n = int(input("크기: "))
+    rows = []
+    for i in range(1, n + 1):
+        rows.append(" " * (n - i) + "*" * (2 * i - 1))
+    for row in rows + rows[-2::-1]:
+        print(row)
+mutants:
+  - name: 가운데 줄이 두 번
+    code: |
+      n = int(input("크기: "))
+      for i in range(1, n + 1):
+          print(" " * (n - i) + "*" * (2 * i - 1))
+      for i in range(n, 0, -1):
+          print(" " * (n - i) + "*" * (2 * i - 1))
+  - name: 아래쪽 마지막 줄 누락
+    code: |
+      n = int(input("크기: "))
+      for i in range(1, n + 1):
+          print(" " * (n - i) + "*" * (2 * i - 1))
+      for i in range(n - 1, 1, -1):
+          print(" " * (n - i) + "*" * (2 * i - 1))
+tests:
+  - stdin: "3\n"
+    public: true
+  - stdin: "1\n"
+    note: 별 하나
+  - stdin: "2\n"
+  - stdin: "5\n"
+hints:
+  - "위쪽은 피라미드와 같습니다. 아래쪽은 `range(n - 1, 0, -1)`로 i를 거꾸로 돌리면 됩니다."
+  - "`range(시작, 끝, -1)`은 끝값을 포함하지 않으므로 1까지 내려가려면 끝을 0으로 둡니다."
+explanation: |
+  감소하는 range(`step`이 음수)를 쓰면 같은 식으로 아래쪽을 만들 수 있습니다. 가운데(n번째) 줄이 두 번 나오지 않도록 주의하세요.

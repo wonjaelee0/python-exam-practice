@@ -1,0 +1,90 @@
+id: b04-updown-game-013
+title: 업다운 숫자 맞히기 (random.seed(1))
+unit: b04
+difficulty: 3
+tags: [loop.while-true, random.seed, cond.elif-order]
+statement: |
+  컴퓨터가 정한 1~100 사이의 숫자를 맞히는 게임을 만드시오.
+
+  - 프로그램 맨 앞에서 `random.seed(1)`로 시드를 고정하고, `random.randint(1, 100)`으로 정답을 **한 번** 정한다.
+  - 정답을 맞힐 때까지 숫자를 입력받는다. 입력 프롬프트: `숫자: `
+  - 입력한 수가 정답보다 작으면 `UP`, 크면 `DOWN`을 출력한다.
+  - 맞히면 `정답! 3번 만에 맞혔습니다.` 형식으로 출력하고 끝낸다.
+starter: |
+  import random
+  random.seed(1)
+solution: |
+  import random
+  random.seed(1)
+  answer = random.randint(1, 100)
+  tries = 0
+  while True:
+      guess = int(input("숫자: "))
+      tries += 1
+      if guess < answer:
+          print("UP")
+      elif guess > answer:
+          print("DOWN")
+      else:
+          print(f"정답! {tries}번 만에 맞혔습니다.")
+          break
+alt_solutions:
+  - |
+    import random
+    random.seed(1)
+    secret = random.randint(1, 100)
+    count = 1
+    guess = int(input("숫자: "))
+    while guess != secret:
+        if guess > secret:
+            print("DOWN")
+        else:
+            print("UP")
+        guess = int(input("숫자: "))
+        count += 1
+    print("정답! " + str(count) + "번 만에 맞혔습니다.")
+mutants:
+  - name: UP과 DOWN을 반대로
+    code: |
+      import random
+      random.seed(1)
+      answer = random.randint(1, 100)
+      tries = 0
+      while True:
+          guess = int(input("숫자: "))
+          tries += 1
+          if guess < answer:
+              print("DOWN")
+          elif guess > answer:
+              print("UP")
+          else:
+              print(f"정답! {tries}번 만에 맞혔습니다.")
+              break
+  - name: 반복할 때마다 정답을 새로 뽑음
+    code: |
+      import random
+      random.seed(1)
+      tries = 0
+      while True:
+          answer = random.randint(1, 100)
+          guess = int(input("숫자: "))
+          tries += 1
+          if guess < answer:
+              print("UP")
+          elif guess > answer:
+              print("DOWN")
+          else:
+              print(f"정답! {tries}번 만에 맞혔습니다.")
+              break
+tests:
+  - stdin: "50\n25\n12\n18\n"
+    public: true
+  - stdin: "18\n"
+    note: 한 번에 맞힘
+  - stdin: "1\n100\n17\n19\n18\n"
+  - stdin: "30\n20\n10\n15\n18\n"
+hints:
+  - "정답은 반복문 **밖**에서 한 번만 정해야 합니다."
+  - "시드가 1로 고정되어 있으므로 Run으로 여러 번 실행해도 정답이 같습니다. 직접 확인해 보세요."
+explanation: |
+  `random.seed(1)` 뒤의 첫 `randint(1, 100)` 값은 항상 같습니다. 반복문 안에서 `randint`를 다시 부르면 정답이 계속 바뀌어요.

@@ -1,0 +1,69 @@
+id: b04-vowel-count-017
+title: 영어 문장의 모음과 공백 세기
+unit: b04
+difficulty: 2
+tags: [loop.for-each, str.in, loop.count]
+statement: |
+  영어 문장을 입력받아 모음(a, e, i, o, u — 대문자 포함)의 개수와 공백의 개수를 출력하시오.
+
+  - 입력 프롬프트: `문장: `
+  - 출력 형식: `모음: 3`, `공백: 1`
+starter: |
+  text = input("문장: ")
+solution: |
+  text = input("문장: ")
+  vowels = 0
+  spaces = 0
+  for ch in text:
+      if ch in "aeiouAEIOU":
+          vowels += 1
+      elif ch == " ":
+          spaces += 1
+  print(f"모음: {vowels}")
+  print(f"공백: {spaces}")
+alt_solutions:
+  - |
+    text = input("문장: ")
+    v = 0
+    for ch in text.lower():
+        if ch == "a" or ch == "e" or ch == "i" or ch == "o" or ch == "u":
+            v += 1
+    print("모음:", v)
+    print("공백:", text.count(" "))
+mutants:
+  - name: 대문자 모음을 세지 않음
+    code: |
+      text = input("문장: ")
+      vowels = 0
+      spaces = 0
+      for ch in text:
+          if ch in "aeiou":
+              vowels += 1
+          elif ch == " ":
+              spaces += 1
+      print(f"모음: {vowels}")
+      print(f"공백: {spaces}")
+  - name: y도 모음으로 셈
+    code: |
+      text = input("문장: ")
+      vowels = 0
+      spaces = 0
+      for ch in text:
+          if ch in "aeiouyAEIOUY":
+              vowels += 1
+          elif ch == " ":
+              spaces += 1
+      print(f"모음: {vowels}")
+      print(f"공백: {spaces}")
+tests:
+  - stdin: "Hello World\n"
+    public: true
+  - stdin: "AEIOU aeiou\n"
+    note: 대문자 모음
+  - stdin: "rhythm\n"
+    note: 모음 없음 (y는 모음 아님)
+  - stdin: "I love Python very much\n"
+hints:
+  - "`ch in \"aeiouAEIOU\"`는 ch가 그 문자열 안에 있는지 확인합니다."
+explanation: |
+  `for ch in 문자열:`로 한 글자씩 꺼내 검사합니다. `in` 연산자는 문자열에도 쓸 수 있습니다.

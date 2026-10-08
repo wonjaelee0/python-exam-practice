@@ -1,0 +1,71 @@
+id: b04-range-sum-005
+title: a부터 b까지의 합과 짝수의 합
+unit: b04
+difficulty: 1
+tags: [loop.for-range, loop.accumulate]
+statement: |
+  정수 a, b(a ≤ b)를 입력받아 a부터 b까지 모든 정수의 합과, 그중 짝수의 합을 출력하시오.
+
+  - 입력 프롬프트: `a: `, `b: `
+  - 출력 형식: `전체 합: 55`, `짝수 합: 30`
+starter: |
+  a = int(input("a: "))
+  b = int(input("b: "))
+solution: |
+  a = int(input("a: "))
+  b = int(input("b: "))
+  total = 0
+  even = 0
+  for i in range(a, b + 1):
+      total += i
+      if i % 2 == 0:
+          even += i
+  print(f"전체 합: {total}")
+  print(f"짝수 합: {even}")
+alt_solutions:
+  - |
+    a = int(input("a: "))
+    b = int(input("b: "))
+    nums = list(range(a, b + 1))
+    print("전체 합:", sum(nums))
+    print("짝수 합:", sum([x for x in nums if x % 2 == 0]))
+mutants:
+  - name: b를 포함하지 않음
+    code: |
+      a = int(input("a: "))
+      b = int(input("b: "))
+      total = 0
+      even = 0
+      for i in range(a, b):
+          total += i
+          if i % 2 == 0:
+              even += i
+      print(f"전체 합: {total}")
+      print(f"짝수 합: {even}")
+  - name: 짝수 '번째'를 더함
+    code: |
+      a = int(input("a: "))
+      b = int(input("b: "))
+      total = 0
+      even = 0
+      for i in range(a, b + 1):
+          total += i
+      for i in range(a, b + 1, 2):
+          even += i
+      print(f"전체 합: {total}")
+      print(f"짝수 합: {even}")
+tests:
+  - stdin: "1\n10\n"
+    public: true
+  - stdin: "3\n3\n"
+    note: a와 b가 같음
+  - stdin: "-4\n4\n"
+    note: 음수 포함
+  - stdin: "7\n12\n"
+    note: 홀수에서 시작
+  - stdin: "0\n100\n"
+hints:
+  - "`range(a, b + 1)`이어야 b까지 포함됩니다."
+  - "합계 변수는 반복문 **밖**에서 0으로 만들어 두세요."
+explanation: |
+  누적 합 패턴: `total = 0` → 반복하며 `total += i`. 조건을 붙이면 원하는 값만 더할 수 있습니다.

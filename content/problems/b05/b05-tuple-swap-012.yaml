@@ -1,0 +1,53 @@
+id: b05-tuple-swap-012
+title: 튜플 언패킹으로 값 바꾸기
+unit: b05
+difficulty: 1
+tags: [tuple.unpack, tuple.create]
+statement: |
+  두 단어를 입력받아 튜플로 묶어 출력한 뒤, 언패킹으로 두 값을 바꿔 다시 튜플로 출력하시오.
+
+  - 입력 프롬프트: `첫 번째: `, `두 번째: `
+  - 출력 형식: `바꾸기 전: ('사과', '배')`, `바꾼 후: ('배', '사과')` (튜플을 그대로 출력)
+starter: |
+  a = input("첫 번째: ")
+  b = input("두 번째: ")
+solution: |
+  a = input("첫 번째: ")
+  b = input("두 번째: ")
+  print(f"바꾸기 전: {(a, b)}")
+  a, b = b, a
+  print(f"바꾼 후: {(a, b)}")
+alt_solutions:
+  - |
+    a = input("첫 번째: ")
+    b = input("두 번째: ")
+    pair = (a, b)
+    print("바꾸기 전:", pair)
+    x, y = pair
+    print("바꾼 후:", (y, x))
+mutants:
+  - name: 임시 변수 없이 순서대로 대입
+    code: |
+      a = input("첫 번째: ")
+      b = input("두 번째: ")
+      print(f"바꾸기 전: {(a, b)}")
+      a = b
+      b = a
+      print(f"바꾼 후: {(a, b)}")
+  - name: 리스트로 출력
+    code: |
+      a = input("첫 번째: ")
+      b = input("두 번째: ")
+      print(f"바꾸기 전: {[a, b]}")
+      print(f"바꾼 후: {[b, a]}")
+tests:
+  - stdin: "사과\n배\n"
+    public: true
+  - stdin: "x\ny\n"
+  - stdin: "같음\n같음\n"
+  - stdin: "Hello\nWorld\n"
+hints:
+  - "`a, b = b, a`는 오른쪽 튜플 `(b, a)`를 먼저 만든 뒤 언패킹합니다."
+  - "f-string 안에 `(a, b)`를 쓰면 튜플이 `('사과', '배')`처럼 출력됩니다."
+explanation: |
+  `a = b` 다음에 `b = a`를 하면 둘 다 b가 됩니다. 튜플 언패킹을 쓰면 임시 변수 없이 안전하게 바꿀 수 있습니다.

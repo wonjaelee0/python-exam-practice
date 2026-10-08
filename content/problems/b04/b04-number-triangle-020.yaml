@@ -1,0 +1,64 @@
+id: b04-number-triangle-020
+title: 숫자 삼각형
+unit: b04
+difficulty: 3
+tags: [loop.nested, str.concat]
+statement: |
+  1 이상의 정수 n을 입력받아 n줄짜리 숫자 삼각형을 출력하시오.
+
+  - i번째 줄에는 1부터 i까지의 수를 공백 하나로 구분해 출력한다.
+  - **줄 끝에는 공백이 없어야 한다.**
+  - 입력 프롬프트: `줄 수: `
+
+  n이 4일 때 프롬프트 다음에 출력되는 삼각형:
+  ```
+  1
+  1 2
+  1 2 3
+  1 2 3 4
+  ```
+starter: |
+  n = int(input("줄 수: "))
+solution: |
+  n = int(input("줄 수: "))
+  for i in range(1, n + 1):
+      line = ""
+      for j in range(1, i + 1):
+          if j > 1:
+              line += " "
+          line += str(j)
+      print(line)
+alt_solutions:
+  - |
+    n = int(input("줄 수: "))
+    for i in range(1, n + 1):
+        print(" ".join(str(j) for j in range(1, i + 1)))
+mutants:
+  - name: end=" "로 출력 (줄 끝 공백)
+    code: |
+      n = int(input("줄 수: "))
+      for i in range(1, n + 1):
+          for j in range(1, i + 1):
+              print(j, end=" ")
+          print()
+  - name: 줄마다 i부터 출력
+    code: |
+      n = int(input("줄 수: "))
+      for i in range(1, n + 1):
+          line = ""
+          for j in range(i, 0, -1):
+              if j < i:
+                  line += " "
+              line += str(j)
+          print(line)
+tests:
+  - stdin: "4\n"
+    public: true
+  - stdin: "1\n"
+  - stdin: "2\n"
+  - stdin: "6\n"
+hints:
+  - "`print(j, end=\" \")`로 이어 출력하면 마지막 숫자 뒤에도 공백이 남습니다."
+  - "한 줄을 문자열로 만들고, 두 번째 숫자부터 앞에 공백을 붙이면 줄 끝 공백이 생기지 않습니다."
+explanation: |
+  출력은 공백까지 정확히 비교됩니다. 줄 끝 공백이 생기지 않게 문자열을 만들거나 `" ".join(...)`을 쓰세요.

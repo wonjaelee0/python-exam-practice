@@ -1,0 +1,65 @@
+id: b05-count-index-017
+title: count와 index로 단어 찾기
+unit: b05
+difficulty: 1
+tags: [list.count, list.index, list.in]
+statement: |
+  공백으로 구분된 단어들과 찾을 단어를 입력받아, 찾을 단어의 개수와 처음 나오는 위치(인덱스)를 출력하시오.
+
+  - 입력 프롬프트: `단어들: `, `찾을 단어: `
+  - 출력 형식: `개수: 2`, `처음 위치: 1`
+  - 찾을 단어가 없으면 `개수: 0` 다음 줄에 `처음 위치: 없음`을 출력한다.
+starter: |
+  words = input("단어들: ").split()
+  target = input("찾을 단어: ")
+solution: |
+  words = input("단어들: ").split()
+  target = input("찾을 단어: ")
+  print(f"개수: {words.count(target)}")
+  if target in words:
+      print(f"처음 위치: {words.index(target)}")
+  else:
+      print("처음 위치: 없음")
+alt_solutions:
+  - |
+    words = input("단어들: ").split()
+    target = input("찾을 단어: ")
+    count = 0
+    first = -1
+    for i in range(len(words)):
+        if words[i] == target:
+            count += 1
+            if first == -1:
+                first = i
+    print("개수:", count)
+    if first == -1:
+        print("처음 위치: 없음")
+    else:
+        print("처음 위치:", first)
+mutants:
+  - name: 없는 단어도 index() 호출 (오류)
+    code: |
+      words = input("단어들: ").split()
+      target = input("찾을 단어: ")
+      print(f"개수: {words.count(target)}")
+      print(f"처음 위치: {words.index(target)}")
+  - name: 위치를 1부터 셈
+    code: |
+      words = input("단어들: ").split()
+      target = input("찾을 단어: ")
+      print(f"개수: {words.count(target)}")
+      if target in words:
+          print(f"처음 위치: {words.index(target) + 1}")
+      else:
+          print("처음 위치: 없음")
+tests:
+  - stdin: "a b c b\nb\n"
+    public: true
+  - stdin: "사과 배\n귤\n"
+    note: 없는 단어
+  - stdin: "x x x\nx\n"
+  - stdin: "one two three\nthree\n"
+hints:
+  - "`index()`는 값이 없으면 ValueError가 납니다. `in`으로 먼저 확인하세요."
+explanation: |
+  `count(값)`은 개수, `index(값)`은 처음 위치를 돌려줍니다. 리스트 인덱스는 0부터 셉니다.

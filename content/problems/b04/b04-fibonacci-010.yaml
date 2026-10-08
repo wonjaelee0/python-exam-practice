@@ -1,0 +1,68 @@
+id: b04-fibonacci-010
+title: n번째 피보나치 수
+unit: b04
+difficulty: 2
+tags: [loop.for-range, var.multi-assign]
+statement: |
+  피보나치 수열은 1, 1, 2, 3, 5, 8, …처럼 첫째·둘째 항이 1이고, 셋째 항부터는 앞의 두 항을 더한 수열이다.
+  1 이상의 정수 n을 입력받아 n번째 항과 1번째부터 n번째 항까지의 합을 출력하시오.
+
+  - 입력 프롬프트: `n: `
+  - 출력 형식: `6번째 피보나치 수: 8`, `합: 20`
+starter: |
+  n = int(input("n: "))
+solution: |
+  n = int(input("n: "))
+  a, b = 1, 1
+  total = 0
+  for i in range(n):
+      total += a
+      if i < n - 1:
+          a, b = b, a + b
+  print(f"{n}번째 피보나치 수: {a}")
+  print(f"합: {total}")
+alt_solutions:
+  - |
+    n = int(input("n: "))
+    fib = [1, 1]
+    while len(fib) < n:
+        fib.append(fib[-1] + fib[-2])
+    fib = fib[:n]
+    print(str(n) + "번째 피보나치 수:", fib[-1])
+    print("합:", sum(fib))
+mutants:
+  - name: 한 칸씩 밀림 (n+1번째를 출력)
+    code: |
+      n = int(input("n: "))
+      a, b = 1, 1
+      total = 0
+      for i in range(n):
+          total += a
+          a, b = b, a + b
+      print(f"{n}번째 피보나치 수: {a}")
+      print(f"합: {total}")
+  - name: 동시 대입 대신 순서대로 대입
+    code: |
+      n = int(input("n: "))
+      a = 1
+      b = 1
+      total = 0
+      for i in range(n):
+          total += a
+          if i < n - 1:
+              a = b
+              b = a + b
+      print(f"{n}번째 피보나치 수: {a}")
+      print(f"합: {total}")
+tests:
+  - stdin: "6\n"
+    public: true
+  - stdin: "1\n"
+  - stdin: "2\n"
+  - stdin: "10\n"
+  - stdin: "30\n"
+hints:
+  - "`a, b = b, a + b`는 오른쪽을 먼저 모두 계산한 뒤 동시에 대입합니다."
+  - "`a = b` 다음 줄에 `b = a + b`를 쓰면 a가 이미 바뀐 뒤라 틀린 값이 됩니다."
+explanation: |
+  다중 대입(`a, b = b, a + b`)을 쓰면 임시 변수 없이 두 값을 동시에 갱신할 수 있습니다.

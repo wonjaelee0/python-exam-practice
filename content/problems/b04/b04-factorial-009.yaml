@@ -1,0 +1,55 @@
+id: b04-factorial-009
+title: 팩토리얼
+unit: b04
+difficulty: 1
+tags: [loop.for-range, loop.accumulate]
+statement: |
+  0 이상의 정수 n을 입력받아 n!(1부터 n까지의 곱)을 출력하시오. 0! = 1이다.
+
+  - 입력 프롬프트: `n: `
+  - 출력 형식: `5! = 120`
+starter: |
+  n = int(input("n: "))
+solution: |
+  n = int(input("n: "))
+  result = 1
+  for i in range(1, n + 1):
+      result *= i
+  print(f"{n}! = {result}")
+alt_solutions:
+  - |
+    n = int(input("n: "))
+    result = 1
+    i = n
+    while i > 1:
+        result = result * i
+        i -= 1
+    print(str(n) + "! = " + str(result))
+mutants:
+  - name: 곱의 시작값을 0으로
+    code: |
+      n = int(input("n: "))
+      result = 0
+      for i in range(1, n + 1):
+          result *= i
+      print(f"{n}! = {result}")
+  - name: range(n)으로 곱함 (0부터)
+    code: |
+      n = int(input("n: "))
+      result = 1
+      for i in range(n):
+          result *= i
+      print(f"{n}! = {result}")
+tests:
+  - stdin: "5\n"
+    public: true
+  - stdin: "0\n"
+    note: 0! = 1
+  - stdin: "1\n"
+  - stdin: "10\n"
+  - stdin: "20\n"
+    note: 파이썬 정수는 아주 큰 수도 정확하다
+hints:
+  - "곱을 누적할 때는 시작값이 1이어야 합니다 (0이면 계속 0)."
+explanation: |
+  누적 곱 패턴은 `result = 1` → `result *= i`입니다. 파이썬 정수는 크기 제한이 없어 20!도 정확합니다.

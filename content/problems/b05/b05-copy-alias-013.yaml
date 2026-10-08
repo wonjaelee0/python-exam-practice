@@ -1,0 +1,75 @@
+id: b05-copy-alias-013
+title: 할당과 복사의 차이 확인하기
+unit: b05
+difficulty: 2
+tags: [list.copy, list.alias]
+statement: |
+  정수 x를 입력받아 다음 순서대로 실행한 결과를 출력하시오.
+
+  1. `a = [1, 2, 3]`
+  2. `b = a` (할당), `c = a.copy()` (복사)
+  3. `b[0] = x`
+  4. `c[2] = x * 10`
+
+  - 입력 프롬프트: `x: `
+  - 출력 형식 (네 줄): `a: [...]`, `b: [...]`, `c: [...]`, `a is b: True`
+starter: |
+  x = int(input("x: "))
+  a = [1, 2, 3]
+solution: |
+  x = int(input("x: "))
+  a = [1, 2, 3]
+  b = a
+  c = a.copy()
+  b[0] = x
+  c[2] = x * 10
+  print(f"a: {a}")
+  print(f"b: {b}")
+  print(f"c: {c}")
+  print(f"a is b: {a is b}")
+alt_solutions:
+  - |
+    x = int(input("x: "))
+    a = [x, 2, 3]
+    b = a
+    c = [1, 2, x * 10]
+    print("a:", a)
+    print("b:", b)
+    print("c:", c)
+    print("a is b:", True)
+mutants:
+  - name: 할당도 복사라고 생각함
+    code: |
+      x = int(input("x: "))
+      a = [1, 2, 3]
+      b = a.copy()
+      c = a.copy()
+      b[0] = x
+      c[2] = x * 10
+      print(f"a: {a}")
+      print(f"b: {b}")
+      print(f"c: {c}")
+      print(f"a is b: {a is b}")
+  - name: 복사도 같은 리스트라고 생각함
+    code: |
+      x = int(input("x: "))
+      a = [1, 2, 3]
+      b = a
+      c = a
+      b[0] = x
+      c[2] = x * 10
+      print(f"a: {a}")
+      print(f"b: {b}")
+      print(f"c: {c}")
+      print(f"a is b: {a is b}")
+tests:
+  - stdin: "9\n"
+    public: true
+  - stdin: "0\n"
+  - stdin: "-4\n"
+  - stdin: "100\n"
+hints:
+  - "`b = a`는 같은 리스트에 이름을 하나 더 붙이는 것입니다. b를 바꾸면 a도 바뀝니다."
+  - "`a.copy()`는 새 리스트를 만듭니다. c를 바꿔도 a는 그대로예요."
+explanation: |
+  `is`는 두 이름이 같은 객체(메모리)를 가리키는지 확인합니다. 할당은 같은 객체, `copy()`는 다른 객체입니다.

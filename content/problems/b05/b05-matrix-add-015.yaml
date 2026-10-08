@@ -1,0 +1,64 @@
+id: b05-matrix-add-015
+title: 두 행렬의 합
+unit: b05
+difficulty: 3
+tags: [list.2d, loop.nested, io.split-map]
+statement: |
+  행의 수 r을 입력받고, 이어서 행렬 A의 각 행(공백으로 구분된 정수)을 r줄, 행렬 B의 각 행을 r줄 입력받아 A + B를 출력하시오.
+  두 행렬의 크기는 같다.
+
+  - 입력 프롬프트: `행 수: `, A의 각 행은 `A: `, B의 각 행은 `B: `
+  - 출력: 합 행렬의 각 행을 리스트 형태로 한 줄씩 출력 (예: `[5, 7, 9]`)
+starter: |
+  r = int(input("행 수: "))
+solution: |
+  r = int(input("행 수: "))
+  a = []
+  for i in range(r):
+      a.append(list(map(int, input("A: ").split())))
+  b = []
+  for i in range(r):
+      b.append(list(map(int, input("B: ").split())))
+  for i in range(r):
+      row = []
+      for j in range(len(a[i])):
+          row.append(a[i][j] + b[i][j])
+      print(row)
+alt_solutions:
+  - |
+    r = int(input("행 수: "))
+    a = [list(map(int, input("A: ").split())) for _ in range(r)]
+    b = [list(map(int, input("B: ").split())) for _ in range(r)]
+    for ra, rb in zip(a, b):
+        print([x + y for x, y in zip(ra, rb)])
+mutants:
+  - name: 리스트를 이어 붙임 (+ 연산 오해)
+    code: |
+      r = int(input("행 수: "))
+      a = [list(map(int, input("A: ").split())) for _ in range(r)]
+      b = [list(map(int, input("B: ").split())) for _ in range(r)]
+      for i in range(r):
+          print(a[i] + b[i])
+  - name: A와 B를 번갈아 입력받음
+    code: |
+      r = int(input("행 수: "))
+      a = []
+      b = []
+      for i in range(r):
+          a.append(list(map(int, input("A: ").split())))
+          b.append(list(map(int, input("B: ").split())))
+      for i in range(r):
+          print([a[i][j] + b[i][j] for j in range(len(a[i]))])
+tests:
+  - stdin: "2\n1 2 3\n4 5 6\n4 5 6\n1 1 1\n"
+    public: true
+  - stdin: "1\n10\n-10\n"
+    note: 1×1 행렬
+  - stdin: "3\n1 0\n0 1\n2 2\n5 5\n5 5\n5 5\n"
+  - stdin: "2\n1 2 3 4\n5 6 7 8\n-1 -2 -3 -4\n0 0 0 1\n"
+    note: 음수가 섞인 2×4 행렬
+hints:
+  - "리스트끼리 `+`는 이어 붙이기입니다. 원소끼리 더하려면 인덱스로 하나씩 더해야 해요."
+  - "입력 순서: A의 모든 행을 먼저, 그다음 B의 모든 행입니다."
+explanation: |
+  `a[i][j]`는 i행 j열 원소입니다. 중첩 반복문으로 같은 위치의 원소를 더해 새 행을 만듭니다.

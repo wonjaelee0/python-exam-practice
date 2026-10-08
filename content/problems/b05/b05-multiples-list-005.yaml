@@ -1,0 +1,62 @@
+id: b05-multiples-list-005
+title: n 이하 k의 배수 리스트
+unit: b05
+difficulty: 1
+tags: [list.range, list.comprehension, list.len]
+statement: |
+  양의 정수 n과 k를 입력받아 1 이상 n 이하인 k의 배수로 이루어진 리스트를 만들고, 리스트와 개수, 합을 출력하시오.
+
+  - 입력 프롬프트: `n: `, `k: `
+  - 출력 형식: `배수: [3, 6, 9]`, `개수: 3`, `합: 18`
+  - 배수가 없으면 빈 리스트 `[]`를 출력한다.
+starter: |
+  n = int(input("n: "))
+  k = int(input("k: "))
+solution: |
+  n = int(input("n: "))
+  k = int(input("k: "))
+  multiples = list(range(k, n + 1, k))
+  print(f"배수: {multiples}")
+  print(f"개수: {len(multiples)}")
+  print(f"합: {sum(multiples)}")
+alt_solutions:
+  - |
+    n = int(input("n: "))
+    k = int(input("k: "))
+    multiples = []
+    for i in range(1, n + 1):
+        if i % k == 0:
+            multiples.append(i)
+    print("배수:", multiples)
+    print("개수:", len(multiples))
+    print("합:", sum(multiples))
+mutants:
+  - name: n을 포함하지 않음
+    code: |
+      n = int(input("n: "))
+      k = int(input("k: "))
+      multiples = list(range(k, n, k))
+      print(f"배수: {multiples}")
+      print(f"개수: {len(multiples)}")
+      print(f"합: {sum(multiples)}")
+  - name: 0부터 시작
+    code: |
+      n = int(input("n: "))
+      k = int(input("k: "))
+      multiples = list(range(0, n + 1, k))
+      print(f"배수: {multiples}")
+      print(f"개수: {len(multiples)}")
+      print(f"합: {sum(multiples)}")
+tests:
+  - stdin: "10\n3\n"
+    public: true
+  - stdin: "12\n4\n"
+    note: n이 배수
+  - stdin: "5\n7\n"
+    note: 배수가 없음
+  - stdin: "1\n1\n"
+  - stdin: "30\n5\n"
+hints:
+  - "`range(시작, 끝, 간격)`으로 배수를 바로 만들 수 있습니다. `list()`로 감싸면 리스트가 돼요."
+explanation: |
+  `list(range(k, n + 1, k))`는 k, 2k, 3k, …를 n 이하까지 만듭니다. 컴프리헨션 `[i for i in range(1, n + 1) if i % k == 0]`도 같은 결과입니다.

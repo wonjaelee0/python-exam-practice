@@ -1,0 +1,62 @@
+id: b04-gugudan-range-006
+title: 시작 단부터 끝 단까지 구구단
+unit: b04
+difficulty: 2
+tags: [loop.nested, io.fstring]
+statement: |
+  시작 단과 끝 단(2 ≤ 시작 ≤ 끝 ≤ 9)을 입력받아 그 범위의 구구단을 출력하시오.
+
+  - 입력 프롬프트: `시작 단: `, `끝 단: `
+  - 각 단마다 먼저 `[3단]` 형식의 제목 줄을 출력하고, 이어서 `3 * 1 = 3` ~ `3 * 9 = 27` 아홉 줄을 출력한다.
+  - 단과 단 사이에 빈 줄은 없다.
+starter: |
+  start = int(input("시작 단: "))
+  end = int(input("끝 단: "))
+solution: |
+  start = int(input("시작 단: "))
+  end = int(input("끝 단: "))
+  for dan in range(start, end + 1):
+      print(f"[{dan}단]")
+      for i in range(1, 10):
+          print(f"{dan} * {i} = {dan * i}")
+alt_solutions:
+  - |
+    start = int(input("시작 단: "))
+    end = int(input("끝 단: "))
+    dan = start
+    while dan <= end:
+        print("[" + str(dan) + "단]")
+        i = 1
+        while i <= 9:
+            print(dan, "*", i, "=", dan * i)
+            i += 1
+        dan += 1
+mutants:
+  - name: 끝 단을 빠뜨림
+    code: |
+      start = int(input("시작 단: "))
+      end = int(input("끝 단: "))
+      for dan in range(start, end):
+          print(f"[{dan}단]")
+          for i in range(1, 10):
+              print(f"{dan} * {i} = {dan * i}")
+  - name: 제목을 안쪽 반복문에 넣음
+    code: |
+      start = int(input("시작 단: "))
+      end = int(input("끝 단: "))
+      for dan in range(start, end + 1):
+          for i in range(1, 10):
+              print(f"[{dan}단]")
+              print(f"{dan} * {i} = {dan * i}")
+tests:
+  - stdin: "2\n3\n"
+    public: true
+  - stdin: "9\n9\n"
+    note: 한 단만
+  - stdin: "4\n6\n"
+  - stdin: "2\n9\n"
+hints:
+  - "바깥 반복문은 단(dan), 안쪽 반복문은 곱하는 수(i)입니다."
+  - "제목 줄은 단마다 한 번이므로 바깥 반복문 안, 안쪽 반복문 앞에 둡니다."
+explanation: |
+  중첩 반복문에서 어떤 문장이 어느 반복문에 속하는지는 들여쓰기로 정해집니다.

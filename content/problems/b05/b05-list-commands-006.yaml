@@ -1,0 +1,115 @@
+id: b05-list-commands-006
+title: 명령어로 리스트 다루기
+unit: b05
+difficulty: 3
+tags: [list.methods, loop.while-sentinel, str.split]
+statement: |
+  처음 리스트는 `[10, 20, 30]`이다. 명령을 한 줄에 하나씩 입력받아 처리하다가 `종료`가 입력되면 마지막 리스트를 출력하시오.
+
+  | 명령 | 동작 |
+  |---|---|
+  | `추가 x` | 리스트 끝에 정수 x 추가 |
+  | `삽입 i x` | 인덱스 i 위치에 정수 x 삽입 |
+  | `삭제 x` | 값 x를 하나 삭제. 리스트에 없으면 `없는 값입니다` 출력 |
+  | `출력` | 현재 리스트 출력 |
+
+  - 입력 프롬프트: `명령: `
+  - `종료`하면 `최종: [10, 20, 30]` 형식으로 출력한다.
+starter: |
+  nums = [10, 20, 30]
+solution: |
+  nums = [10, 20, 30]
+  while True:
+      cmd = input("명령: ").split()
+      if cmd[0] == "종료":
+          break
+      if cmd[0] == "추가":
+          nums.append(int(cmd[1]))
+      elif cmd[0] == "삽입":
+          nums.insert(int(cmd[1]), int(cmd[2]))
+      elif cmd[0] == "삭제":
+          x = int(cmd[1])
+          if x in nums:
+              nums.remove(x)
+          else:
+              print("없는 값입니다")
+      elif cmd[0] == "출력":
+          print(nums)
+  print(f"최종: {nums}")
+alt_solutions:
+  - |
+    nums = [10, 20, 30]
+    line = input("명령: ")
+    while line != "종료":
+        parts = line.split()
+        name = parts[0]
+        if name == "추가":
+            nums = nums + [int(parts[1])]
+        elif name == "삽입":
+            i = int(parts[1])
+            nums = nums[:i] + [int(parts[2])] + nums[i:]
+        elif name == "삭제":
+            v = int(parts[1])
+            if nums.count(v) > 0:
+                del nums[nums.index(v)]
+            else:
+                print("없는 값입니다")
+        else:
+            print(nums)
+        line = input("명령: ")
+    print("최종:", nums)
+mutants:
+  - name: 문자열 그대로 추가 (형변환 누락)
+    code: |
+      nums = [10, 20, 30]
+      while True:
+          cmd = input("명령: ").split()
+          if cmd[0] == "종료":
+              break
+          if cmd[0] == "추가":
+              nums.append(cmd[1])
+          elif cmd[0] == "삽입":
+              nums.insert(int(cmd[1]), cmd[2])
+          elif cmd[0] == "삭제":
+              x = int(cmd[1])
+              if x in nums:
+                  nums.remove(x)
+              else:
+                  print("없는 값입니다")
+          elif cmd[0] == "출력":
+              print(nums)
+      print(f"최종: {nums}")
+  - name: 값이 아니라 인덱스로 삭제 (pop)
+    code: |
+      nums = [10, 20, 30]
+      while True:
+          cmd = input("명령: ").split()
+          if cmd[0] == "종료":
+              break
+          if cmd[0] == "추가":
+              nums.append(int(cmd[1]))
+          elif cmd[0] == "삽입":
+              nums.insert(int(cmd[1]), int(cmd[2]))
+          elif cmd[0] == "삭제":
+              x = int(cmd[1])
+              if x < len(nums):
+                  nums.pop(x)
+              else:
+                  print("없는 값입니다")
+          elif cmd[0] == "출력":
+              print(nums)
+      print(f"최종: {nums}")
+tests:
+  - stdin: "추가 40\n삽입 0 5\n출력\n종료\n"
+    public: true
+  - stdin: "종료\n"
+    note: 명령 없이 종료
+  - stdin: "삭제 20\n삭제 99\n출력\n종료\n"
+    note: 없는 값 삭제
+  - stdin: "추가 20\n삭제 20\n출력\n삽입 1 7\n종료\n"
+    note: 같은 값이 여럿이면 앞의 것을 삭제
+hints:
+  - "`input().split()`으로 명령과 값을 나누고, 첫 단어로 어떤 명령인지 구분합니다."
+  - "`remove(x)`는 값 x를 찾아 삭제하고, 없으면 ValueError가 납니다. 먼저 `in`으로 확인하세요."
+explanation: |
+  `append`(끝에 추가), `insert(i, x)`(위치에 삽입), `remove(x)`(값으로 삭제), `pop(i)`(위치로 삭제)를 구별해야 합니다.

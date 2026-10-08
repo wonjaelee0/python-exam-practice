@@ -1,0 +1,59 @@
+id: b04-reverse-string-018
+title: 반복문으로 문자열 뒤집기
+unit: b04
+difficulty: 1
+tags: [loop.for-each, str.concat]
+statement: |
+  문자열을 입력받아 거꾸로 뒤집은 문자열을 출력하고, 뒤집은 결과가 원래와 같으면(회문) `회문입니다`, 아니면 `회문이 아닙니다`를 출력하시오.
+  슬라이싱(`[::-1]`) 대신 반복문으로 만들어 보자.
+
+  - 입력 프롬프트: `문자열: `
+  - 출력 형식: `거꾸로: olleh`, `회문이 아닙니다`
+starter: |
+  text = input("문자열: ")
+  rev = ""
+solution: |
+  text = input("문자열: ")
+  rev = ""
+  for ch in text:
+      rev = ch + rev
+  print(f"거꾸로: {rev}")
+  if rev == text:
+      print("회문입니다")
+  else:
+      print("회문이 아닙니다")
+alt_solutions:
+  - |
+    text = input("문자열: ")
+    rev = ""
+    for ch in reversed(text):
+        rev += ch
+    print("거꾸로: " + rev)
+    print("회문입니다" if rev == text else "회문이 아닙니다")
+mutants:
+  - name: 뒤에 이어 붙임 (뒤집히지 않음)
+    code: |
+      text = input("문자열: ")
+      rev = ""
+      for ch in text:
+          rev = rev + ch
+      print(f"거꾸로: {rev}")
+      if rev == text:
+          print("회문입니다")
+      else:
+          print("회문이 아닙니다")
+tests:
+  - stdin: "hello\n"
+    public: true
+  - stdin: "level\n"
+    note: 회문
+  - stdin: "a\n"
+  - stdin: "토마토\n"
+  - stdin: "ab ba\n"
+    note: 공백 포함 회문
+  - stdin: "Python 3\n"
+    note: 회문이 아닌 문장
+hints:
+  - "`rev = ch + rev`처럼 새 글자를 **앞에** 붙이면 뒤집힌 문자열이 됩니다."
+explanation: |
+  `reversed(문자열)`을 써도 되고, 슬라이싱 `text[::-1]`이 가장 짧은 방법입니다.
