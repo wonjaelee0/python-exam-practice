@@ -1,0 +1,105 @@
+id: b03-exam-pass-016
+title: 자격시험 합격 판정과 불합격 이유
+unit: b03
+difficulty: 3
+tags: [cond.nested-if, cond.logic-and-or, io.fstring-format]
+statement: |
+  필기와 실기 점수(0~100 정수)를 입력받아 합격 여부를 출력하시오.
+
+  - 첫째 줄: `평균: 65.0` (소수점 첫째 자리)
+  - 두 과목이 모두 40점 이상이고 평균이 60점 이상이면 `합격`
+  - 그렇지 않으면 `불합격`을 출력하고, 다음 줄에 이유를 출력한다.
+    - 40점 미만 과목이 있으면: `과락: 필기`, `과락: 실기`, 둘 다면 `과락: 필기, 실기`
+    - 과락이 없으면: `평균 미달`
+  - 입력 프롬프트: `필기: `, `실기: `
+starter: |
+  written = int(input("필기: "))
+  practical = int(input("실기: "))
+solution: |
+  written = int(input("필기: "))
+  practical = int(input("실기: "))
+  avg = (written + practical) / 2
+  print(f"평균: {avg:.1f}")
+  if written >= 40 and practical >= 40 and avg >= 60:
+      print("합격")
+  else:
+      print("불합격")
+      if written < 40 and practical < 40:
+          print("과락: 필기, 실기")
+      elif written < 40:
+          print("과락: 필기")
+      elif practical < 40:
+          print("과락: 실기")
+      else:
+          print("평균 미달")
+alt_solutions:
+  - |
+    w = int(input("필기: "))
+    p = int(input("실기: "))
+    avg = (w + p) / 2
+    print("평균:", format(avg, ".1f"))
+    fails = []
+    if w < 40:
+        fails.append("필기")
+    if p < 40:
+        fails.append("실기")
+    if len(fails) == 0 and avg >= 60:
+        print("합격")
+    else:
+        print("불합격")
+        if len(fails) > 0:
+            print("과락: " + ", ".join(fails))
+        else:
+            print("평균 미달")
+mutants:
+  - name: and 대신 or
+    code: |
+      written = int(input("필기: "))
+      practical = int(input("실기: "))
+      avg = (written + practical) / 2
+      print(f"평균: {avg:.1f}")
+      if written >= 40 or practical >= 40 and avg >= 60:
+          print("합격")
+      else:
+          print("불합격")
+          if written < 40 and practical < 40:
+              print("과락: 필기, 실기")
+          elif written < 40:
+              print("과락: 필기")
+          elif practical < 40:
+              print("과락: 실기")
+          else:
+              print("평균 미달")
+  - name: 과락 이유를 하나만 출력
+    code: |
+      written = int(input("필기: "))
+      practical = int(input("실기: "))
+      avg = (written + practical) / 2
+      print(f"평균: {avg:.1f}")
+      if written >= 40 and practical >= 40 and avg >= 60:
+          print("합격")
+      else:
+          print("불합격")
+          if written < 40:
+              print("과락: 필기")
+          elif practical < 40:
+              print("과락: 실기")
+          else:
+              print("평균 미달")
+tests:
+  - stdin: "70\n60\n"
+    public: true
+  - stdin: "90\n35\n"
+    note: 평균은 넘지만 실기 과락
+  - stdin: "30\n20\n"
+    note: 둘 다 과락
+  - stdin: "55\n60\n"
+    note: 과락 없이 평균 미달
+  - stdin: "40\n80\n"
+    note: 경계 — 40점, 평균 60.0
+  - stdin: "39\n100\n"
+hints:
+  - "합격 조건은 세 가지를 모두 만족해야 하므로 `and`로 묶습니다."
+  - "불합격일 때 이유를 고르는 부분은 '둘 다 과락'을 가장 먼저 검사해야 합니다."
+explanation: |
+  큰 조건(합격/불합격)을 먼저 나누고, 불합격 안에서 이유를 다시 나누는 중첩 구조입니다. 검사 순서가 출력에 영향을 줍니다.

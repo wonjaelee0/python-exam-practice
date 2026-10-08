@@ -1,0 +1,63 @@
+id: b02-box-repeat-009
+title: 문자열 곱셈으로 상자 그리기
+unit: b02
+difficulty: 1
+tags: [str.repeat, str.concat]
+statement: |
+  문자 하나와 길이 n(2 이상의 정수)을 입력받아 세 줄짜리 상자를 출력하시오.
+
+  - 첫째 줄과 셋째 줄: 문자를 n번 반복
+  - 둘째 줄: 문자, 공백 n-2개, 문자
+  - 입력 프롬프트: `문자: `, `길이: `
+
+  문자가 `#`, 길이가 5일 때 프롬프트 다음에 출력되는 상자:
+  ```
+  #####
+  #   #
+  #####
+  ```
+starter: |
+  ch = input("문자: ")
+  n = int(input("길이: "))
+solution: |
+  ch = input("문자: ")
+  n = int(input("길이: "))
+  print(ch * n)
+  print(ch + " " * (n - 2) + ch)
+  print(ch * n)
+alt_solutions:
+  - |
+    ch = input("문자: ")
+    n = int(input("길이: "))
+    line = ch * n
+    middle = ch + " " * (n - 2) + ch
+    print(line)
+    print(middle)
+    print(line)
+mutants:
+  - name: 가운데 공백을 n개로
+    code: |
+      ch = input("문자: ")
+      n = int(input("길이: "))
+      print(ch * n)
+      print(ch + " " * n + ch)
+      print(ch * n)
+  - name: 가운데 줄도 꽉 채움
+    code: |
+      ch = input("문자: ")
+      n = int(input("길이: "))
+      print(ch * n)
+      print(ch * n)
+      print(ch * n)
+tests:
+  - stdin: "#\n5\n"
+    public: true
+  - stdin: "*\n2\n"
+    note: 가운데 공백 0개
+  - stdin: "=\n3\n"
+  - stdin: "A\n8\n"
+hints:
+  - "`\"*\" * 3`은 `\"***\"`입니다."
+  - "가운데 줄은 `문자 + 공백*(n-2) + 문자`로 이어 붙입니다."
+explanation: |
+  문자열에 정수를 곱하면 반복, 문자열끼리 더하면 이어 붙이기입니다.

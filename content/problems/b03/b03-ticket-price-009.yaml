@@ -1,0 +1,120 @@
+id: b03-ticket-price-009
+title: 나이별 입장료와 단체 할인
+unit: b03
+difficulty: 2
+tags: [cond.elif-order, cond.boundary, op.floordiv]
+statement: |
+  나이와 인원(같은 나이대 일행의 수)을 입력받아 1인 요금과 총 요금을 출력하시오.
+
+  | 나이 | 1인 요금 |
+  |---|---|
+  | 8세 미만 | 0원 |
+  | 8세 이상 13세 이하 | 5000원 |
+  | 14세 이상 19세 이하 | 8000원 |
+  | 20세 이상 64세 이하 | 12000원 |
+  | 65세 이상 | 6000원 |
+
+  - 인원이 10명 이상이면 총 요금에서 10% 할인한다: `총액 * 90 // 100`
+  - 입력 프롬프트: `나이: `, `인원: `
+  - 출력 형식
+    - `1인 요금: 8000원`
+    - (할인이 적용될 때만) `단체 할인이 적용되었습니다`
+    - `총 요금: 72000원`
+starter: |
+  age = int(input("나이: "))
+  count = int(input("인원: "))
+solution: |
+  age = int(input("나이: "))
+  count = int(input("인원: "))
+  if age < 8:
+      price = 0
+  elif age <= 13:
+      price = 5000
+  elif age <= 19:
+      price = 8000
+  elif age <= 64:
+      price = 12000
+  else:
+      price = 6000
+  total = price * count
+  print(f"1인 요금: {price}원")
+  if count >= 10:
+      total = total * 90 // 100
+      print("단체 할인이 적용되었습니다")
+  print(f"총 요금: {total}원")
+alt_solutions:
+  - |
+    age = int(input("나이: "))
+    count = int(input("인원: "))
+    if age >= 65:
+        price = 6000
+    elif age >= 20:
+        price = 12000
+    elif age >= 14:
+        price = 8000
+    elif age >= 8:
+        price = 5000
+    else:
+        price = 0
+    print("1인 요금: " + str(price) + "원")
+    total = price * count
+    if count >= 10:
+        print("단체 할인이 적용되었습니다")
+        total = total * 9 // 10
+    print("총 요금: " + str(total) + "원")
+mutants:
+  - name: 13세를 청소년 요금으로 (<)
+    code: |
+      age = int(input("나이: "))
+      count = int(input("인원: "))
+      if age < 8:
+          price = 0
+      elif age < 13:
+          price = 5000
+      elif age < 19:
+          price = 8000
+      elif age < 64:
+          price = 12000
+      else:
+          price = 6000
+      total = price * count
+      print(f"1인 요금: {price}원")
+      if count >= 10:
+          total = total * 90 // 100
+          print("단체 할인이 적용되었습니다")
+      print(f"총 요금: {total}원")
+  - name: 10명 초과일 때만 할인
+    code: |
+      age = int(input("나이: "))
+      count = int(input("인원: "))
+      if age < 8:
+          price = 0
+      elif age <= 13:
+          price = 5000
+      elif age <= 19:
+          price = 8000
+      elif age <= 64:
+          price = 12000
+      else:
+          price = 6000
+      total = price * count
+      print(f"1인 요금: {price}원")
+      if count > 10:
+          total = total * 90 // 100
+          print("단체 할인이 적용되었습니다")
+      print(f"총 요금: {total}원")
+tests:
+  - stdin: "15\n9\n"
+    public: true
+  - stdin: "7\n3\n"
+    note: 8세 미만 무료
+  - stdin: "13\n10\n"
+    note: 경계 — 13세, 10명
+  - stdin: "65\n1\n"
+  - stdin: "64\n12\n"
+  - stdin: "19\n2\n"
+hints:
+  - "낮은 나이부터 `if age < 8 → elif age <= 13 → …` 순서로 검사하면 각 구간의 아래쪽 조건을 다시 쓸 필요가 없습니다."
+  - "'10명 이상'은 `count >= 10`입니다."
+explanation: |
+  구간을 나눌 때 경계값(13, 19, 64, 10명)이 어느 쪽에 속하는지가 가장 많이 틀리는 부분입니다.

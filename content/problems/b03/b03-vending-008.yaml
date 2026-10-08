@@ -1,0 +1,92 @@
+id: b03-vending-008
+title: 음료 자판기
+unit: b03
+difficulty: 2
+tags: [cond.elif-order, cond.boundary, io.input-order]
+statement: |
+  음료 자판기를 만드시오. 버튼 1은 콜라(1200원), 2는 사이다(1100원), 3은 생수(800원)이다.
+
+  - 먼저 버튼 번호를 입력받는다. 입력 프롬프트: `버튼(1-3): `
+  - 버튼이 1~3이 아니면 돈을 입력받지 않고 `없는 메뉴입니다` 한 줄만 출력한다.
+  - 버튼이 맞으면 넣은 돈을 입력받는다. 입력 프롬프트: `넣은 돈: `
+    - 돈이 가격보다 적으면 `금액이 부족합니다 (300원 부족)` 형식으로 출력한다.
+    - 돈이 충분하면 `콜라가 나왔습니다`와 `거스름돈: 800원` 두 줄을 출력한다.
+starter: |
+  button = int(input("버튼(1-3): "))
+solution: |
+  button = int(input("버튼(1-3): "))
+  if button == 1:
+      name = "콜라"
+      price = 1200
+  elif button == 2:
+      name = "사이다"
+      price = 1100
+  elif button == 3:
+      name = "생수"
+      price = 800
+  else:
+      name = ""
+      price = 0
+  if name == "":
+      print("없는 메뉴입니다")
+  else:
+      money = int(input("넣은 돈: "))
+      if money < price:
+          print(f"금액이 부족합니다 ({price - money}원 부족)")
+      else:
+          print(f"{name}가 나왔습니다")
+          print(f"거스름돈: {money - price}원")
+alt_solutions:
+  - |
+    button = int(input("버튼(1-3): "))
+    if button < 1 or button > 3:
+        print("없는 메뉴입니다")
+    else:
+        names = ["콜라", "사이다", "생수"]
+        prices = [1200, 1100, 800]
+        money = int(input("넣은 돈: "))
+        price = prices[button - 1]
+        if money >= price:
+            print(names[button - 1] + "가 나왔습니다")
+            print("거스름돈: " + str(money - price) + "원")
+        else:
+            print("금액이 부족합니다 (" + str(price - money) + "원 부족)")
+mutants:
+  - name: 돈이 딱 맞으면 부족하다고 처리 (<=)
+    code: |
+      button = int(input("버튼(1-3): "))
+      prices = {1: 1200, 2: 1100, 3: 800}
+      names = {1: "콜라", 2: "사이다", 3: "생수"}
+      if button not in prices:
+          print("없는 메뉴입니다")
+      else:
+          money = int(input("넣은 돈: "))
+          if money <= prices[button]:
+              print(f"금액이 부족합니다 ({prices[button] - money}원 부족)")
+          else:
+              print(f"{names[button]}가 나왔습니다")
+              print(f"거스름돈: {money - prices[button]}원")
+  - name: 없는 메뉴여도 돈을 먼저 입력받음
+    code: |
+      button = int(input("버튼(1-3): "))
+      money = int(input("넣은 돈: "))
+      if button == 1:
+          print(f"콜라가 나왔습니다")
+          print(f"거스름돈: {money - 1200}원")
+      else:
+          print("없는 메뉴입니다")
+tests:
+  - stdin: "1\n2000\n"
+    public: true
+  - stdin: "3\n800\n"
+    note: 돈이 딱 맞음 (거스름돈 0원)
+  - stdin: "2\n1000\n"
+    note: 100원 부족
+  - stdin: "4\n"
+    note: 없는 메뉴 — 돈을 입력받지 않는다
+  - stdin: "0\n"
+hints:
+  - "버튼을 먼저 확인하고, 맞는 버튼일 때만 `input(\"넣은 돈: \")`을 호출해야 합니다. 입력 순서도 채점 대상이에요."
+  - "'돈이 가격보다 적다'는 `money < price`입니다. 딱 맞으면 살 수 있어요."
+explanation: |
+  채점은 입력을 정해진 순서대로 넣습니다. 지문과 다른 순서로 `input()`을 호출하면 입력이 어긋나거나 EOFError가 납니다.

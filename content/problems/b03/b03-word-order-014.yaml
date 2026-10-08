@@ -1,0 +1,68 @@
+id: b03-word-order-014
+title: 사전순으로 먼저 오는 단어
+unit: b03
+difficulty: 2
+tags: [str.compare, cond.elif-order]
+statement: |
+  단어 두 개를 입력받아 사전순(문자열 비교 `<`)으로 먼저 오는 단어를 출력하시오.
+
+  - 입력 프롬프트: `첫 번째 단어: `, `두 번째 단어: `
+  - 출력 형식: `먼저 오는 단어: apple`
+  - 두 단어가 같으면 `두 단어가 같습니다`를 출력한다.
+  - 파이썬의 문자열 비교를 그대로 사용한다. (대문자가 소문자보다 앞선다)
+starter: |
+  w1 = input("첫 번째 단어: ")
+  w2 = input("두 번째 단어: ")
+solution: |
+  w1 = input("첫 번째 단어: ")
+  w2 = input("두 번째 단어: ")
+  if w1 == w2:
+      print("두 단어가 같습니다")
+  elif w1 < w2:
+      print(f"먼저 오는 단어: {w1}")
+  else:
+      print(f"먼저 오는 단어: {w2}")
+alt_solutions:
+  - |
+    w1 = input("첫 번째 단어: ")
+    w2 = input("두 번째 단어: ")
+    if w1 != w2:
+        first = w1
+        if w2 < w1:
+            first = w2
+        print("먼저 오는 단어:", first)
+    else:
+        print("두 단어가 같습니다")
+mutants:
+  - name: 비교 방향 반대
+    code: |
+      w1 = input("첫 번째 단어: ")
+      w2 = input("두 번째 단어: ")
+      if w1 == w2:
+          print("두 단어가 같습니다")
+      elif w1 > w2:
+          print(f"먼저 오는 단어: {w1}")
+      else:
+          print(f"먼저 오는 단어: {w2}")
+  - name: 같은 경우 처리 누락
+    code: |
+      w1 = input("첫 번째 단어: ")
+      w2 = input("두 번째 단어: ")
+      if w1 < w2:
+          print(f"먼저 오는 단어: {w1}")
+      else:
+          print(f"먼저 오는 단어: {w2}")
+tests:
+  - stdin: "apple\nbanana\n"
+    public: true
+  - stdin: "banana\napple\n"
+  - stdin: "cat\ncat\n"
+  - stdin: "Zoo\napple\n"
+    note: 대문자 Z가 소문자 a보다 앞선다
+  - stdin: "나무\n가방\n"
+  - stdin: "app\napple\n"
+    note: 앞부분이 같으면 짧은 쪽이 먼저
+hints:
+  - "문자열도 `<`, `>`로 비교할 수 있습니다. 첫 글자부터 차례로 비교해요."
+explanation: |
+  문자열 비교는 문자 코드(유니코드) 순서를 따릅니다. 대문자 A~Z가 소문자 a~z보다 앞에 있어서 `'Zoo' < 'apple'`입니다.

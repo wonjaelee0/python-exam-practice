@@ -1,0 +1,79 @@
+id: b03-rock-paper-010
+title: 가위바위보 승부
+unit: b03
+difficulty: 2
+tags: [cond.logic-and-or, cond.elif-order, str.compare]
+statement: |
+  철수와 영희가 낸 것(`가위`, `바위`, `보` 중 하나)을 입력받아 승부를 출력하시오.
+
+  - 입력 프롬프트: `철수: `, `영희: `
+  - 출력: `철수 승리`, `영희 승리`, `무승부` 중 하나
+  - 둘 중 한 명이라도 `가위`, `바위`, `보`가 아닌 값을 내면 `잘못된 입력입니다`를 출력한다.
+starter: |
+  a = input("철수: ")
+  b = input("영희: ")
+solution: |
+  a = input("철수: ")
+  b = input("영희: ")
+  ok_a = a == "가위" or a == "바위" or a == "보"
+  ok_b = b == "가위" or b == "바위" or b == "보"
+  if not (ok_a and ok_b):
+      print("잘못된 입력입니다")
+  elif a == b:
+      print("무승부")
+  elif (a == "가위" and b == "보") or (a == "바위" and b == "가위") or (a == "보" and b == "바위"):
+      print("철수 승리")
+  else:
+      print("영희 승리")
+alt_solutions:
+  - |
+    a = input("철수: ")
+    b = input("영희: ")
+    hands = ["가위", "바위", "보"]
+    if a not in hands or b not in hands:
+        print("잘못된 입력입니다")
+    else:
+        diff = (hands.index(a) - hands.index(b)) % 3
+        if diff == 0:
+            print("무승부")
+        elif diff == 1:
+            print("철수 승리")
+        else:
+            print("영희 승리")
+mutants:
+  - name: 승패를 반대로
+    code: |
+      a = input("철수: ")
+      b = input("영희: ")
+      if a == b:
+          print("무승부")
+      elif (a == "가위" and b == "바위") or (a == "바위" and b == "보") or (a == "보" and b == "가위"):
+          print("철수 승리")
+      else:
+          print("영희 승리")
+  - name: 잘못된 입력 검사 누락
+    code: |
+      a = input("철수: ")
+      b = input("영희: ")
+      if a == b:
+          print("무승부")
+      elif (a == "가위" and b == "보") or (a == "바위" and b == "가위") or (a == "보" and b == "바위"):
+          print("철수 승리")
+      else:
+          print("영희 승리")
+tests:
+  - stdin: "가위\n보\n"
+    public: true
+  - stdin: "바위\n보\n"
+  - stdin: "보\n보\n"
+  - stdin: "가위\n주먹\n"
+    note: 잘못된 입력
+  - stdin: "바위\n가위\n"
+  - stdin: "가위\n바위\n"
+  - stdin: "묵\n묵\n"
+    note: 같아도 잘못된 입력
+hints:
+  - "철수가 이기는 경우는 세 가지뿐입니다: (가위, 보), (바위, 가위), (보, 바위)."
+  - "잘못된 입력을 가장 먼저 걸러야 '묵, 묵'이 무승부가 되지 않습니다."
+explanation: |
+  조건을 검사하는 순서가 중요합니다: 잘못된 입력 → 무승부 → 철수가 이기는 세 경우 → 나머지는 영희 승리.

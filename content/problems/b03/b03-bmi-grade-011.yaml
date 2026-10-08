@@ -1,0 +1,89 @@
+id: b03-bmi-grade-011
+title: BMI 판정
+unit: b03
+difficulty: 2
+tags: [cond.elif-order, cond.boundary, io.fstring-format]
+statement: |
+  몸무게(kg)와 키(cm)를 실수로 입력받아 BMI와 판정 결과를 출력하시오.
+
+  - BMI = 몸무게 / (키(m) × 키(m)), 키(m) = 키(cm) / 100
+  - 판정: BMI가 18.5 미만 `저체중`, 23 미만 `정상`, 25 미만 `과체중`, 25 이상 `비만`
+  - 판정은 반올림하기 전의 BMI 값으로 한다.
+  - 입력 프롬프트: `몸무게(kg): `, `키(cm): `
+  - 출력 형식: `BMI: 22.86` (소수점 둘째 자리), `판정: 정상`
+starter: |
+  weight = float(input("몸무게(kg): "))
+  height = float(input("키(cm): ")) / 100
+solution: |
+  weight = float(input("몸무게(kg): "))
+  height = float(input("키(cm): ")) / 100
+  bmi = weight / (height * height)
+  if bmi < 18.5:
+      result = "저체중"
+  elif bmi < 23:
+      result = "정상"
+  elif bmi < 25:
+      result = "과체중"
+  else:
+      result = "비만"
+  print(f"BMI: {bmi:.2f}")
+  print(f"판정: {result}")
+alt_solutions:
+  - |
+    weight = float(input("몸무게(kg): "))
+    height = float(input("키(cm): ")) / 100
+    bmi = weight / (height * height)
+    print("BMI:", format(bmi, ".2f"))
+    if bmi >= 25:
+        print("판정: 비만")
+    elif bmi >= 23:
+        print("판정: 과체중")
+    elif bmi >= 18.5:
+        print("판정: 정상")
+    else:
+        print("판정: 저체중")
+mutants:
+  - name: 경계값을 이하(<=)로 비교
+    code: |
+      weight = float(input("몸무게(kg): "))
+      height = float(input("키(cm): ")) / 100
+      bmi = weight / (height * height)
+      if bmi <= 18.5:
+          result = "저체중"
+      elif bmi <= 23:
+          result = "정상"
+      elif bmi <= 25:
+          result = "과체중"
+      else:
+          result = "비만"
+      print(f"BMI: {bmi:.2f}")
+      print(f"판정: {result}")
+  - name: 반올림한 값으로 판정
+    code: |
+      weight = float(input("몸무게(kg): "))
+      height = float(input("키(cm): ")) / 100
+      bmi = round(weight / (height * height))
+      if bmi < 18.5:
+          result = "저체중"
+      elif bmi < 23:
+          result = "정상"
+      elif bmi < 25:
+          result = "과체중"
+      else:
+          result = "비만"
+      print(f"BMI: {bmi:.2f}")
+      print(f"판정: {result}")
+tests:
+  - stdin: "70\n175\n"
+    public: true
+  - stdin: "50\n170\n"
+  - stdin: "60\n160\n"
+  - stdin: "80\n170\n"
+  - stdin: "23\n100\n"
+    note: BMI가 정확히 23 → 과체중
+  - stdin: "18.5\n100\n"
+    note: BMI가 정확히 18.5 → 정상
+hints:
+  - "'18.5 미만'은 `< 18.5`입니다. 정확히 18.5는 정상이에요."
+explanation: |
+  `elif`로 낮은 구간부터 검사하면 각 구간의 아래쪽 경계는 앞 조건이 이미 걸러 줍니다.

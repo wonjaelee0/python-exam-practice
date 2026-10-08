@@ -1,0 +1,65 @@
+id: b02-vat-receipt-013
+title: 부가세가 들어간 영수증
+unit: b02
+difficulty: 2
+tags: [op.floordiv, io.fstring, io.input-cast]
+statement: |
+  상품의 단가와 수량(정수)을 입력받아 공급가액, 부가세, 합계를 출력하시오.
+
+  - 공급가액 = 단가 × 수량
+  - 부가세 = 공급가액의 10% — 소수점 아래는 버리고 정수로 (`공급가액 * 10 // 100`)
+  - 합계 = 공급가액 + 부가세
+  - 입력 프롬프트: `단가: `, `수량: `
+  - 출력 형식: `공급가액: 15000원`, `부가세: 1500원`, `합계: 16500원`
+starter: |
+  price = int(input("단가: "))
+  qty = int(input("수량: "))
+solution: |
+  price = int(input("단가: "))
+  qty = int(input("수량: "))
+  supply = price * qty
+  vat = supply * 10 // 100
+  total = supply + vat
+  print(f"공급가액: {supply}원")
+  print(f"부가세: {vat}원")
+  print(f"합계: {total}원")
+alt_solutions:
+  - |
+    price = int(input("단가: "))
+    qty = int(input("수량: "))
+    supply = price * qty
+    vat = supply // 10
+    print("공급가액: " + str(supply) + "원")
+    print("부가세: " + str(vat) + "원")
+    print("합계: " + str(supply + vat) + "원")
+mutants:
+  - name: 나눗셈(/)으로 실수 부가세
+    code: |
+      price = int(input("단가: "))
+      qty = int(input("수량: "))
+      supply = price * qty
+      vat = supply * 10 / 100
+      print(f"공급가액: {supply}원")
+      print(f"부가세: {vat}원")
+      print(f"합계: {supply + vat}원")
+  - name: 반올림(round) 사용
+    code: |
+      price = int(input("단가: "))
+      qty = int(input("수량: "))
+      supply = price * qty
+      vat = round(supply / 10)
+      print(f"공급가액: {supply}원")
+      print(f"부가세: {vat}원")
+      print(f"합계: {supply + vat}원")
+tests:
+  - stdin: "5000\n3\n"
+    public: true
+  - stdin: "999\n1\n"
+    note: 99.9원 → 버리면 99원
+  - stdin: "1005\n1\n"
+  - stdin: "0\n5\n"
+  - stdin: "12345\n2\n"
+hints:
+  - "`/`는 실수 결과를 냅니다. 소수점 아래를 버린 정수가 필요하면 `//`를 쓰세요."
+explanation: |
+  `supply * 10 // 100`은 먼저 곱한 뒤 몫을 구하므로 소수점 아래가 버려진 정수가 됩니다.

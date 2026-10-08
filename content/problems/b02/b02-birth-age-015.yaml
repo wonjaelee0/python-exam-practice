@@ -1,0 +1,54 @@
+id: b02-birth-age-015
+title: 2026년의 나이와 10년 뒤 나이
+unit: b02
+difficulty: 1
+tags: [io.input-cast, io.fstring]
+statement: |
+  이름과 태어난 해를 입력받아 2026년의 나이와 10년 뒤의 나이를 출력하시오.
+
+  - 나이 = 2026 - 태어난 해
+  - 입력 프롬프트: `이름: `, `태어난 해: `
+  - 출력 형식
+    - `민수님은 2026년에 21살입니다.`
+    - `10년 뒤에는 31살입니다.`
+starter: |
+  name = input("이름: ")
+  year = int(input("태어난 해: "))
+solution: |
+  name = input("이름: ")
+  year = int(input("태어난 해: "))
+  age = 2026 - year
+  print(f"{name}님은 2026년에 {age}살입니다.")
+  print(f"10년 뒤에는 {age + 10}살입니다.")
+alt_solutions:
+  - |
+    name = input("이름: ")
+    age = 2026 - int(input("태어난 해: "))
+    print(name + "님은 2026년에", str(age) + "살입니다.")
+    print("10년 뒤에는", str(age + 10) + "살입니다.")
+mutants:
+  - name: 빼는 순서가 반대
+    code: |
+      name = input("이름: ")
+      year = int(input("태어난 해: "))
+      age = year - 2026
+      print(f"{name}님은 2026년에 {age}살입니다.")
+      print(f"10년 뒤에는 {age + 10}살입니다.")
+  - name: 문장 끝 마침표 앞 공백
+    code: |
+      name = input("이름: ")
+      year = int(input("태어난 해: "))
+      age = 2026 - year
+      print(name + "님은 2026년에", age, "살입니다.")
+      print("10년 뒤에는", age + 10, "살입니다.")
+tests:
+  - stdin: "민수\n2005\n"
+    public: true
+  - stdin: "Amy\n2026\n"
+    note: 올해 태어남
+  - stdin: "철수\n1990\n"
+  - stdin: "영희\n2010\n"
+hints:
+  - "`print(a, b)`는 값 사이에 공백을 넣습니다. `21살`처럼 붙여 써야 하는 곳은 f-string이나 `+`를 쓰세요."
+explanation: |
+  `print()`에 쉼표로 여러 값을 주면 사이에 공백이 들어갑니다. 출력 형식이 정확해야 채점을 통과하므로 f-string이 안전합니다.

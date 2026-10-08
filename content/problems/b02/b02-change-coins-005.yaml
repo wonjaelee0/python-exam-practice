@@ -1,0 +1,84 @@
+id: b02-change-coins-005
+title: 거스름돈을 지폐와 동전으로
+unit: b02
+difficulty: 2
+tags: [op.floordiv, op.mod, io.input-cast]
+statement: |
+  물건값과 낸 돈(원, 정수)을 입력받아 거스름돈을 구하고, 거스름돈을 1000원권·500원·100원·50원·10원으로
+  줄 때 각각 몇 개가 필요한지 출력하시오. 큰 단위부터 가능한 한 많이 준다.
+  (모든 금액은 10원 단위이고, 낸 돈은 물건값 이상이다)
+
+  - 입력 프롬프트: `물건값: `, `낸 돈: `
+  - 출력 형식 (여섯 줄)
+    - `거스름돈: 2760원`
+    - `1000원: 2개`
+    - `500원: 1개`
+    - `100원: 2개`
+    - `50원: 1개`
+    - `10원: 1개`
+starter: |
+  price = int(input("물건값: "))
+  paid = int(input("낸 돈: "))
+solution: |
+  price = int(input("물건값: "))
+  paid = int(input("낸 돈: "))
+  change = paid - price
+  print(f"거스름돈: {change}원")
+  print(f"1000원: {change // 1000}개")
+  change = change % 1000
+  print(f"500원: {change // 500}개")
+  change = change % 500
+  print(f"100원: {change // 100}개")
+  change = change % 100
+  print(f"50원: {change // 50}개")
+  change = change % 50
+  print(f"10원: {change // 10}개")
+alt_solutions:
+  - |
+    price = int(input("물건값: "))
+    paid = int(input("낸 돈: "))
+    left = paid - price
+    print("거스름돈: " + str(left) + "원")
+    for unit in [1000, 500, 100, 50, 10]:
+        count, left = divmod(left, unit)
+        print(str(unit) + "원: " + str(count) + "개")
+mutants:
+  - name: 남은 금액을 줄이지 않음
+    code: |
+      price = int(input("물건값: "))
+      paid = int(input("낸 돈: "))
+      change = paid - price
+      print(f"거스름돈: {change}원")
+      print(f"1000원: {change // 1000}개")
+      print(f"500원: {change // 500}개")
+      print(f"100원: {change // 100}개")
+      print(f"50원: {change // 50}개")
+      print(f"10원: {change // 10}개")
+  - name: 나눗셈(/) 사용
+    code: |
+      price = int(input("물건값: "))
+      paid = int(input("낸 돈: "))
+      change = paid - price
+      print(f"거스름돈: {change}원")
+      print(f"1000원: {change / 1000}개")
+      change = change % 1000
+      print(f"500원: {change / 500}개")
+      change = change % 500
+      print(f"100원: {change / 100}개")
+      change = change % 100
+      print(f"50원: {change / 50}개")
+      change = change % 50
+      print(f"10원: {change / 10}개")
+tests:
+  - stdin: "7240\n10000\n"
+    public: true
+  - stdin: "1000\n1000\n"
+    note: 거스름돈 0원
+  - stdin: "990\n5000\n"
+  - stdin: "3330\n5000\n"
+  - stdin: "10\n100\n"
+hints:
+  - "개수는 `금액 // 단위`, 남은 금액은 `금액 % 단위`입니다."
+  - "한 단위를 계산한 뒤 `change = change % 1000`처럼 남은 금액으로 바꿔 두세요."
+explanation: |
+  몫(`//`)으로 개수를 구하고 나머지(`%`)를 다음 단위로 넘기는 패턴입니다. `divmod`를 쓰면 두 값을 한 번에 얻습니다.

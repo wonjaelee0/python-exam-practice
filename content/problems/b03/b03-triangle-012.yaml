@@ -1,0 +1,86 @@
+id: b03-triangle-012
+title: 삼각형 판별
+unit: b03
+difficulty: 3
+tags: [cond.nested-if, cond.logic-and-or]
+statement: |
+  세 변의 길이(양의 정수) a, b, c를 입력받아 삼각형의 종류를 출력하시오.
+
+  - 어느 변이든 나머지 두 변의 합보다 짧아야 삼각형이 된다. 아니면 `삼각형을 만들 수 없습니다`
+  - 삼각형이면: 세 변이 모두 같으면 `정삼각형`, 두 변만 같으면 `이등변삼각형`, 모두 다르면 `일반 삼각형`
+  - 입력 프롬프트: `a: `, `b: `, `c: `
+starter: |
+  a = int(input("a: "))
+  b = int(input("b: "))
+  c = int(input("c: "))
+solution: |
+  a = int(input("a: "))
+  b = int(input("b: "))
+  c = int(input("c: "))
+  if a < b + c and b < a + c and c < a + b:
+      if a == b and b == c:
+          print("정삼각형")
+      elif a == b or b == c or a == c:
+          print("이등변삼각형")
+      else:
+          print("일반 삼각형")
+  else:
+      print("삼각형을 만들 수 없습니다")
+alt_solutions:
+  - |
+    a = int(input("a: "))
+    b = int(input("b: "))
+    c = int(input("c: "))
+    longest = max(a, b, c)
+    if longest >= a + b + c - longest:
+        print("삼각형을 만들 수 없습니다")
+    elif a == b == c:
+        print("정삼각형")
+    elif a != b and b != c and a != c:
+        print("일반 삼각형")
+    else:
+        print("이등변삼각형")
+mutants:
+  - name: 같아도 삼각형으로 봄 (<=)
+    code: |
+      a = int(input("a: "))
+      b = int(input("b: "))
+      c = int(input("c: "))
+      if a <= b + c and b <= a + c and c <= a + b:
+          if a == b and b == c:
+              print("정삼각형")
+          elif a == b or b == c or a == c:
+              print("이등변삼각형")
+          else:
+              print("일반 삼각형")
+      else:
+          print("삼각형을 만들 수 없습니다")
+  - name: 한 변만 검사
+    code: |
+      a = int(input("a: "))
+      b = int(input("b: "))
+      c = int(input("c: "))
+      if c < a + b:
+          if a == b and b == c:
+              print("정삼각형")
+          elif a == b or b == c or a == c:
+              print("이등변삼각형")
+          else:
+              print("일반 삼각형")
+      else:
+          print("삼각형을 만들 수 없습니다")
+tests:
+  - stdin: "3\n4\n5\n"
+    public: true
+  - stdin: "5\n5\n5\n"
+  - stdin: "5\n5\n8\n"
+  - stdin: "1\n2\n3\n"
+    note: 1 + 2 = 3 이라서 삼각형이 아님
+  - stdin: "10\n2\n3\n"
+    note: 가장 긴 변이 a
+  - stdin: "2\n7\n7\n"
+hints:
+  - "세 조건 `a < b + c`, `b < a + c`, `c < a + b`가 모두 참이어야 합니다 (`and`)."
+  - "삼각형이 되는지 먼저 확인하고, 그 안에서 종류를 나눕니다 (중첩 if)."
+explanation: |
+  가장 긴 변이 나머지 두 변의 합보다 짧아야 삼각형입니다. 어느 변이 가장 긴지 모르므로 세 경우를 모두 검사합니다.

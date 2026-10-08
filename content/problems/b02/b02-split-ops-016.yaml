@@ -1,0 +1,58 @@
+id: b02-split-ops-016
+title: 한 줄에 입력받은 두 정수로 다섯 가지 연산
+unit: b02
+difficulty: 1
+tags: [io.split-map, op.floordiv, op.mod]
+statement: |
+  두 정수 a, b를 한 줄에 공백으로 구분해 입력받아 다섯 가지 연산 결과를 출력하시오. (b는 0이 아님)
+
+  - 입력 프롬프트: `두 정수: ` (예: `10 3`)
+  - 출력 형식 (다섯 줄): `합: a+b`, `차: a-b`, `곱: a*b`, `몫: a//b`, `나머지: a%b`
+starter: |
+  a, b = map(int, input("두 정수: ").split())
+solution: |
+  a, b = map(int, input("두 정수: ").split())
+  print(f"합: {a + b}")
+  print(f"차: {a - b}")
+  print(f"곱: {a * b}")
+  print(f"몫: {a // b}")
+  print(f"나머지: {a % b}")
+alt_solutions:
+  - |
+    parts = input("두 정수: ").split()
+    a = int(parts[0])
+    b = int(parts[1])
+    print("합:", a + b)
+    print("차:", a - b)
+    print("곱:", a * b)
+    print("몫:", a // b)
+    print("나머지:", a % b)
+mutants:
+  - name: 몫을 /로
+    code: |
+      a, b = map(int, input("두 정수: ").split())
+      print(f"합: {a + b}")
+      print(f"차: {a - b}")
+      print(f"곱: {a * b}")
+      print(f"몫: {a / b}")
+      print(f"나머지: {a % b}")
+  - name: 차를 b - a로
+    code: |
+      a, b = map(int, input("두 정수: ").split())
+      print(f"합: {a + b}")
+      print(f"차: {b - a}")
+      print(f"곱: {a * b}")
+      print(f"몫: {a // b}")
+      print(f"나머지: {a % b}")
+tests:
+  - stdin: "10 3\n"
+    public: true
+  - stdin: "3 10\n"
+  - stdin: "-9 2\n"
+    note: 음수의 몫과 나머지
+  - stdin: "6 6\n"
+  - stdin: "100 7\n"
+hints:
+  - "`a, b = map(int, input().split())`로 두 정수를 한 번에 받습니다."
+explanation: |
+  `split()`으로 나눈 뒤 `map(int, ...)`으로 정수로 바꿉니다. 몫은 `//`, 나머지는 `%`입니다.

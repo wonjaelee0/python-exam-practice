@@ -1,0 +1,51 @@
+id: b02-power-root-014
+title: 제곱, 세제곱, 제곱근
+unit: b02
+difficulty: 1
+tags: [op.pow, io.fstring-format, op.precedence]
+statement: |
+  0 이상의 정수 n을 입력받아 n의 제곱, 세제곱, 제곱근을 출력하시오. 거듭제곱 연산자 `**`를 사용한다.
+
+  - 제곱근은 `n ** 0.5`로 구하고 소수점 셋째 자리까지 출력한다.
+  - 입력 프롬프트: `정수: `
+  - 출력 형식: `제곱: 49`, `세제곱: 343`, `제곱근: 2.646`
+starter: |
+  n = int(input("정수: "))
+solution: |
+  n = int(input("정수: "))
+  print(f"제곱: {n ** 2}")
+  print(f"세제곱: {n ** 3}")
+  print(f"제곱근: {n ** 0.5:.3f}")
+alt_solutions:
+  - |
+    import math
+    n = int(input("정수: "))
+    print("제곱:", n * n)
+    print("세제곱:", n * n * n)
+    print("제곱근:", format(math.sqrt(n), ".3f"))
+mutants:
+  - name: n ** 1/2 (우선순위 실수)
+    code: |
+      n = int(input("정수: "))
+      print(f"제곱: {n ** 2}")
+      print(f"세제곱: {n ** 3}")
+      print(f"제곱근: {n ** 1/2:.3f}")
+  - name: 제곱을 n * 2로
+    code: |
+      n = int(input("정수: "))
+      print(f"제곱: {n * 2}")
+      print(f"세제곱: {n * 3}")
+      print(f"제곱근: {n ** 0.5:.3f}")
+tests:
+  - stdin: "7\n"
+    public: true
+  - stdin: "0\n"
+  - stdin: "16\n"
+    note: 제곱근이 정수
+  - stdin: "2\n"
+  - stdin: "100\n"
+hints:
+  - "`**`는 거듭제곱입니다. `2 ** 3`은 8이에요."
+  - "`n ** 1/2`는 `(n ** 1) / 2`로 계산됩니다. 제곱근은 `n ** 0.5`처럼 지수를 한 덩어리로 써야 해요."
+explanation: |
+  `**`는 곱셈·나눗셈보다 우선순위가 높습니다. 제곱근은 0.5제곱으로 구할 수 있습니다.

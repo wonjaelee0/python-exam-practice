@@ -1,0 +1,49 @@
+id: b02-bmi-calc-007
+title: BMI 계산하기
+unit: b02
+difficulty: 1
+tags: [io.input-cast, io.fstring-format, op.arith]
+statement: |
+  몸무게(kg)와 키(cm)를 실수로 입력받아 BMI를 소수점 둘째 자리까지 출력하시오.
+
+  - BMI = 몸무게 / (키(m) × 키(m)) — 키는 cm로 입력되므로 100으로 나눠 m로 바꾼다.
+  - 입력 프롬프트: `몸무게(kg): `, `키(cm): `
+  - 출력 형식: `BMI: 22.86`
+starter: |
+  weight = float(input("몸무게(kg): "))
+  height = float(input("키(cm): "))
+solution: |
+  weight = float(input("몸무게(kg): "))
+  height = float(input("키(cm): ")) / 100
+  bmi = weight / (height * height)
+  print(f"BMI: {bmi:.2f}")
+alt_solutions:
+  - |
+    w = float(input("몸무게(kg): "))
+    h_cm = float(input("키(cm): "))
+    h = h_cm / 100
+    print("BMI:", format(w / (h * h), ".2f"))
+mutants:
+  - name: cm를 m로 바꾸지 않음
+    code: |
+      weight = float(input("몸무게(kg): "))
+      height = float(input("키(cm): "))
+      print(f"BMI: {weight / (height * height):.2f}")
+  - name: 괄호 누락 (w / h * h)
+    code: |
+      weight = float(input("몸무게(kg): "))
+      height = float(input("키(cm): ")) / 100
+      print(f"BMI: {weight / height * height:.2f}")
+tests:
+  - stdin: "70\n175\n"
+    public: true
+  - stdin: "50\n160\n"
+  - stdin: "90\n180\n"
+  - stdin: "45.5\n155.5\n"
+  - stdin: "100\n200\n"
+    note: 정확히 25.00
+hints:
+  - "175cm는 1.75m입니다. `float(input(...)) / 100`"
+  - "`weight / height * height`는 `(weight / height) * height`로 계산됩니다. 분모에 괄호가 필요해요."
+explanation: |
+  `/`와 `*`는 같은 우선순위라 왼쪽부터 계산됩니다. 키의 제곱으로 나누려면 `weight / (height * height)`처럼 괄호로 묶습니다.

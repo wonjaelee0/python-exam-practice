@@ -1,0 +1,84 @@
+id: b03-time-greeting-013
+title: 시각에 맞는 인사
+unit: b03
+difficulty: 1
+tags: [cond.elif-order, cond.boundary]
+statement: |
+  시각(0~23의 정수)을 입력받아 알맞은 인사를 출력하시오.
+
+  | 시각 | 출력 |
+  |---|---|
+  | 0 ~ 5 | `새벽입니다` |
+  | 6 ~ 11 | `좋은 아침입니다` |
+  | 12 ~ 17 | `좋은 오후입니다` |
+  | 18 ~ 23 | `좋은 저녁입니다` |
+  | 그 외 | `잘못된 시각입니다` |
+
+  - 입력 프롬프트: `시각(0~23): `
+starter: |
+  hour = int(input("시각(0~23): "))
+solution: |
+  hour = int(input("시각(0~23): "))
+  if hour < 0 or hour > 23:
+      print("잘못된 시각입니다")
+  elif hour <= 5:
+      print("새벽입니다")
+  elif hour <= 11:
+      print("좋은 아침입니다")
+  elif hour <= 17:
+      print("좋은 오후입니다")
+  else:
+      print("좋은 저녁입니다")
+alt_solutions:
+  - |
+    hour = int(input("시각(0~23): "))
+    if 0 <= hour <= 5:
+        print("새벽입니다")
+    elif 6 <= hour <= 11:
+        print("좋은 아침입니다")
+    elif 12 <= hour <= 17:
+        print("좋은 오후입니다")
+    elif 18 <= hour <= 23:
+        print("좋은 저녁입니다")
+    else:
+        print("잘못된 시각입니다")
+mutants:
+  - name: 범위 밖 검사 누락
+    code: |
+      hour = int(input("시각(0~23): "))
+      if hour <= 5:
+          print("새벽입니다")
+      elif hour <= 11:
+          print("좋은 아침입니다")
+      elif hour <= 17:
+          print("좋은 오후입니다")
+      else:
+          print("좋은 저녁입니다")
+  - name: 경계를 미만(<)으로
+    code: |
+      hour = int(input("시각(0~23): "))
+      if hour < 0 or hour > 23:
+          print("잘못된 시각입니다")
+      elif hour < 5:
+          print("새벽입니다")
+      elif hour < 11:
+          print("좋은 아침입니다")
+      elif hour < 17:
+          print("좋은 오후입니다")
+      else:
+          print("좋은 저녁입니다")
+tests:
+  - stdin: "9\n"
+    public: true
+  - stdin: "0\n"
+  - stdin: "5\n"
+  - stdin: "12\n"
+  - stdin: "17\n"
+  - stdin: "23\n"
+  - stdin: "24\n"
+    note: 범위 밖
+  - stdin: "-1\n"
+hints:
+  - "범위 밖인 경우를 먼저 걸러 내면 나머지 조건이 단순해집니다."
+explanation: |
+  `0 <= hour <= 5`처럼 비교 연산자를 이어 쓰면 범위를 읽기 쉽게 표현할 수 있습니다.

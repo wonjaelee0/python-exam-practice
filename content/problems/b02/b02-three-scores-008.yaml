@@ -1,0 +1,51 @@
+id: b02-three-scores-008
+title: 한 줄로 입력받은 세 과목의 합계와 평균
+unit: b02
+difficulty: 1
+tags: [io.split-map, io.fstring-format]
+statement: |
+  세 과목의 점수(정수)를 한 줄에 공백으로 구분해 입력받아 합계와 평균을 출력하시오.
+
+  - 입력 프롬프트: `세 과목 점수: ` (예: `80 90 85`)
+  - 출력 형식
+    - `합계: 255`
+    - `평균: 85.00` (소수점 둘째 자리까지)
+starter: |
+  a, b, c = map(int, input("세 과목 점수: ").split())
+solution: |
+  a, b, c = map(int, input("세 과목 점수: ").split())
+  total = a + b + c
+  print(f"합계: {total}")
+  print(f"평균: {total / 3:.2f}")
+alt_solutions:
+  - |
+    parts = input("세 과목 점수: ").split()
+    total = int(parts[0]) + int(parts[1]) + int(parts[2])
+    print("합계:", total)
+    print("평균:", format(total / 3, ".2f"))
+mutants:
+  - name: 형변환 없이 문자열로 더함
+    code: |
+      a, b, c = input("세 과목 점수: ").split()
+      total = a + b + c
+      print(f"합계: {total}")
+      print(f"평균: {int(total) / 3:.2f}")
+  - name: 평균을 몫(//)으로
+    code: |
+      a, b, c = map(int, input("세 과목 점수: ").split())
+      total = a + b + c
+      print(f"합계: {total}")
+      print(f"평균: {total // 3:.2f}")
+tests:
+  - stdin: "80 90 85\n"
+    public: true
+  - stdin: "100 100 100\n"
+  - stdin: "0 0 1\n"
+    note: 평균 0.33
+  - stdin: "59 60 62\n"
+  - stdin: "77 88 99\n"
+hints:
+  - "`input().split()`은 공백 기준으로 나눈 문자열 리스트입니다."
+  - "`map(int, ...)`으로 정수로 바꾸고 `a, b, c = ...`로 한 번에 받을 수 있어요."
+explanation: |
+  `a, b, c = map(int, input().split())`는 한 줄에 여러 정수를 입력받는 대표적인 방법입니다.

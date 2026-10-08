@@ -1,0 +1,56 @@
+id: b02-floordiv-negative-011
+title: 음수 나눗셈의 몫과 나머지
+unit: b02
+difficulty: 2
+tags: [op.floordiv, op.mod, op.div]
+statement: |
+  두 정수 a, b(b는 0이 아님)를 입력받아 다음 네 줄을 출력하시오. 음수가 입력될 수 있다.
+
+  - `a // b = 몫`
+  - `a % b = 나머지`
+  - `a / b = 나눗셈 결과`
+  - `검산: 값` — `b * (a // b) + a % b`의 값 (항상 a와 같다)
+  - 입력 프롬프트: `a: `, `b: `
+starter: |
+  a = int(input("a: "))
+  b = int(input("b: "))
+solution: |
+  a = int(input("a: "))
+  b = int(input("b: "))
+  print(f"a // b = {a // b}")
+  print(f"a % b = {a % b}")
+  print(f"a / b = {a / b}")
+  print(f"검산: {b * (a // b) + a % b}")
+alt_solutions:
+  - |
+    a = int(input("a: "))
+    b = int(input("b: "))
+    q, r = divmod(a, b)
+    print("a // b =", q)
+    print("a % b =", r)
+    print("a / b =", a / b)
+    print("검산:", b * q + r)
+mutants:
+  - name: 몫을 int(a / b)로 (0 쪽으로 버림)
+    code: |
+      a = int(input("a: "))
+      b = int(input("b: "))
+      q = int(a / b)
+      print(f"a // b = {q}")
+      print(f"a % b = {a - b * q}")
+      print(f"a / b = {a / b}")
+      print(f"검산: {b * q + (a - b * q)}")
+tests:
+  - stdin: "-7\n2\n"
+    public: true
+  - stdin: "7\n2\n"
+  - stdin: "7\n-2\n"
+    note: 나누는 수가 음수
+  - stdin: "-8\n4\n"
+    note: 나누어떨어지는 음수
+  - stdin: "5\n10\n"
+hints:
+  - "`//`는 '버림'이 아니라 '내림'입니다. `-7 // 2`는 `-3.5`보다 작은 정수 중 가장 큰 `-4`예요."
+  - "그래서 `-7 % 2`는 `1`이 됩니다. (`2 * -4 + 1 = -7`)"
+explanation: |
+  파이썬의 `//`는 결과를 음의 무한대 쪽으로 내림합니다. 항상 `b * (a // b) + a % b == a`가 성립하도록 `%`가 정해집니다.

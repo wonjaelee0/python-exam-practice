@@ -1,0 +1,60 @@
+id: b02-cast-debug-012
+title: "[버그 고치기] 합이 1020으로 나와요"
+unit: b02
+difficulty: 1
+tags: [io.input-cast, debug]
+format: debug
+statement: |
+  아래 코드는 두 정수를 입력받아 합과 평균을 출력하려고 만들었다.
+  그런데 `10`과 `20`을 입력하면 `합: 1020`이 나오고, 평균을 계산할 때 오류가 난다.
+  코드를 고쳐 올바르게 동작하게 하시오.
+
+  - 입력 프롬프트: `첫 번째 수: `, `두 번째 수: `
+  - 출력 형식: `합: 30`, `평균: 15.0`
+starter: |
+  a = input("첫 번째 수: ")
+  b = input("두 번째 수: ")
+  total = a + b
+  print("합:", total)
+  print("평균:", total / 2)
+solution: |
+  a = int(input("첫 번째 수: "))
+  b = int(input("두 번째 수: "))
+  total = a + b
+  print("합:", total)
+  print("평균:", total / 2)
+alt_solutions:
+  - |
+    a = input("첫 번째 수: ")
+    b = input("두 번째 수: ")
+    total = int(a) + int(b)
+    print(f"합: {total}")
+    print(f"평균: {total / 2}")
+mutants:
+  - name: 원래 코드 그대로
+    code: |
+      a = input("첫 번째 수: ")
+      b = input("두 번째 수: ")
+      total = a + b
+      print("합:", total)
+      print("평균:", total / 2)
+  - name: float로 바꿈 (합이 30.0)
+    code: |
+      a = float(input("첫 번째 수: "))
+      b = float(input("두 번째 수: "))
+      total = a + b
+      print("합:", total)
+      print("평균:", total / 2)
+tests:
+  - stdin: "10\n20\n"
+    public: true
+  - stdin: "0\n0\n"
+  - stdin: "-5\n4\n"
+  - stdin: "7\n8\n"
+    note: 평균 7.5
+hints:
+  - "`input()`이 돌려주는 값은 항상 문자열입니다. `'10' + '20'`은 `'1020'`이에요."
+  - "정수로 계산하려면 `int()`로 바꿔야 합니다."
+explanation: |
+  문자열끼리 `+`는 이어 붙이기입니다. `int(input(...))`로 바꾸면 숫자 덧셈이 됩니다.
+  정수를 쓰면 합은 `30`, `/`로 나눈 평균은 `15.0`이 됩니다.

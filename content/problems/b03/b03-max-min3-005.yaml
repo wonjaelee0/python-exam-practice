@@ -1,0 +1,83 @@
+id: b03-max-min3-005
+title: 세 수 중 가장 큰 수와 가장 작은 수
+unit: b03
+difficulty: 2
+tags: [cond.if-else, cond.compare]
+statement: |
+  정수 세 개를 입력받아 가장 큰 수와 가장 작은 수를 출력하시오. `max()`, `min()` 없이 **if문으로** 구해 보자.
+
+  - 입력 프롬프트: `a: `, `b: `, `c: `
+  - 출력 형식: `가장 큰 수: 9`, `가장 작은 수: 3`
+starter: |
+  a = int(input("a: "))
+  b = int(input("b: "))
+  c = int(input("c: "))
+solution: |
+  a = int(input("a: "))
+  b = int(input("b: "))
+  c = int(input("c: "))
+  largest = a
+  if b > largest:
+      largest = b
+  if c > largest:
+      largest = c
+  smallest = a
+  if b < smallest:
+      smallest = b
+  if c < smallest:
+      smallest = c
+  print(f"가장 큰 수: {largest}")
+  print(f"가장 작은 수: {smallest}")
+alt_solutions:
+  - |
+    a = int(input("a: "))
+    b = int(input("b: "))
+    c = int(input("c: "))
+    print("가장 큰 수:", max(a, b, c))
+    print("가장 작은 수:", min(a, b, c))
+mutants:
+  - name: c를 비교하지 않음
+    code: |
+      a = int(input("a: "))
+      b = int(input("b: "))
+      c = int(input("c: "))
+      if a > b:
+          largest = a
+          smallest = b
+      else:
+          largest = b
+          smallest = a
+      print(f"가장 큰 수: {largest}")
+      print(f"가장 작은 수: {smallest}")
+  - name: elif로 한 번만 갱신
+    code: |
+      a = int(input("a: "))
+      b = int(input("b: "))
+      c = int(input("c: "))
+      largest = a
+      smallest = a
+      if b > largest:
+          largest = b
+      elif c > largest:
+          largest = c
+      if b < smallest:
+          smallest = b
+      elif c < smallest:
+          smallest = c
+      print(f"가장 큰 수: {largest}")
+      print(f"가장 작은 수: {smallest}")
+tests:
+  - stdin: "3\n9\n5\n"
+    public: true
+  - stdin: "9\n3\n5\n"
+  - stdin: "3\n5\n9\n"
+    note: 마지막 수가 가장 큼
+  - stdin: "4\n4\n4\n"
+  - stdin: "-1\n-5\n-3\n"
+  - stdin: "1\n5\n9\n"
+    note: elif로 하면 c를 놓침
+hints:
+  - "가장 큰 수를 일단 a라고 두고, b와 c를 차례로 비교하며 더 크면 바꿉니다."
+  - "두 번의 비교는 서로 독립적이어야 하므로 `elif`가 아니라 `if`를 두 번 씁니다."
+explanation: |
+  '지금까지의 최댓값' 변수를 두고 하나씩 비교해 갱신하는 방법은 반복문에서도 그대로 쓰입니다.
