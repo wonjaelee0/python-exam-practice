@@ -197,6 +197,9 @@ button.copy {
   position: absolute; top: 6px; right: 6px; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 4px; cursor: pointer;
   background: #fff; color: #24252b; border: 1px solid #cfd3da;
 }
+button.copy.copied, button.copy.sent { font-size: 0; }
+button.copy.copied::after { content: "복사됨"; font-size: 11px; }
+button.copy.sent::after { content: "입력됨"; font-size: 11px; }
 .link-btn { background: none; border: 0; color: var(--accent); font: inherit; font-size: 13px; cursor: pointer; padding: 0; }
 .hints { margin-top: 24px; border-top: 1px solid #e3e5ea; padding-top: 12px; }
 .hints details { border: 1px solid #e3e5ea; border-radius: 8px; padding: 8px 12px; margin: 8px 0; }

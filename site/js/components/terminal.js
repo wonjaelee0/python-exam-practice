@@ -44,6 +44,20 @@ export class TermView {
     this.buf = ''; // 입력 중인 줄
     this.pending = []; // 미리 입력된(붙여넣은) 줄들
     this.term.onData((d) => this._onData(d));
+    // 붙여넣기는 직접 처리한다. 한글 입력기가 켜진 상태에서 xterm 기본 처리에 맡기면
+    // 숨은 입력칸에 남은 글자까지 다시 들어가 "copycopy"처럼 겹칠 수 있다.
+    const ta = this.term.textarea;
+    ta?.addEventListener(
+      'paste',
+      (e) => {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        const text = e.clipboardData?.getData('text/plain') || '';
+        ta.value = '';
+        if (text) this._onData(text);
+      },
+      true,
+    );
   }
 
   refit() {
@@ -86,6 +100,12 @@ export class TermView {
   /** 예시 입력을 미리 넣어 둔다 (입력 요청이 오면 차례로 사용) */
   queueInput(lines) {
     this.pending.push(...lines);
+  }
+
+  /** 키보드로 친 것처럼 입력하고 Enter (여러 줄이면 줄마다 Enter) */
+  typeInput(text) {
+    const body = String(text).replace(/\r\n?/g, '\n').replace(/\n+$/, '');
+    this._onData(body + '\r');
   }
 
   readLine() {

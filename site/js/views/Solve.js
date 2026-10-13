@@ -130,6 +130,14 @@ function Workspace({ problem, siblings, unit, manifest }) {
     if (runningRef.current) runner.stop();
   };
 
+  // 실행 중에 Copy를 누르면 elice처럼 터미널에 바로 입력 + Enter
+  actions.current.typeInput = (text) => {
+    if (!runningRef.current || !termRef.current) return false;
+    termRef.current.typeInput(text);
+    termRef.current.focus();
+    return true;
+  };
+
   actions.current.run = async (presetInputs) => {
     if (runningRef.current) {
       runner.stop();
@@ -242,7 +250,8 @@ function Workspace({ problem, siblings, unit, manifest }) {
         })}
       </nav>
 
-      <${ProblemPanel} problem=${problem} unit=${unit} onRunWith=${(lines) => actions.current.run(lines)} />
+      <${ProblemPanel} problem=${problem} unit=${unit} onRunWith=${(lines) => actions.current.run(lines)}
+        toTerminal=${(text) => actions.current.typeInput(text)} />
 
       <section class="code-pane">
         <div class="tabs">
@@ -293,11 +302,11 @@ function Workspace({ problem, siblings, unit, manifest }) {
   </div>`;
 }
 
-function ProblemPanel({ problem, unit, onRunWith }) {
+function ProblemPanel({ problem, unit, onRunWith, toTerminal }) {
   const ref = useRef(null);
   const body = useMemo(() => md(problem.statement), [problem.id]);
   const [solution, setSolution] = useState(null);
-  useEffect(() => addCopyButtons(ref.current), [problem.id]);
+  useEffect(() => addCopyButtons(ref.current, toTerminal), [problem.id]);
   const pubs = problem.tests.filter((t) => t.public);
   const pre = problem.style === 'elice-pre';
 
@@ -318,7 +327,7 @@ function ProblemPanel({ problem, unit, onRunWith }) {
         ? html`<h4 class="io-label">${pre ? 'Input Sample' : 'Input'}
               <button class="link-btn" onClick=${() => onRunWith(splitLines(t.stdin))} title="이 입력을 자동으로 넣어 Run">▶ 이 입력으로 Run</button></h4>
             ${splitLines(t.stdin).map((line) => html`<div class="io-box"><code>${line}</code>
-              <button class="copy" onClick=${(e) => copyText(line, e.currentTarget)}>Copy</button></div>`)}`
+              <button class="copy" title="실행 중이면 터미널에 바로 입력됩니다" onClick=${(e) => copyText(line, e.currentTarget, toTerminal)}>Copy</button></div>`)}`
         : null}
       <h4 class="io-label">${pre ? 'Output Sample' : 'Output'}</h4>
       <div class="io-box out"><pre>${t.expected}</pre>
