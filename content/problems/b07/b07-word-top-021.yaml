@@ -1,0 +1,184 @@
+id: b07-word-top-021
+title: 함수 세 개로 만드는 단어 순위
+unit: b07
+difficulty: 4
+tags: [func.compose, func.dict-return, list.sort]
+statement: |
+  세 함수를 정의하고 차례로 연결해 단어 순위를 출력하시오.
+
+  - `tokenize(text)`: 소문자로 바꾸고 `,.!?`를 지운 뒤 공백으로 나눈 단어 리스트를 반환
+  - `count_words(words)`: `{단어: 개수}` 딕셔너리를 반환
+  - `top_n(counts, n)`: 개수가 많은 순서로, 같으면 단어의 사전순으로 정렬해 앞에서 n개를 `(단어, 개수)` 튜플의 리스트로 반환 (단어가 n개보다 적으면 전부)
+
+  - 입력 프롬프트: `문장: `, `개수: `
+  - 출력: 순위마다 `1. python: 3` 형식. 단어가 하나도 없으면 `단어가 없습니다`
+starter: |
+  def tokenize(text):
+      pass
+
+
+  def count_words(words):
+      pass
+
+
+  def top_n(counts, n):
+      pass
+
+
+  text = input("문장: ")
+  n = int(input("개수: "))
+solution: |
+  def tokenize(text):
+      text = text.lower()
+      for mark in ",.!?":
+          text = text.replace(mark, "")
+      return text.split()
+
+
+  def count_words(words):
+      counts = {}
+      for w in words:
+          counts[w] = counts.get(w, 0) + 1
+      return counts
+
+
+  def top_n(counts, n):
+      items = []
+      for word in counts:
+          items.append([-counts[word], word])
+      items.sort()
+      result = []
+      for neg, word in items[:n]:
+          result.append((word, -neg))
+      return result
+
+
+  text = input("문장: ")
+  n = int(input("개수: "))
+  ranking = top_n(count_words(tokenize(text)), n)
+  if len(ranking) == 0:
+      print("단어가 없습니다")
+  for i in range(len(ranking)):
+      word, cnt = ranking[i]
+      print(f"{i + 1}. {word}: {cnt}")
+alt_solutions:
+  - |
+    def tokenize(text):
+        cleaned = ""
+        for ch in text.lower():
+            if ch not in ",.!?":
+                cleaned += ch
+        return cleaned.split()
+
+
+    def count_words(words):
+        counts = {}
+        for w in words:
+            if w in counts:
+                counts[w] += 1
+            else:
+                counts[w] = 1
+        return counts
+
+
+    def top_n(counts, n):
+        pairs = sorted(counts.items())
+        pairs.sort(key=lambda p: -p[1])
+        return pairs[:n]
+
+
+    text = input("문장: ")
+    n = int(input("개수: "))
+    words = tokenize(text)
+    counts = count_words(words)
+    ranking = top_n(counts, n)
+    if not ranking:
+        print("단어가 없습니다")
+    rank = 1
+    for word, cnt in ranking:
+        print(str(rank) + ". " + word + ": " + str(cnt))
+        rank += 1
+mutants:
+  - name: 개수가 같으면 먼저 나온 단어 순
+    code: |
+      def tokenize(text):
+          text = text.lower()
+          for mark in ",.!?":
+              text = text.replace(mark, "")
+          return text.split()
+
+
+      def count_words(words):
+          counts = {}
+          for w in words:
+              counts[w] = counts.get(w, 0) + 1
+          return counts
+
+
+      def top_n(counts, n):
+          items = []
+          order = 0
+          for word in counts:
+              items.append([-counts[word], order, word])
+              order += 1
+          items.sort()
+          result = []
+          for neg, order, word in items[:n]:
+              result.append((word, -neg))
+          return result
+
+
+      text = input("문장: ")
+      n = int(input("개수: "))
+      ranking = top_n(count_words(tokenize(text)), n)
+      if len(ranking) == 0:
+          print("단어가 없습니다")
+      for i in range(len(ranking)):
+          word, cnt = ranking[i]
+          print(f"{i + 1}. {word}: {cnt}")
+  - name: 문장부호를 지우지 않음
+    code: |
+      def tokenize(text):
+          return text.lower().split()
+
+
+      def count_words(words):
+          counts = {}
+          for w in words:
+              counts[w] = counts.get(w, 0) + 1
+          return counts
+
+
+      def top_n(counts, n):
+          items = []
+          for word in counts:
+              items.append([-counts[word], word])
+          items.sort()
+          result = []
+          for neg, word in items[:n]:
+              result.append((word, -neg))
+          return result
+
+
+      text = input("문장: ")
+      n = int(input("개수: "))
+      ranking = top_n(count_words(tokenize(text)), n)
+      if len(ranking) == 0:
+          print("단어가 없습니다")
+      for i in range(len(ranking)):
+          word, cnt = ranking[i]
+          print(f"{i + 1}. {word}: {cnt}")
+tests:
+  - stdin: "Python is fun. I love Python, and python loves me!\n3\n"
+    public: true
+  - stdin: "b a c b a\n5\n"
+    note: 개수보다 단어가 적음, 동점은 사전순
+  - stdin: "...!!!\n2\n"
+    note: 단어 없음
+  - stdin: "Hi! hi? HI.\n1\n"
+hints:
+  - "`top_n(count_words(tokenize(text)), n)`처럼 한 함수의 반환값을 다음 함수의 인자로 바로 넘길 수 있습니다."
+  - "`[-개수, 단어]` 리스트를 정렬하면 개수 내림차순, 같으면 단어 오름차순이 됩니다."
+explanation: |
+  하나의 큰 문제를 '정리 → 세기 → 순위'의 작은 함수로 나눈 뒤 연결했습니다. 각 함수는 자기 일만 하고 결과를 반환합니다.
+  정렬 기준이 두 개일 때 `[-개수, 단어]`처럼 리스트를 만들어 정렬하는 방법은 함수 없이도 쓸 수 있는 유용한 요령입니다.

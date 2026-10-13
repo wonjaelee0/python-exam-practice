@@ -1,0 +1,172 @@
+id: b07-prime-range-016
+title: 소수 판별 함수로 범위 안의 소수 찾기
+unit: b07
+difficulty: 3
+tags: [func.bool-return, func.compose, loop.for]
+statement: |
+  두 함수를 정의하시오.
+
+  - `is_prime(n)`: n이 소수이면 `True`, 아니면 `False`를 반환한다. (소수: 1과 자기 자신만으로 나누어떨어지는 2 이상의 정수)
+  - `primes_between(a, b)`: `is_prime`을 이용해 a 이상 b 이하의 소수를 리스트로 반환한다. a가 b보다 크면 두 값을 바꿔서 구한다.
+
+  - 입력 프롬프트: `범위: ` (두 정수, 예: `1 10`)
+  - 출력 형식: `소수: [2, 3, 5, 7]`, `개수: 4`
+starter: |
+  def is_prime(n):
+      pass
+
+
+  def primes_between(a, b):
+      pass
+
+
+  a, b = input("범위: ").split()
+  a = int(a)
+  b = int(b)
+solution: |
+  def is_prime(n):
+      if n < 2:
+          return False
+      for d in range(2, n):
+          if d * d > n:
+              break
+          if n % d == 0:
+              return False
+      return True
+
+
+  def primes_between(a, b):
+      if a > b:
+          a, b = b, a
+      result = []
+      for n in range(a, b + 1):
+          if is_prime(n):
+              result.append(n)
+      return result
+
+
+  a, b = input("범위: ").split()
+  a = int(a)
+  b = int(b)
+  primes = primes_between(a, b)
+  print(f"소수: {primes}")
+  print(f"개수: {len(primes)}")
+alt_solutions:
+  - |
+    def is_prime(n):
+        if n <= 1:
+            return False
+        count = 0
+        for d in range(1, n + 1):
+            if n % d == 0:
+                count += 1
+        return count == 2
+
+
+    def primes_between(a, b):
+        lo = min(a, b)
+        hi = max(a, b)
+        return [n for n in range(lo, hi + 1) if is_prime(n)]
+
+
+    a, b = input("범위: ").split()
+    a = int(a)
+    b = int(b)
+    primes = primes_between(a, b)
+    print("소수:", primes)
+    print("개수:", len(primes))
+mutants:
+  - name: 1을 소수로 봄
+    code: |
+      def is_prime(n):
+          for d in range(2, n):
+              if n % d == 0:
+                  return False
+          return True
+
+
+      def primes_between(a, b):
+          if a > b:
+              a, b = b, a
+          result = []
+          for n in range(a, b + 1):
+              if is_prime(n):
+                  result.append(n)
+          return result
+
+
+      a, b = input("범위: ").split()
+      a = int(a)
+      b = int(b)
+      primes = primes_between(a, b)
+      print(f"소수: {primes}")
+      print(f"개수: {len(primes)}")
+  - name: b를 범위에 넣지 않음
+    code: |
+      def is_prime(n):
+          if n < 2:
+              return False
+          for d in range(2, n):
+              if n % d == 0:
+                  return False
+          return True
+
+
+      def primes_between(a, b):
+          if a > b:
+              a, b = b, a
+          result = []
+          for n in range(a, b):
+              if is_prime(n):
+                  result.append(n)
+          return result
+
+
+      a, b = input("범위: ").split()
+      a = int(a)
+      b = int(b)
+      primes = primes_between(a, b)
+      print(f"소수: {primes}")
+      print(f"개수: {len(primes)}")
+  - name: a가 b보다 클 때 바꾸지 않음
+    code: |
+      def is_prime(n):
+          if n < 2:
+              return False
+          for d in range(2, n):
+              if n % d == 0:
+                  return False
+          return True
+
+
+      def primes_between(a, b):
+          result = []
+          for n in range(a, b + 1):
+              if is_prime(n):
+                  result.append(n)
+          return result
+
+
+      a, b = input("범위: ").split()
+      a = int(a)
+      b = int(b)
+      primes = primes_between(a, b)
+      print(f"소수: {primes}")
+      print(f"개수: {len(primes)}")
+tests:
+  - stdin: "1 10\n"
+    public: true
+  - stdin: "20 2\n"
+    note: 앞의 수가 더 큼
+  - stdin: "14 16\n"
+    note: 소수 없음
+  - stdin: "2 2\n"
+  - stdin: "90 113\n"
+  - stdin: "0 3\n"
+    note: 0과 1은 소수가 아님
+hints:
+  - "`is_prime`에서 나누어떨어지는 수를 찾으면 바로 `return False`. 반복이 끝까지 가면 `return True`."
+  - "`primes_between`은 `if is_prime(n):`처럼 다른 함수를 불러 씁니다. b도 포함하려면 `range(a, b + 1)`."
+explanation: |
+  큰 일을 작은 함수로 나누고(`is_prime`), 그 함수를 다른 함수(`primes_between`)에서 재사용하는 것이 함수의 핵심 활용법입니다.
+  `return`이 반복을 바로 끝내 주므로, 나누어떨어지는 수를 하나라도 찾으면 더 볼 필요가 없습니다.

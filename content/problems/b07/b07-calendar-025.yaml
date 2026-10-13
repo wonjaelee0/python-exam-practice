@@ -1,0 +1,238 @@
+id: b07-calendar-025
+title: 함수로 만드는 달력
+unit: b07
+difficulty: 5
+tags: [func.compose, cond.leap-year, str.format-align]
+statement: |
+  연도와 월을 입력받아 그 달의 달력을 출력하시오. 다음 함수들을 정의해 활용한다.
+
+  - `is_leap(y)`: 윤년이면 `True` (4로 나누어떨어지면 윤년, 단 100으로 나누어떨어지면 평년, 그중 400으로 나누어떨어지면 윤년)
+  - `days_in_month(y, m)`: 그 달의 날짜 수를 반환
+  - `first_weekday(y, m)`: 그 달 1일의 요일 번호를 반환 (일요일 0, 월요일 1, …, 토요일 6). **1900년 1월 1일은 월요일**이다.
+
+  - 입력 프롬프트: `연도: `, `월: ` (1900 ≤ 연도 ≤ 2100)
+  - 출력 형식 (2026년 10월의 예)
+
+  ```
+  2026년 10월
+  일 월 화 수 목 금 토
+               1  2  3
+   4  5  6  7  8  9 10
+  11 12 13 14 15 16 17
+  18 19 20 21 22 23 24
+  25 26 27 28 29 30 31
+  ```
+
+  - 날짜는 두 칸 오른쪽 정렬(`f"{d:>2}"`), 칸 사이는 공백 하나. 1일 앞의 빈칸은 공백 두 칸으로 채운다.
+  - 일요일부터 한 주를 한 줄로 출력하며, 줄 끝에는 공백을 두지 않는다.
+starter: |
+  def is_leap(y):
+      pass
+
+
+  def days_in_month(y, m):
+      pass
+
+
+  def first_weekday(y, m):
+      pass
+
+
+  y = int(input("연도: "))
+  m = int(input("월: "))
+solution: |
+  def is_leap(y):
+      return (y % 4 == 0 and y % 100 != 0) or y % 400 == 0
+
+
+  def days_in_month(y, m):
+      days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+      if m == 2 and is_leap(y):
+          return 29
+      return days[m - 1]
+
+
+  def first_weekday(y, m):
+      total = 0
+      for year in range(1900, y):
+          if is_leap(year):
+              total += 366
+          else:
+              total += 365
+      for month in range(1, m):
+          total += days_in_month(y, month)
+      return (total + 1) % 7
+
+
+  y = int(input("연도: "))
+  m = int(input("월: "))
+  print(f"{y}년 {m}월")
+  print("일 월 화 수 목 금 토")
+  cells = ["  "] * first_weekday(y, m)
+  for d in range(1, days_in_month(y, m) + 1):
+      cells.append(f"{d:>2}")
+  for i in range(0, len(cells), 7):
+      print(" ".join(cells[i:i + 7]))
+alt_solutions:
+  - |
+    def is_leap(y):
+        if y % 400 == 0:
+            return True
+        if y % 100 == 0:
+            return False
+        return y % 4 == 0
+
+
+    def days_in_month(y, m):
+        if m == 2:
+            return 29 if is_leap(y) else 28
+        if m in [4, 6, 9, 11]:
+            return 30
+        return 31
+
+
+    def first_weekday(y, m):
+        days = 0
+        for year in range(1900, y):
+            days += 366 if is_leap(year) else 365
+        for month in range(1, m):
+            days += days_in_month(y, month)
+        monday_based = days % 7
+        return (monday_based + 1) % 7
+
+
+    y = int(input("연도: "))
+    m = int(input("월: "))
+    print(str(y) + "년 " + str(m) + "월")
+    print("일 월 화 수 목 금 토")
+    col = first_weekday(y, m)
+    line = "   " * col
+    for d in range(1, days_in_month(y, m) + 1):
+        line += "{:>2}".format(d)
+        col += 1
+        if col == 7:
+            print(line)
+            line = ""
+            col = 0
+        else:
+            line += " "
+    if line.strip() != "":
+        print(line.rstrip())
+mutants:
+  - name: 4년마다 윤년 (100·400 규칙 무시)
+    code: |
+      def is_leap(y):
+          return y % 4 == 0
+
+
+      def days_in_month(y, m):
+          days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+          if m == 2 and is_leap(y):
+              return 29
+          return days[m - 1]
+
+
+      def first_weekday(y, m):
+          total = 0
+          for year in range(1900, y):
+              if is_leap(year):
+                  total += 366
+              else:
+                  total += 365
+          for month in range(1, m):
+              total += days_in_month(y, month)
+          return (total + 1) % 7
+
+
+      y = int(input("연도: "))
+      m = int(input("월: "))
+      print(f"{y}년 {m}월")
+      print("일 월 화 수 목 금 토")
+      cells = ["  "] * first_weekday(y, m)
+      for d in range(1, days_in_month(y, m) + 1):
+          cells.append(f"{d:>2}")
+      for i in range(0, len(cells), 7):
+          print(" ".join(cells[i:i + 7]))
+  - name: 요일 번호를 월요일 0 기준으로 씀
+    code: |
+      def is_leap(y):
+          return (y % 4 == 0 and y % 100 != 0) or y % 400 == 0
+
+
+      def days_in_month(y, m):
+          days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+          if m == 2 and is_leap(y):
+              return 29
+          return days[m - 1]
+
+
+      def first_weekday(y, m):
+          total = 0
+          for year in range(1900, y):
+              if is_leap(year):
+                  total += 366
+              else:
+                  total += 365
+          for month in range(1, m):
+              total += days_in_month(y, month)
+          return total % 7
+
+
+      y = int(input("연도: "))
+      m = int(input("월: "))
+      print(f"{y}년 {m}월")
+      print("일 월 화 수 목 금 토")
+      cells = ["  "] * first_weekday(y, m)
+      for d in range(1, days_in_month(y, m) + 1):
+          cells.append(f"{d:>2}")
+      for i in range(0, len(cells), 7):
+          print(" ".join(cells[i:i + 7]))
+  - name: 그해의 윤년을 달 계산에 반영하지 않음
+    code: |
+      def is_leap(y):
+          return (y % 4 == 0 and y % 100 != 0) or y % 400 == 0
+
+
+      def days_in_month(y, m):
+          days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+          return days[m - 1]
+
+
+      def first_weekday(y, m):
+          total = 0
+          for year in range(1900, y):
+              if is_leap(year):
+                  total += 366
+              else:
+                  total += 365
+          for month in range(1, m):
+              total += days_in_month(y, month)
+          return (total + 1) % 7
+
+
+      y = int(input("연도: "))
+      m = int(input("월: "))
+      print(f"{y}년 {m}월")
+      print("일 월 화 수 목 금 토")
+      cells = ["  "] * first_weekday(y, m)
+      for d in range(1, days_in_month(y, m) + 1):
+          cells.append(f"{d:>2}")
+      for i in range(0, len(cells), 7):
+          print(" ".join(cells[i:i + 7]))
+tests:
+  - stdin: "2026\n10\n"
+    public: true
+  - stdin: "2024\n2\n"
+    note: 윤년 2월
+  - stdin: "1900\n2\n"
+    note: 1900년은 평년
+  - stdin: "2100\n3\n"
+  - stdin: "2000\n3\n"
+  - stdin: "2027\n8\n"
+  - stdin: "1900\n1\n"
+hints:
+  - "1900-01-01부터 그 달 1일 전날까지의 날짜 수를 세면, 월요일 기준 요일은 `날짜 수 % 7`입니다. 일요일을 0으로 바꾸려면 1을 더해 7로 나눈 나머지."
+  - "앞쪽 빈칸 `\"  \"`과 날짜 `f\"{d:>2}\"`를 한 리스트에 담고, 7개씩 잘라 `\" \".join(...)`으로 출력하면 줄 끝 공백이 생기지 않습니다."
+explanation: |
+  `first_weekday`가 `days_in_month`와 `is_leap`을 다시 사용하는 것처럼, 작은 함수를 쌓아 올려 큰 기능을 만듭니다.
+  한글 요일은 터미널에서 두 칸을 차지하므로 두 칸 정렬된 날짜와 줄이 맞습니다.

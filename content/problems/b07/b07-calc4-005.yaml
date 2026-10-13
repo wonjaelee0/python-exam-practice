@@ -1,0 +1,84 @@
+id: b07-calc4-005
+title: 사칙연산 결과 4개 반환
+unit: b07
+difficulty: 2
+tags: [func.multi-return, tuple.unpack, func.none]
+statement: |
+  두 정수를 받아 덧셈, 뺄셈, 곱셈, 나눗셈 결과를 **한 번에 반환**하는 함수 `calc(x, y)`를 정의하고, 입력받은 두 수로 호출해 결과를 출력하시오.
+
+  - 입력 프롬프트: `첫 번째 숫자: `, `두 번째 숫자: `
+  - 출력 형식: `덧셈: 15, 뺄셈: 5, 곱셈: 50, 나눗셈: 2.0`
+  - `y`가 0이면 `calc`는 나눗셈 결과 자리에 `None`을 반환하고, 출력은 `나눗셈: 불가`로 한다.
+    (예: `덧셈: 10, 뺄셈: 10, 곱셈: 0, 나눗셈: 불가`)
+starter: |
+  def calc(x, y):
+      pass
+
+
+  x = int(input("첫 번째 숫자: "))
+  y = int(input("두 번째 숫자: "))
+solution: |
+  def calc(x, y):
+      if y == 0:
+          return x + y, x - y, x * y, None
+      return x + y, x - y, x * y, x / y
+
+
+  x = int(input("첫 번째 숫자: "))
+  y = int(input("두 번째 숫자: "))
+  a, s, m, d = calc(x, y)
+  if d is None:
+      d = "불가"
+  print(f"덧셈: {a}, 뺄셈: {s}, 곱셈: {m}, 나눗셈: {d}")
+alt_solutions:
+  - |
+    def calc(x, y):
+        div = None
+        if y != 0:
+            div = x / y
+        return (x + y, x - y, x * y, div)
+
+
+    x = int(input("첫 번째 숫자: "))
+    y = int(input("두 번째 숫자: "))
+    result = calc(x, y)
+    text = "불가" if result[3] == None else str(result[3])
+    print("덧셈: " + str(result[0]) + ", 뺄셈: " + str(result[1]) + ", 곱셈: " + str(result[2]) + ", 나눗셈: " + text)
+mutants:
+  - name: 0으로 나누는 경우를 처리하지 않음
+    code: |
+      def calc(x, y):
+          return x + y, x - y, x * y, x / y
+
+
+      x = int(input("첫 번째 숫자: "))
+      y = int(input("두 번째 숫자: "))
+      a, s, m, d = calc(x, y)
+      print(f"덧셈: {a}, 뺄셈: {s}, 곱셈: {m}, 나눗셈: {d}")
+  - name: 나눗셈을 몫(//)으로 계산
+    code: |
+      def calc(x, y):
+          if y == 0:
+              return x + y, x - y, x * y, None
+          return x + y, x - y, x * y, x // y
+
+
+      x = int(input("첫 번째 숫자: "))
+      y = int(input("두 번째 숫자: "))
+      a, s, m, d = calc(x, y)
+      if d is None:
+          d = "불가"
+      print(f"덧셈: {a}, 뺄셈: {s}, 곱셈: {m}, 나눗셈: {d}")
+tests:
+  - stdin: "10\n5\n"
+    public: true
+  - stdin: "7\n2\n"
+  - stdin: "10\n0\n"
+    note: 0으로 나누기
+  - stdin: "-9\n4\n"
+hints:
+  - "`return a, b, c, d`처럼 값 4개를 반환하고 `a, s, m, d = calc(x, y)`로 받습니다."
+  - "`if y == 0:` 안에서 먼저 `return`하면 그 아래 줄(0으로 나누는 계산)은 실행되지 않습니다."
+explanation: |
+  `return`은 값을 돌려주는 동시에 함수를 끝냅니다. 그래서 예외 상황을 먼저 검사해 일찍 `return`하는 패턴을 많이 씁니다.
+  '값이 없음'은 `None`으로 표현하고, 받는 쪽에서 `is None`으로 확인합니다.

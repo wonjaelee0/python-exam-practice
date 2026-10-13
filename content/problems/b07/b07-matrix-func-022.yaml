@@ -1,0 +1,196 @@
+id: b07-matrix-func-022
+title: 전치 행렬과 대칭 판별 함수
+unit: b07
+difficulty: 4
+tags: [func.list-return, list.2d, func.no-mutation]
+statement: |
+  n×n 정사각 행렬을 다루는 함수들을 정의하시오.
+
+  - `read_matrix(n)`: `행: ` 프롬프트로 n줄을 입력받아 정수 2차원 리스트를 반환
+  - `transpose(m)`: m의 행과 열을 바꾼 **새** 행렬을 반환 (원래 행렬 m은 바꾸지 않는다)
+  - `is_symmetric(m)`: m이 전치 행렬과 같으면 `True`
+  - `print_matrix(m)`: 각 행의 값을 공백 하나로 구분해 한 줄씩 출력
+
+  - 입력 프롬프트: `크기: `, 이어서 `행: ` n번
+  - 출력 (순서대로)
+    - `전치 행렬:` 다음 줄부터 전치 행렬
+    - `대칭 행렬입니다` 또는 `대칭 행렬이 아닙니다`
+    - `원래 첫 행: 1 2 3` (입력한 행렬의 첫 행이 그대로인지 확인)
+starter: |
+  def read_matrix(n):
+      pass
+
+
+  def transpose(m):
+      pass
+
+
+  def is_symmetric(m):
+      pass
+
+
+  def print_matrix(m):
+      pass
+
+
+  n = int(input("크기: "))
+  m = read_matrix(n)
+solution: |
+  def read_matrix(n):
+      m = []
+      for i in range(n):
+          m.append([int(x) for x in input("행: ").split()])
+      return m
+
+
+  def transpose(m):
+      n = len(m)
+      t = []
+      for j in range(n):
+          row = []
+          for i in range(n):
+              row.append(m[i][j])
+          t.append(row)
+      return t
+
+
+  def is_symmetric(m):
+      return m == transpose(m)
+
+
+  def print_matrix(m):
+      for row in m:
+          print(" ".join([str(v) for v in row]))
+
+
+  n = int(input("크기: "))
+  m = read_matrix(n)
+  print("전치 행렬:")
+  print_matrix(transpose(m))
+  if is_symmetric(m):
+      print("대칭 행렬입니다")
+  else:
+      print("대칭 행렬이 아닙니다")
+  print("원래 첫 행: " + " ".join([str(v) for v in m[0]]))
+alt_solutions:
+  - |
+    def read_matrix(n):
+        return [list(map(int, input("행: ").split())) for _ in range(n)]
+
+
+    def transpose(m):
+        return [[m[i][j] for i in range(len(m))] for j in range(len(m))]
+
+
+    def is_symmetric(m):
+        for i in range(len(m)):
+            for j in range(len(m)):
+                if m[i][j] != m[j][i]:
+                    return False
+        return True
+
+
+    def print_matrix(m):
+        for row in m:
+            line = ""
+            for k in range(len(row)):
+                if k > 0:
+                    line += " "
+                line += str(row[k])
+            print(line)
+
+
+    n = int(input("크기: "))
+    m = read_matrix(n)
+    print("전치 행렬:")
+    print_matrix(transpose(m))
+    print("대칭 행렬입니다" if is_symmetric(m) else "대칭 행렬이 아닙니다")
+    print("원래 첫 행:", " ".join(map(str, m[0])))
+mutants:
+  - name: 원래 행렬을 직접 바꿔서 전치
+    code: |
+      def read_matrix(n):
+          m = []
+          for i in range(n):
+              m.append([int(x) for x in input("행: ").split()])
+          return m
+
+
+      def transpose(m):
+          n = len(m)
+          for i in range(n):
+              for j in range(i + 1, n):
+                  m[i][j], m[j][i] = m[j][i], m[i][j]
+          return m
+
+
+      def is_symmetric(m):
+          return m == transpose(m)
+
+
+      def print_matrix(m):
+          for row in m:
+              print(" ".join([str(v) for v in row]))
+
+
+      n = int(input("크기: "))
+      m = read_matrix(n)
+      print("전치 행렬:")
+      print_matrix(transpose(m))
+      if is_symmetric(m):
+          print("대칭 행렬입니다")
+      else:
+          print("대칭 행렬이 아닙니다")
+      print("원래 첫 행: " + " ".join([str(v) for v in m[0]]))
+  - name: 첫 행과 첫 열만 비교해 대칭 판별
+    code: |
+      def read_matrix(n):
+          m = []
+          for i in range(n):
+              m.append([int(x) for x in input("행: ").split()])
+          return m
+
+
+      def transpose(m):
+          n = len(m)
+          t = []
+          for j in range(n):
+              row = []
+              for i in range(n):
+                  row.append(m[i][j])
+              t.append(row)
+          return t
+
+
+      def is_symmetric(m):
+          return m[0] == transpose(m)[0]
+
+
+      def print_matrix(m):
+          for row in m:
+              print(" ".join([str(v) for v in row]))
+
+
+      n = int(input("크기: "))
+      m = read_matrix(n)
+      print("전치 행렬:")
+      print_matrix(transpose(m))
+      if is_symmetric(m):
+          print("대칭 행렬입니다")
+      else:
+          print("대칭 행렬이 아닙니다")
+      print("원래 첫 행: " + " ".join([str(v) for v in m[0]]))
+tests:
+  - stdin: "3\n1 2 3\n4 5 6\n7 8 9\n"
+    public: true
+  - stdin: "2\n1 2\n2 1\n"
+    note: 대칭 행렬
+  - stdin: "3\n1 2 3\n2 5 6\n3 7 9\n"
+    note: 첫 행과 첫 열은 같지만 대칭이 아님
+  - stdin: "1\n5\n"
+hints:
+  - "전치 행렬의 j행은 원래 행렬의 j열입니다: `row.append(m[i][j])`를 i에 대해 반복해 새 리스트를 만드세요."
+  - "리스트를 인자로 넘기면 함수 안에서 그 리스트를 바꾸는 순간 바깥 리스트도 바뀝니다. 새 리스트를 만들어 반환하세요."
+explanation: |
+  리스트는 함수에 넘겨도 복사되지 않습니다. 함수 안에서 `m[i][j] = …`처럼 바꾸면 호출한 쪽의 행렬도 바뀝니다.
+  그래서 '원래 첫 행'이 달라지고, 바뀐 행렬끼리 비교하니 대칭 판별도 틀립니다. 결과는 새 리스트로 만들어 반환하는 것이 안전합니다.

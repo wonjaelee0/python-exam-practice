@@ -1,0 +1,71 @@
+id: b07-circle-tuple-004
+title: 원의 넓이와 둘레를 함께 반환
+unit: b07
+difficulty: 2
+tags: [func.multi-return, tuple.unpack]
+format: fill
+statement: |
+  반지름을 받아 원의 넓이와 둘레를 **함께 반환**하는 함수 `circle_area_circum`을 완성하시오. 시작 코드의 빈칸 `_____`을 모두 채우면 된다.
+
+  - 원주율은 `3.14`를 쓴다. 넓이 = 3.14 × 반지름², 둘레 = 2 × 3.14 × 반지름
+  - 입력 프롬프트: `반지름: ` (실수)
+  - 출력 형식: `원의 넓이: 78.50, 원의 둘레: 31.4`
+starter: |
+  _____ circle_area_circum(_____):
+      area = 3.14 * radius ** 2
+      circum = 2 * 3.14 * radius
+      return _____
+
+  r = float(input("반지름: "))
+  area, circum = _____(_____)
+  print(f"원의 넓이: {area:.2f}, 원의 둘레: {circum:.1f}")
+solution: |
+  def circle_area_circum(radius):
+      area = 3.14 * radius ** 2
+      circum = 2 * 3.14 * radius
+      return area, circum
+
+  r = float(input("반지름: "))
+  area, circum = circle_area_circum(r)
+  print(f"원의 넓이: {area:.2f}, 원의 둘레: {circum:.1f}")
+alt_solutions:
+  - |
+    def circle_area_circum(radius):
+        return 3.14 * radius ** 2, 2 * 3.14 * radius
+
+    r = float(input("반지름: "))
+    res = circle_area_circum(r)
+    print("원의 넓이: {:.2f}, 원의 둘레: {:.1f}".format(res[0], res[1]))
+mutants:
+  - name: 반환 순서를 바꿈
+    code: |
+      def circle_area_circum(radius):
+          area = 3.14 * radius ** 2
+          circum = 2 * 3.14 * radius
+          return circum, area
+
+      r = float(input("반지름: "))
+      area, circum = circle_area_circum(r)
+      print(f"원의 넓이: {area:.2f}, 원의 둘레: {circum:.1f}")
+  - name: 넓이를 반지름 × 2로 계산
+    code: |
+      def circle_area_circum(radius):
+          area = 3.14 * radius * 2
+          circum = 2 * 3.14 * radius
+          return area, circum
+
+      r = float(input("반지름: "))
+      area, circum = circle_area_circum(r)
+      print(f"원의 넓이: {area:.2f}, 원의 둘레: {circum:.1f}")
+tests:
+  - stdin: "5\n"
+    public: true
+  - stdin: "10\n"
+  - stdin: "0\n"
+  - stdin: "2.5\n"
+hints:
+  - "값 두 개를 콤마로 이어 `return 값1, 값2`라고 쓰면 튜플 하나로 반환됩니다."
+  - "`area, circum = 함수(인자)`처럼 받으면 튜플이 두 변수에 차례로 풀려 들어갑니다 (언패킹)."
+explanation: |
+  `return area, circum`은 `(area, circum)` 튜플을 반환합니다. 받는 쪽에서 변수 두 개로 받으면 언패킹되어 순서대로 들어갑니다.
+  반환하는 순서와 받는 순서가 다르면 값이 뒤바뀌니 주의하세요.

@@ -1,0 +1,95 @@
+id: b07-avg-dict-008
+title: 딕셔너리를 받아 평균 출력
+unit: b07
+difficulty: 2
+tags: [func.dict-arg, builtin.sum-len-max]
+statement: |
+  학생 정보 딕셔너리 `{"name": 이름, "scores": 점수 리스트}`를 받아 평균과 최고 점수를 출력하는 함수 `print_avg_score(student)`를 정의하시오.
+  딕셔너리를 만들고 함수를 호출하는 코드는 시작 코드에 있다.
+
+  - 입력 프롬프트: `이름: `, `점수들: ` (공백으로 구분된 정수, 1개 이상)
+  - 출력 형식
+    - `Jisoo의 평균 점수는 91.7점입니다.` (평균은 소수 첫째 자리까지)
+    - `최고 점수: 100점`
+  - 내장 함수 `sum()`, `len()`, `max()`를 활용해 보자.
+starter: |
+  def print_avg_score(student):
+      pass
+
+
+  name = input("이름: ")
+  scores = [int(x) for x in input("점수들: ").split()]
+  s = {"name": name, "scores": scores}
+  print_avg_score(s)
+solution: |
+  def print_avg_score(student):
+      name = student["name"]
+      scores = student["scores"]
+      avg = sum(scores) / len(scores)
+      print(f"{name}의 평균 점수는 {avg:.1f}점입니다.")
+      print(f"최고 점수: {max(scores)}점")
+
+
+  name = input("이름: ")
+  scores = [int(x) for x in input("점수들: ").split()]
+  s = {"name": name, "scores": scores}
+  print_avg_score(s)
+alt_solutions:
+  - |
+    def print_avg_score(student):
+        total = 0
+        best = student["scores"][0]
+        for sc in student["scores"]:
+            total += sc
+            if sc > best:
+                best = sc
+        avg = total / len(student["scores"])
+        print("{}의 평균 점수는 {:.1f}점입니다.".format(student["name"], avg))
+        print("최고 점수: " + str(best) + "점")
+
+
+    name = input("이름: ")
+    scores = [int(x) for x in input("점수들: ").split()]
+    s = {"name": name, "scores": scores}
+    print_avg_score(s)
+mutants:
+  - name: 평균을 몫(//)으로 계산
+    code: |
+      def print_avg_score(student):
+          name = student["name"]
+          scores = student["scores"]
+          avg = sum(scores) // len(scores)
+          print(f"{name}의 평균 점수는 {avg:.1f}점입니다.")
+          print(f"최고 점수: {max(scores)}점")
+
+
+      name = input("이름: ")
+      scores = [int(x) for x in input("점수들: ").split()]
+      s = {"name": name, "scores": scores}
+      print_avg_score(s)
+  - name: 과목 수를 3으로 고정
+    code: |
+      def print_avg_score(student):
+          name = student["name"]
+          scores = student["scores"]
+          avg = sum(scores) / 3
+          print(f"{name}의 평균 점수는 {avg:.1f}점입니다.")
+          print(f"최고 점수: {max(scores)}점")
+
+
+      name = input("이름: ")
+      scores = [int(x) for x in input("점수들: ").split()]
+      s = {"name": name, "scores": scores}
+      print_avg_score(s)
+tests:
+  - stdin: "Jisoo\n85 90 100\n"
+    public: true
+  - stdin: "민수\n70\n"
+  - stdin: "Kim\n0 100 55 61\n"
+  - stdin: "A\n99 98\n"
+hints:
+  - "딕셔너리 값은 `student[\"name\"]`, `student[\"scores\"]`로 꺼냅니다."
+  - "평균은 `sum(scores) / len(scores)`, 출력은 `{avg:.1f}`."
+explanation: |
+  딕셔너리 하나로 여러 정보를 묶어 함수에 넘기면, 매개변수를 여러 개 두지 않아도 됩니다.
+  점수 개수는 학생마다 다를 수 있으니 `len()`으로 구해야 합니다.

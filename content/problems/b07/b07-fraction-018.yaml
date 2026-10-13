@@ -1,0 +1,167 @@
+id: b07-fraction-018
+title: 최대공약수 함수로 분수 계산
+unit: b07
+difficulty: 3
+tags: [func.compose, func.multi-return, math.gcd]
+statement: |
+  다음 함수들을 정의하고 활용하시오.
+
+  - `gcd(a, b)`: 두 양의 정수의 최대공약수를 반환 (유클리드 호제법: b가 0이 될 때까지 `a, b = b, a % b`)
+  - `reduce(n, d)`: 분수 n/d를 기약분수로 만들어 분자와 분모를 **함께 반환**
+  - `frac_str(n, d)`: 분수를 문자열로 반환. 분모가 1이면 분자만 (`"2"`), 아니면 `"2/3"`
+  - `add(n1, d1, n2, d2)`: 두 분수의 합을 기약분수로 반환
+
+  - 입력 프롬프트: `분수: `, `다른 분수: ` (양의 정수로 된 `분자/분모` 형식)
+  - 출력 형식: `기약분수: 2/3` (첫 분수를 기약분수로), `합: 7/6` (두 분수의 합)
+starter: |
+  def gcd(a, b):
+      pass
+
+
+  def reduce(n, d):
+      pass
+
+
+  def frac_str(n, d):
+      pass
+
+
+  def add(n1, d1, n2, d2):
+      pass
+
+
+  n1, d1 = input("분수: ").split("/")
+  n2, d2 = input("다른 분수: ").split("/")
+  n1, d1, n2, d2 = int(n1), int(d1), int(n2), int(d2)
+solution: |
+  def gcd(a, b):
+      while b != 0:
+          a, b = b, a % b
+      return a
+
+
+  def reduce(n, d):
+      g = gcd(n, d)
+      return n // g, d // g
+
+
+  def frac_str(n, d):
+      if d == 1:
+          return str(n)
+      return f"{n}/{d}"
+
+
+  def add(n1, d1, n2, d2):
+      return reduce(n1 * d2 + n2 * d1, d1 * d2)
+
+
+  n1, d1 = input("분수: ").split("/")
+  n2, d2 = input("다른 분수: ").split("/")
+  n1, d1, n2, d2 = int(n1), int(d1), int(n2), int(d2)
+  rn, rd = reduce(n1, d1)
+  print(f"기약분수: {frac_str(rn, rd)}")
+  sn, sd = add(n1, d1, n2, d2)
+  print(f"합: {frac_str(sn, sd)}")
+alt_solutions:
+  - |
+    def gcd(a, b):
+        g = 1
+        for k in range(1, min(a, b) + 1):
+            if a % k == 0 and b % k == 0:
+                g = k
+        return g
+
+
+    def reduce(n, d):
+        g = gcd(n, d)
+        return (n // g, d // g)
+
+
+    def frac_str(n, d):
+        return str(n) if d == 1 else str(n) + "/" + str(d)
+
+
+    def add(n1, d1, n2, d2):
+        l = d1 * d2 // gcd(d1, d2)
+        return reduce(n1 * (l // d1) + n2 * (l // d2), l)
+
+
+    n1, d1 = input("분수: ").split("/")
+    n2, d2 = input("다른 분수: ").split("/")
+    n1, d1, n2, d2 = int(n1), int(d1), int(n2), int(d2)
+    r = reduce(n1, d1)
+    print("기약분수:", frac_str(r[0], r[1]))
+    s = add(n1, d1, n2, d2)
+    print("합:", frac_str(s[0], s[1]))
+mutants:
+  - name: 합을 약분하지 않음
+    code: |
+      def gcd(a, b):
+          while b != 0:
+              a, b = b, a % b
+          return a
+
+
+      def reduce(n, d):
+          g = gcd(n, d)
+          return n // g, d // g
+
+
+      def frac_str(n, d):
+          if d == 1:
+              return str(n)
+          return f"{n}/{d}"
+
+
+      def add(n1, d1, n2, d2):
+          return n1 * d2 + n2 * d1, d1 * d2
+
+
+      n1, d1 = input("분수: ").split("/")
+      n2, d2 = input("다른 분수: ").split("/")
+      n1, d1, n2, d2 = int(n1), int(d1), int(n2), int(d2)
+      rn, rd = reduce(n1, d1)
+      print(f"기약분수: {frac_str(rn, rd)}")
+      sn, sd = add(n1, d1, n2, d2)
+      print(f"합: {frac_str(sn, sd)}")
+  - name: 분모가 1이어도 2/1로 출력
+    code: |
+      def gcd(a, b):
+          while b != 0:
+              a, b = b, a % b
+          return a
+
+
+      def reduce(n, d):
+          g = gcd(n, d)
+          return n // g, d // g
+
+
+      def frac_str(n, d):
+          return f"{n}/{d}"
+
+
+      def add(n1, d1, n2, d2):
+          return reduce(n1 * d2 + n2 * d1, d1 * d2)
+
+
+      n1, d1 = input("분수: ").split("/")
+      n2, d2 = input("다른 분수: ").split("/")
+      n1, d1, n2, d2 = int(n1), int(d1), int(n2), int(d2)
+      rn, rd = reduce(n1, d1)
+      print(f"기약분수: {frac_str(rn, rd)}")
+      sn, sd = add(n1, d1, n2, d2)
+      print(f"합: {frac_str(sn, sd)}")
+tests:
+  - stdin: "12/18\n1/2\n"
+    public: true
+  - stdin: "4/2\n3/6\n"
+    note: 정수가 되는 분수
+  - stdin: "5/7\n2/7\n"
+    note: 합이 1
+  - stdin: "100/75\n1/3\n"
+hints:
+  - "`reduce`는 `gcd`를, `add`는 `reduce`를 불러 씁니다. 함수가 함수를 부를 수 있습니다."
+  - "a/b + c/d = (a×d + c×b) / (b×d)를 계산한 뒤 `reduce`로 약분합니다."
+explanation: |
+  작은 함수(`gcd`)를 여러 곳에서 재사용하는 연습입니다. 분자와 분모처럼 늘 함께 다니는 두 값은 튜플로 함께 반환하면 편합니다.

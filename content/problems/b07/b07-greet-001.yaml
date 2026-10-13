@@ -1,0 +1,63 @@
+id: b07-greet-001
+title: 매개변수로 이름 받아 인사하기
+unit: b07
+difficulty: 1
+tags: [func.def, func.param]
+format: fill
+statement: |
+  이름을 매개변수로 받아 인사말을 출력하는 함수 `greet`를 완성하시오. 시작 코드의 빈칸 `_____`을 채우면 된다.
+
+  - 입력 프롬프트: `이름: `
+  - 함수는 두 번 호출된다. 한 번은 입력한 이름으로, 한 번은 `"파이썬"`으로.
+  - 출력 형식: `안녕하세요, 홍길동님! 좋은 하루 되세요.`
+starter: |
+  def _____(_____):
+      print(f"안녕하세요, {name}님! 좋은 하루 되세요.")
+
+  user = input("이름: ")
+  greet(user)
+  greet("파이썬")
+solution: |
+  def greet(name):
+      print(f"안녕하세요, {name}님! 좋은 하루 되세요.")
+
+  user = input("이름: ")
+  greet(user)
+  greet("파이썬")
+alt_solutions:
+  - |
+    def greet(name):
+        print("안녕하세요, " + name + "님! 좋은 하루 되세요.")
+
+    user = input("이름: ")
+    greet(user)
+    greet("파이썬")
+mutants:
+  - name: 매개변수 대신 바깥 변수 user를 씀
+    code: |
+      def greet(name):
+          print(f"안녕하세요, {user}님! 좋은 하루 되세요.")
+
+      user = input("이름: ")
+      greet(user)
+      greet("파이썬")
+  - name: f를 빠뜨림
+    code: |
+      def greet(name):
+          print("안녕하세요, {name}님! 좋은 하루 되세요.")
+
+      user = input("이름: ")
+      greet(user)
+      greet("파이썬")
+tests:
+  - stdin: "홍길동\n"
+    public: true
+  - stdin: "Alice\n"
+  - stdin: "김 철수\n"
+  - stdin: "이 지은\n"
+hints:
+  - "함수 정의는 `def 함수이름(매개변수):` 형식입니다. 함수 이름은 아래에서 호출하는 이름과 같아야 합니다."
+  - "함수 안에서 쓰는 변수 이름(`name`)이 매개변수 이름이 됩니다."
+explanation: |
+  호출할 때 넘긴 값(인자, argument)이 매개변수(parameter) `name`에 들어갑니다.
+  `greet("파이썬")`처럼 다른 값으로 호출하면 같은 코드가 다른 결과를 내는 것이 함수의 장점입니다.

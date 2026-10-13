@@ -1,0 +1,136 @@
+id: b07-filter-menu-013
+title: 판매 중인 메뉴만 골라 주문
+unit: b07
+difficulty: 3
+tags: [func.list-return, list.dedupe-order, list.in]
+statement: |
+  친구들의 음식 요청 리스트와 가게의 판매 메뉴 리스트를 받아 처리하는 두 함수를 정의하시오.
+
+  - `filter_menu(requests, available)`: 요청 중 **판매 중인** 음식만, **중복 없이**, 처음 요청된 순서대로 담은 리스트를 반환
+  - `unavailable(requests, available)`: 요청 중 **판매하지 않는** 음식만, 중복 없이, 처음 요청된 순서대로 담은 리스트를 반환
+
+  - 입력 프롬프트: `요청: `, `판매 메뉴: ` (각각 공백으로 구분)
+  - 출력 형식
+    - `주문 메뉴: ['떡볶이', '김밥', '치킨']`
+    - `제외: ['짜장면', '초밥']`
+    - `주문 수: 3개`
+starter: |
+  def filter_menu(requests, available):
+      pass
+
+
+  def unavailable(requests, available):
+      pass
+
+
+  requests = input("요청: ").split()
+  available = input("판매 메뉴: ").split()
+solution: |
+  def filter_menu(requests, available):
+      result = []
+      for item in requests:
+          if item in available and item not in result:
+              result.append(item)
+      return result
+
+
+  def unavailable(requests, available):
+      result = []
+      for item in requests:
+          if item not in available and item not in result:
+              result.append(item)
+      return result
+
+
+  requests = input("요청: ").split()
+  available = input("판매 메뉴: ").split()
+  menu = filter_menu(requests, available)
+  print(f"주문 메뉴: {menu}")
+  print(f"제외: {unavailable(requests, available)}")
+  print(f"주문 수: {len(menu)}개")
+alt_solutions:
+  - |
+    def unique(items):
+        out = []
+        for x in items:
+            if x not in out:
+                out.append(x)
+        return out
+
+
+    def filter_menu(requests, available):
+        return [x for x in unique(requests) if x in available]
+
+
+    def unavailable(requests, available):
+        return [x for x in unique(requests) if x not in available]
+
+
+    requests = input("요청: ").split()
+    available = input("판매 메뉴: ").split()
+    menu = filter_menu(requests, available)
+    print("주문 메뉴:", menu)
+    print("제외:", unavailable(requests, available))
+    print("주문 수: " + str(len(menu)) + "개")
+mutants:
+  - name: 중복을 지우지 않음
+    code: |
+      def filter_menu(requests, available):
+          result = []
+          for item in requests:
+              if item in available:
+                  result.append(item)
+          return result
+
+
+      def unavailable(requests, available):
+          result = []
+          for item in requests:
+              if item not in available:
+                  result.append(item)
+          return result
+
+
+      requests = input("요청: ").split()
+      available = input("판매 메뉴: ").split()
+      menu = filter_menu(requests, available)
+      print(f"주문 메뉴: {menu}")
+      print(f"제외: {unavailable(requests, available)}")
+      print(f"주문 수: {len(menu)}개")
+  - name: 집합으로 중복을 지워 순서가 바뀜 (정렬)
+    code: |
+      def filter_menu(requests, available):
+          result = []
+          for item in sorted(set(requests)):
+              if item in available:
+                  result.append(item)
+          return result
+
+
+      def unavailable(requests, available):
+          result = []
+          for item in sorted(set(requests)):
+              if item not in available:
+                  result.append(item)
+          return result
+
+
+      requests = input("요청: ").split()
+      available = input("판매 메뉴: ").split()
+      menu = filter_menu(requests, available)
+      print(f"주문 메뉴: {menu}")
+      print(f"제외: {unavailable(requests, available)}")
+      print(f"주문 수: {len(menu)}개")
+tests:
+  - stdin: "떡볶이 김밥 짜장면 김밥 치킨 초밥\n김밥 떡볶이 치킨 라면\n"
+    public: true
+  - stdin: "라면 라면\n라면\n"
+  - stdin: "피자\n김밥\n"
+    note: 주문할 수 있는 메뉴가 없음
+  - stdin: "치킨 김밥 치킨 피자 피자\n김밥 치킨\n"
+hints:
+  - "결과 리스트에 넣기 전에 `item not in result`로 이미 넣었는지 확인하면 순서를 지키며 중복을 없앨 수 있습니다."
+  - "`set()`으로 중복을 없애면 순서가 보장되지 않습니다."
+explanation: |
+  강의 예제처럼 `list(set(requests))`를 쓰면 중복은 사라지지만 **순서가 매번 달라질 수 있어** 정확한 출력이 필요한 문제에서는 위험합니다.
+  순서를 지키려면 '처음 보는 것만 추가'하는 방식이 안전합니다.

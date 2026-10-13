@@ -1,0 +1,129 @@
+id: b07-todo-dict-014
+title: 날짜별 할 일 딕셔너리
+unit: b07
+difficulty: 3
+tags: [func.dict-return, dict.list-values, tuple.unpack]
+statement: |
+  `(날짜, 할 일)` 튜플들의 리스트를 받아, 날짜를 키로 하고 그 날의 할 일 리스트를 값으로 하는 딕셔너리를 반환하는 함수 `make_todo_dict(pairs)`를 정의하시오.
+
+  - 입력: `일정: ` 프롬프트로 `날짜 할 일` 형식을 한 줄씩 입력받다가 `종료`가 입력되면 멈춘다. 할 일에는 공백이 있을 수 있다 (예: `4/21 친구 만나기`).
+  - 입력받은 일정들을 튜플 리스트로 만들어 함수를 호출한다.
+  - 출력 (순서대로)
+    - 반환된 딕셔너리: `{'4/20': ['스터디', '과제'], '4/21': ['운동', '친구 만나기']}`
+    - 날짜마다(처음 나온 순서) `4/20: 스터디, 과제 (2개)` 형식
+  - 일정이 하나도 없으면 `{}`와 `일정이 없습니다`를 출력한다.
+starter: |
+  def make_todo_dict(pairs):
+      pass
+
+
+  todos = []
+solution: |
+  def make_todo_dict(pairs):
+      todo_dict = {}
+      for date, task in pairs:
+          if date in todo_dict:
+              todo_dict[date].append(task)
+          else:
+              todo_dict[date] = [task]
+      return todo_dict
+
+
+  todos = []
+  while True:
+      line = input("일정: ")
+      if line == "종료":
+          break
+      date, task = line.split(" ", 1)
+      todos.append((date, task))
+  result = make_todo_dict(todos)
+  print(result)
+  if len(result) == 0:
+      print("일정이 없습니다")
+  for date in result:
+      tasks = result[date]
+      print(f"{date}: {', '.join(tasks)} ({len(tasks)}개)")
+alt_solutions:
+  - |
+    def make_todo_dict(pairs):
+        d = {}
+        for p in pairs:
+            d.setdefault(p[0], []).append(p[1])
+        return d
+
+
+    todos = []
+    line = input("일정: ")
+    while line != "종료":
+        parts = line.split()
+        todos.append((parts[0], " ".join(parts[1:])))
+        line = input("일정: ")
+    result = make_todo_dict(todos)
+    print(result)
+    if not result:
+        print("일정이 없습니다")
+    for date, tasks in result.items():
+        print(date + ": " + ", ".join(tasks) + " (" + str(len(tasks)) + "개)")
+mutants:
+  - name: 같은 날짜의 할 일을 덮어씀
+    code: |
+      def make_todo_dict(pairs):
+          todo_dict = {}
+          for date, task in pairs:
+              todo_dict[date] = [task]
+          return todo_dict
+
+
+      todos = []
+      while True:
+          line = input("일정: ")
+          if line == "종료":
+              break
+          date, task = line.split(" ", 1)
+          todos.append((date, task))
+      result = make_todo_dict(todos)
+      print(result)
+      if len(result) == 0:
+          print("일정이 없습니다")
+      for date in result:
+          tasks = result[date]
+          print(f"{date}: {', '.join(tasks)} ({len(tasks)}개)")
+  - name: 할 일의 첫 단어만 저장
+    code: |
+      def make_todo_dict(pairs):
+          todo_dict = {}
+          for date, task in pairs:
+              if date in todo_dict:
+                  todo_dict[date].append(task)
+              else:
+                  todo_dict[date] = [task]
+          return todo_dict
+
+
+      todos = []
+      while True:
+          line = input("일정: ")
+          if line == "종료":
+              break
+          parts = line.split()
+          todos.append((parts[0], parts[1]))
+      result = make_todo_dict(todos)
+      print(result)
+      if len(result) == 0:
+          print("일정이 없습니다")
+      for date in result:
+          tasks = result[date]
+          print(f"{date}: {', '.join(tasks)} ({len(tasks)}개)")
+tests:
+  - stdin: "4/20 스터디\n4/21 운동\n4/20 과제\n4/21 친구 만나기\n종료\n"
+    public: true
+  - stdin: "종료\n"
+    note: 일정 없음
+  - stdin: "1/1 새해 계획 세우기\n종료\n"
+  - stdin: "3/2 A\n3/1 B\n3/2 C\n3/2 D\n종료\n"
+hints:
+  - "날짜가 이미 키로 있으면 `todo_dict[date].append(task)`, 없으면 `todo_dict[date] = [task]`."
+  - "`line.split(\" \", 1)`은 첫 공백에서 한 번만 나눠 `['4/21', '친구 만나기']`를 만듭니다."
+explanation: |
+  값이 리스트인 딕셔너리를 만드는 전형적인 패턴입니다. 처음 보는 키면 리스트를 새로 만들고, 이미 있으면 그 리스트에 추가합니다.
+  강의의 실습 6(시험 제외 표시)을 응용한 문제이지만, 6주차 딕셔너리와 7주차 함수를 함께 연습하기에 좋습니다.

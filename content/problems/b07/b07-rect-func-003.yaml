@@ -1,0 +1,103 @@
+id: b07-rect-func-003
+title: 직사각형 넓이·둘레 함수
+unit: b07
+difficulty: 1
+tags: [func.def, func.return]
+statement: |
+  직사각형의 넓이를 반환하는 함수 `rect_area(w, h)`와 둘레를 반환하는 함수 `rect_perimeter(w, h)`를 정의하고,
+  가로와 세로를 입력받아 두 함수를 호출해 결과를 출력하시오.
+
+  - 입력 프롬프트: `가로: `, `세로: ` (정수)
+  - 출력 형식: `넓이: 12`, `둘레: 14`
+  - 가로와 세로가 같으면 마지막 줄에 `정사각형입니다`, 다르면 `직사각형입니다`를 출력한다.
+starter: |
+  def rect_area(w, h):
+      pass
+
+
+  def rect_perimeter(w, h):
+      pass
+
+
+  w = int(input("가로: "))
+  h = int(input("세로: "))
+solution: |
+  def rect_area(w, h):
+      return w * h
+
+
+  def rect_perimeter(w, h):
+      return 2 * (w + h)
+
+
+  w = int(input("가로: "))
+  h = int(input("세로: "))
+  print(f"넓이: {rect_area(w, h)}")
+  print(f"둘레: {rect_perimeter(w, h)}")
+  if w == h:
+      print("정사각형입니다")
+  else:
+      print("직사각형입니다")
+alt_solutions:
+  - |
+    def rect_area(w, h):
+        area = w * h
+        return area
+
+
+    def rect_perimeter(w, h):
+        return w + w + h + h
+
+
+    w = int(input("가로: "))
+    h = int(input("세로: "))
+    a = rect_area(w, h)
+    p = rect_perimeter(w, h)
+    print("넓이:", a)
+    print("둘레:", p)
+    print("정사각형입니다" if w == h else "직사각형입니다")
+mutants:
+  - name: 둘레를 w * 2 + h로 계산
+    code: |
+      def rect_area(w, h):
+          return w * h
+
+
+      def rect_perimeter(w, h):
+          return w * 2 + h
+
+
+      w = int(input("가로: "))
+      h = int(input("세로: "))
+      print(f"넓이: {rect_area(w, h)}")
+      print(f"둘레: {rect_perimeter(w, h)}")
+      if w == h:
+          print("정사각형입니다")
+      else:
+          print("직사각형입니다")
+  - name: 정사각형 판별을 빠뜨림
+    code: |
+      def rect_area(w, h):
+          return w * h
+
+
+      def rect_perimeter(w, h):
+          return 2 * (w + h)
+
+
+      w = int(input("가로: "))
+      h = int(input("세로: "))
+      print(f"넓이: {rect_area(w, h)}")
+      print(f"둘레: {rect_perimeter(w, h)}")
+      print("직사각형입니다")
+tests:
+  - stdin: "3\n4\n"
+    public: true
+  - stdin: "5\n5\n"
+  - stdin: "1\n100\n"
+  - stdin: "12\n7\n"
+hints:
+  - "`pass` 자리에 `return 계산식`을 쓰세요."
+  - "함수를 정의만 하면 아무 일도 일어나지 않습니다. 아래에서 `rect_area(w, h)`처럼 호출해야 합니다."
+explanation: |
+  함수는 '정의'와 '호출'이 따로입니다. 값을 반환하는 함수는 `print(f"넓이: {rect_area(w, h)}")`처럼 식 안에서 바로 쓸 수 있습니다.

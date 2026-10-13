@@ -1,0 +1,72 @@
+id: b07-add-return-002
+title: 결과를 돌려주는 add 함수
+unit: b07
+difficulty: 1
+tags: [func.return]
+format: fill
+statement: |
+  두 수를 더한 값을 **반환**하는 함수 `add`를 완성하시오. 시작 코드의 빈칸 `_____`을 채우면 된다.
+
+  - 입력 프롬프트: `첫 번째 수: `, `두 번째 수: `
+  - 출력 형식: `합: 30`, `합의 2배: 60`
+starter: |
+  def add(a, b):
+      _____ a + b
+
+  x = int(input("첫 번째 수: "))
+  y = int(input("두 번째 수: "))
+  result = add(x, y)
+  print(f"합: {result}")
+  print(f"합의 2배: {add(result, result)}")
+solution: |
+  def add(a, b):
+      return a + b
+
+  x = int(input("첫 번째 수: "))
+  y = int(input("두 번째 수: "))
+  result = add(x, y)
+  print(f"합: {result}")
+  print(f"합의 2배: {add(result, result)}")
+alt_solutions:
+  - |
+    def add(a, b):
+        s = a + b
+        return s
+
+    x = int(input("첫 번째 수: "))
+    y = int(input("두 번째 수: "))
+    result = add(x, y)
+    print("합:", result)
+    print("합의 2배:", add(result, result))
+mutants:
+  - name: return 대신 print
+    code: |
+      def add(a, b):
+          print(a + b)
+
+      x = int(input("첫 번째 수: "))
+      y = int(input("두 번째 수: "))
+      result = add(x, y)
+      print(f"합: {result}")
+      print(f"합의 2배: {add(result, result)}")
+  - name: 문자열로 이어 붙임
+    code: |
+      def add(a, b):
+          return str(a) + str(b)
+
+      x = int(input("첫 번째 수: "))
+      y = int(input("두 번째 수: "))
+      result = add(x, y)
+      print(f"합: {result}")
+      print(f"합의 2배: {add(result, result)}")
+tests:
+  - stdin: "10\n20\n"
+    public: true
+  - stdin: "-5\n5\n"
+  - stdin: "7\n0\n"
+  - stdin: "123\n-200\n"
+hints:
+  - "함수가 계산한 값을 호출한 곳으로 돌려주는 키워드는 `return`입니다."
+explanation: |
+  `print`는 화면에 보여 줄 뿐 값을 돌려주지 않습니다. 그러면 `result`에는 `None`이 들어가 `합: None`이 출력되고,
+  `add(None, None)`에서 오류가 납니다. 결과를 다른 계산에 다시 쓰려면 `return`이 필요합니다.

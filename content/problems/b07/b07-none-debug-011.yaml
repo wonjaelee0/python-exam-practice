@@ -1,0 +1,118 @@
+id: b07-none-debug-011
+title: "[버그 고치기] 합계가 None원이에요"
+unit: b07
+difficulty: 2
+tags: [func.return, func.none, debug]
+format: debug
+statement: |
+  가격들과 할인율을 입력받아 합계와 할인 후 금액을 출력하려는 코드이다. 그런데 실행하면 숫자가 따로 찍히고 `합계: None원`이 출력된다.
+  두 함수를 고쳐 올바르게 동작하게 하시오.
+
+  - 입력 프롬프트: `가격들: ` (공백으로 구분된 정수), `할인율(%): ` (정수)
+  - 출력 형식: `합계: 15000원`, `할인 후: 13500원`
+  - 할인 후 금액 = 합계 × (100 - 할인율) // 100
+starter: |
+  def get_total(prices):
+      total = 0
+      for p in prices:
+          total += p
+      print(total)
+
+
+  def apply_discount(total, rate):
+      total = total * (100 - rate) // 100
+
+
+  prices = [int(x) for x in input("가격들: ").split()]
+  rate = int(input("할인율(%): "))
+  total = get_total(prices)
+  final = apply_discount(total, rate)
+  print(f"합계: {total}원")
+  print(f"할인 후: {final}원")
+solution: |
+  def get_total(prices):
+      total = 0
+      for p in prices:
+          total += p
+      return total
+
+
+  def apply_discount(total, rate):
+      return total * (100 - rate) // 100
+
+
+  prices = [int(x) for x in input("가격들: ").split()]
+  rate = int(input("할인율(%): "))
+  total = get_total(prices)
+  final = apply_discount(total, rate)
+  print(f"합계: {total}원")
+  print(f"할인 후: {final}원")
+alt_solutions:
+  - |
+    def get_total(prices):
+        return sum(prices)
+
+
+    def apply_discount(total, rate):
+        total = total * (100 - rate) // 100
+        return total
+
+
+    prices = [int(x) for x in input("가격들: ").split()]
+    rate = int(input("할인율(%): "))
+    total = get_total(prices)
+    final = apply_discount(total, rate)
+    print("합계: " + str(total) + "원")
+    print("할인 후: " + str(final) + "원")
+mutants:
+  - name: get_total만 고침
+    code: |
+      def get_total(prices):
+          total = 0
+          for p in prices:
+              total += p
+          return total
+
+
+      def apply_discount(total, rate):
+          total = total * (100 - rate) // 100
+
+
+      prices = [int(x) for x in input("가격들: ").split()]
+      rate = int(input("할인율(%): "))
+      total = get_total(prices)
+      final = apply_discount(total, rate)
+      print(f"합계: {total}원")
+      print(f"할인 후: {final}원")
+  - name: print를 남긴 채 return을 추가
+    code: |
+      def get_total(prices):
+          total = 0
+          for p in prices:
+              total += p
+          print(total)
+          return total
+
+
+      def apply_discount(total, rate):
+          return total * (100 - rate) // 100
+
+
+      prices = [int(x) for x in input("가격들: ").split()]
+      rate = int(input("할인율(%): "))
+      total = get_total(prices)
+      final = apply_discount(total, rate)
+      print(f"합계: {total}원")
+      print(f"할인 후: {final}원")
+tests:
+  - stdin: "5000 10000\n10\n"
+    public: true
+  - stdin: "999\n0\n"
+  - stdin: "1000 2000 3000\n33\n"
+  - stdin: "100\n100\n"
+hints:
+  - "함수가 끝날 때까지 `return`을 만나지 않으면 `None`이 반환됩니다."
+  - "함수 안에서 매개변수 `total`에 새 값을 넣어도 바깥 변수는 바뀌지 않습니다. 결과는 `return`으로 돌려줘야 합니다."
+explanation: |
+  `print`는 화면에 찍을 뿐 값을 돌려주지 않고, 함수 안에서 바꾼 지역 변수는 함수가 끝나면 사라집니다.
+  두 함수 모두 `return`으로 결과를 돌려줘야 바깥에서 `total`, `final`로 받을 수 있습니다.

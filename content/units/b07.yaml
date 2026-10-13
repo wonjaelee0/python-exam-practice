@@ -1,0 +1,5 @@
+id: b07
+short: 7주차
+title: 함수
+order: 7
+summary: def·매개변수·return(조기 종료, None), 여러 값 반환(튜플 언패킹), 리스트·딕셔너리를 받고 돌려주는 함수

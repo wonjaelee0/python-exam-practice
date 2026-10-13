@@ -1,0 +1,139 @@
+id: b07-count-orders-010
+title: 주문 수량 딕셔너리 반환
+unit: b07
+difficulty: 3
+tags: [func.dict-return, dict.count, func.multi-return]
+statement: |
+  두 함수를 정의하시오.
+
+  - `count_orders(order_list)`: 주문 리스트를 받아 `{음식: 주문 수}` 딕셔너리를 반환한다 (처음 주문된 순서대로).
+  - `most_ordered(order_dict)`: 위 딕셔너리를 받아 가장 많이 주문된 음식과 그 수를 **함께 반환**한다. 수가 같으면 먼저 주문된 음식.
+
+  주문을 입력받아 두 함수를 차례로 호출하고 결과를 출력하시오.
+
+  - 입력 프롬프트: `주문: ` (공백으로 구분, 1개 이상)
+  - 출력 형식
+    - 반환된 딕셔너리: `{'김밥': 3, '떡볶이': 1, '라면': 2}`
+    - `가장 많이 주문된 음식: 김밥 (3개)`
+starter: |
+  def count_orders(order_list):
+      pass
+
+
+  def most_ordered(order_dict):
+      pass
+
+
+  orders = input("주문: ").split()
+solution: |
+  def count_orders(order_list):
+      order_dict = {}
+      for item in order_list:
+          if item in order_dict:
+              order_dict[item] += 1
+          else:
+              order_dict[item] = 1
+      return order_dict
+
+
+  def most_ordered(order_dict):
+      best = ""
+      best_count = 0
+      for item in order_dict:
+          if order_dict[item] > best_count:
+              best = item
+              best_count = order_dict[item]
+      return best, best_count
+
+
+  orders = input("주문: ").split()
+  counts = count_orders(orders)
+  print(counts)
+  food, n = most_ordered(counts)
+  print(f"가장 많이 주문된 음식: {food} ({n}개)")
+alt_solutions:
+  - |
+    def count_orders(order_list):
+        d = {}
+        for item in order_list:
+            d[item] = d.get(item, 0) + 1
+        return d
+
+
+    def most_ordered(order_dict):
+        m = max(order_dict.values())
+        for k, v in order_dict.items():
+            if v == m:
+                return k, v
+
+
+    orders = input("주문: ").split()
+    counts = count_orders(orders)
+    print(counts)
+    result = most_ordered(counts)
+    print("가장 많이 주문된 음식: " + result[0] + " (" + str(result[1]) + "개)")
+mutants:
+  - name: 수가 같으면 나중 음식을 고름
+    code: |
+      def count_orders(order_list):
+          order_dict = {}
+          for item in order_list:
+              if item in order_dict:
+                  order_dict[item] += 1
+              else:
+                  order_dict[item] = 1
+          return order_dict
+
+
+      def most_ordered(order_dict):
+          best = ""
+          best_count = 0
+          for item in order_dict:
+              if order_dict[item] >= best_count:
+                  best = item
+                  best_count = order_dict[item]
+          return best, best_count
+
+
+      orders = input("주문: ").split()
+      counts = count_orders(orders)
+      print(counts)
+      food, n = most_ordered(counts)
+      print(f"가장 많이 주문된 음식: {food} ({n}개)")
+  - name: 이미 있는 음식도 1로 덮어씀
+    code: |
+      def count_orders(order_list):
+          order_dict = {}
+          for item in order_list:
+              order_dict[item] = 1
+          return order_dict
+
+
+      def most_ordered(order_dict):
+          best = ""
+          best_count = 0
+          for item in order_dict:
+              if order_dict[item] > best_count:
+                  best = item
+                  best_count = order_dict[item]
+          return best, best_count
+
+
+      orders = input("주문: ").split()
+      counts = count_orders(orders)
+      print(counts)
+      food, n = most_ordered(counts)
+      print(f"가장 많이 주문된 음식: {food} ({n}개)")
+tests:
+  - stdin: "김밥 떡볶이 김밥 라면 김밥 라면\n"
+    public: true
+  - stdin: "라면 김밥 김밥 라면\n"
+    note: 동점 — 먼저 주문된 음식
+  - stdin: "치킨\n"
+  - stdin: "피자 콜라 피자 콜라 콜라 피자 샐러드\n"
+hints:
+  - "`if item in order_dict:`이면 1 더하고, 아니면 `order_dict[item] = 1`로 새로 만듭니다."
+  - "`return best, best_count`로 두 값을 함께 돌려주고 `food, n = most_ordered(counts)`로 받습니다."
+explanation: |
+  집계 결과를 딕셔너리로 반환하면 그 결과를 다른 함수(`most_ordered`)에 다시 넘겨 활용할 수 있습니다.
+  '같으면 먼저 나온 것'은 `>`로 비교해야 합니다. `>=`이면 뒤에 나온 같은 값으로 바뀝니다.

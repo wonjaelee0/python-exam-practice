@@ -1,0 +1,112 @@
+id: b07-capitalize-all-007
+title: 리스트의 단어 첫 글자 대문자로
+unit: b07
+difficulty: 2
+tags: [func.list-arg, func.list-return, str.capitalize]
+statement: |
+  단어 리스트를 받아, 각 단어의 첫 글자는 대문자로, 나머지는 소문자로 바꾼 **새 리스트를 반환**하는 함수 `upper_all(words)`를 정의하시오.
+
+  - 입력 프롬프트: `단어들: ` (공백으로 구분)
+  - 출력 (순서대로)
+    - 함수가 반환한 리스트: `['Apple', 'Banana', 'Cherry']`
+    - `가장 긴 단어: Banana` (반환된 리스트에서 가장 긴 단어, 길이가 같으면 앞의 단어)
+  - 참고: `str.capitalize()`는 첫 글자를 대문자로, 나머지를 소문자로 바꾼 새 문자열을 돌려준다.
+starter: |
+  def upper_all(words):
+      pass
+
+
+  data = input("단어들: ").split()
+solution: |
+  def upper_all(words):
+      result = []
+      for w in words:
+          result.append(w.capitalize())
+      return result
+
+
+  data = input("단어들: ").split()
+  caps = upper_all(data)
+  print(caps)
+  longest = caps[0]
+  for w in caps:
+      if len(w) > len(longest):
+          longest = w
+  print(f"가장 긴 단어: {longest}")
+alt_solutions:
+  - |
+    def upper_all(words):
+        return [w[0].upper() + w[1:].lower() for w in words]
+
+
+    data = input("단어들: ").split()
+    caps = upper_all(data)
+    print(caps)
+    lengths = [len(w) for w in caps]
+    print("가장 긴 단어:", caps[lengths.index(max(lengths))])
+mutants:
+  - name: 모두 대문자로 바꿈 (upper)
+    code: |
+      def upper_all(words):
+          result = []
+          for w in words:
+              result.append(w.upper())
+          return result
+
+
+      data = input("단어들: ").split()
+      caps = upper_all(data)
+      print(caps)
+      longest = caps[0]
+      for w in caps:
+          if len(w) > len(longest):
+              longest = w
+      print(f"가장 긴 단어: {longest}")
+  - name: 첫 글자만 바꾸고 나머지는 그대로 둠
+    code: |
+      def upper_all(words):
+          result = []
+          for w in words:
+              result.append(w[0].upper() + w[1:])
+          return result
+
+
+      data = input("단어들: ").split()
+      caps = upper_all(data)
+      print(caps)
+      longest = caps[0]
+      for w in caps:
+          if len(w) > len(longest):
+              longest = w
+      print(f"가장 긴 단어: {longest}")
+  - name: 길이가 같으면 뒤의 단어를 고름
+    code: |
+      def upper_all(words):
+          result = []
+          for w in words:
+              result.append(w.capitalize())
+          return result
+
+
+      data = input("단어들: ").split()
+      caps = upper_all(data)
+      print(caps)
+      longest = caps[0]
+      for w in caps:
+          if len(w) >= len(longest):
+              longest = w
+      print(f"가장 긴 단어: {longest}")
+tests:
+  - stdin: "apple banana cherry\n"
+    public: true
+  - stdin: "pYTHON jAVA c\n"
+    note: 나머지 글자는 소문자로
+  - stdin: "hello\n"
+  - stdin: "a bb cc\n"
+    note: 길이가 같은 단어
+hints:
+  - "빈 리스트 `result = []`를 만들고, 반복하며 `result.append(w.capitalize())`한 뒤 `return result`."
+  - "반환된 리스트를 변수에 받아 두면 출력과 '가장 긴 단어' 찾기에 모두 쓸 수 있습니다."
+explanation: |
+  함수가 리스트를 '반환'하면 호출한 쪽에서 그 리스트를 다시 활용할 수 있습니다.
+  `capitalize()`는 나머지 글자를 소문자로 바꾸므로 `pYTHON` → `Python`이 됩니다. 첫 글자만 `upper()`하면 `PYTHON`이 되어 다릅니다.

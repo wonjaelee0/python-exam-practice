@@ -1,0 +1,104 @@
+id: b07-parity-count-006
+title: 짝홀 판별 함수와 개수 세기
+unit: b07
+difficulty: 2
+tags: [func.return, loop.while-sentinel, func.none]
+statement: |
+  정수를 받아 `"짝수"` 또는 `"홀수"`를 **반환**하는 함수 `parity(n)`을 정의하시오.
+  그다음 정수를 `0`이 입력될 때까지 입력받으며, 각 수마다 함수의 결과를 출력하고 마지막에 개수를 출력하시오.
+
+  - 입력 프롬프트: `수: `
+  - 각 수마다: `7: 홀수` 형식 (`0`은 끝을 뜻하므로 판별하지 않는다)
+  - 마지막 줄: `짝수 2개, 홀수 3개`
+  - 음수도 입력될 수 있다.
+starter: |
+  def parity(n):
+      pass
+solution: |
+  def parity(n):
+      if n % 2 == 0:
+          return "짝수"
+      return "홀수"
+
+
+  even = 0
+  odd = 0
+  while True:
+      n = int(input("수: "))
+      if n == 0:
+          break
+      result = parity(n)
+      print(f"{n}: {result}")
+      if result == "짝수":
+          even += 1
+      else:
+          odd += 1
+  print(f"짝수 {even}개, 홀수 {odd}개")
+alt_solutions:
+  - |
+    def parity(n):
+        return "짝수" if n % 2 == 0 else "홀수"
+
+
+    counts = {"짝수": 0, "홀수": 0}
+    n = int(input("수: "))
+    while n != 0:
+        p = parity(n)
+        print(str(n) + ":", p)
+        counts[p] += 1
+        n = int(input("수: "))
+    print("짝수 " + str(counts["짝수"]) + "개, 홀수 " + str(counts["홀수"]) + "개")
+mutants:
+  - name: 짝수일 때 return이 없음 (None 반환)
+    code: |
+      def parity(n):
+          if n % 2 == 1:
+              return "홀수"
+
+
+      even = 0
+      odd = 0
+      while True:
+          n = int(input("수: "))
+          if n == 0:
+              break
+          result = parity(n)
+          print(f"{n}: {result}")
+          if result == "홀수":
+              odd += 1
+          else:
+              even += 1
+      print(f"짝수 {even}개, 홀수 {odd}개")
+  - name: 끝을 뜻하는 0까지 짝수로 셈
+    code: |
+      def parity(n):
+          if n % 2 == 0:
+              return "짝수"
+          return "홀수"
+
+
+      even = 0
+      odd = 0
+      while True:
+          n = int(input("수: "))
+          if parity(n) == "짝수":
+              even += 1
+          else:
+              odd += 1
+          if n == 0:
+              break
+          print(f"{n}: {parity(n)}")
+      print(f"짝수 {even}개, 홀수 {odd}개")
+tests:
+  - stdin: "3\n8\n-5\n10\n7\n0\n"
+    public: true
+  - stdin: "0\n"
+    note: 바로 끝남
+  - stdin: "2\n4\n-6\n0\n"
+  - stdin: "-1\n1\n-2\n0\n"
+hints:
+  - "함수 안에서는 `print`가 아니라 `return \"짝수\"`처럼 값을 돌려줍니다."
+  - "`if` 안에서 `return`하면 함수가 끝나므로, 그 아래에 `return \"홀수\"`만 써도 됩니다."
+explanation: |
+  `return`이 실행되지 않고 함수가 끝나면 `None`이 반환됩니다. 모든 경우에 `return`이 있는지 확인하세요.
+  파이썬에서는 `-5 % 2`가 `1`이므로 음수의 짝홀도 `% 2`로 판별됩니다.

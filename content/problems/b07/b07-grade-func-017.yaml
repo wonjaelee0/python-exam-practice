@@ -1,0 +1,127 @@
+id: b07-grade-func-017
+title: 등급 함수와 등급 분포
+unit: b07
+difficulty: 3
+tags: [func.return-early, dict.count, loop.while-sentinel]
+statement: |
+  점수를 받아 등급 문자를 반환하는 함수 `to_grade(score)`를 정의하시오.
+  90점 이상 `A`, 80점 이상 `B`, 70점 이상 `C`, 60점 이상 `D`, 나머지 `F`.
+
+  그다음 `이름 점수`를 `종료`가 입력될 때까지 입력받으며 각 학생의 등급을 출력하고, 마지막에 등급 분포를 출력하시오.
+
+  - 입력 프롬프트: `이름 점수: `
+  - 학생마다: `민수: 87점 → B`
+  - 마지막 줄: `등급 분포: {'A': 1, 'B': 2, 'C': 0, 'D': 0, 'F': 1}` (A부터 F까지 모든 등급을 이 순서로, 없는 등급은 0)
+starter: |
+  def to_grade(score):
+      pass
+solution: |
+  def to_grade(score):
+      if score >= 90:
+          return "A"
+      if score >= 80:
+          return "B"
+      if score >= 70:
+          return "C"
+      if score >= 60:
+          return "D"
+      return "F"
+
+
+  dist = {"A": 0, "B": 0, "C": 0, "D": 0, "F": 0}
+  while True:
+      line = input("이름 점수: ")
+      if line == "종료":
+          break
+      name, score = line.split()
+      score = int(score)
+      grade = to_grade(score)
+      dist[grade] += 1
+      print(f"{name}: {score}점 → {grade}")
+  print(f"등급 분포: {dist}")
+alt_solutions:
+  - |
+    def to_grade(score):
+        cuts = [90, 80, 70, 60]
+        letters = ["A", "B", "C", "D"]
+        for i in range(4):
+            if score >= cuts[i]:
+                return letters[i]
+        return "F"
+
+
+    dist = {}
+    for g in "ABCDF":
+        dist[g] = 0
+    line = input("이름 점수: ")
+    while line != "종료":
+        parts = line.split()
+        g = to_grade(int(parts[1]))
+        dist[g] = dist[g] + 1
+        print(parts[0] + ": " + parts[1] + "점 → " + g)
+        line = input("이름 점수: ")
+    print("등급 분포:", dist)
+mutants:
+  - name: 경계 점수를 놓침 (> 사용)
+    code: |
+      def to_grade(score):
+          if score > 90:
+              return "A"
+          if score > 80:
+              return "B"
+          if score > 70:
+              return "C"
+          if score > 60:
+              return "D"
+          return "F"
+
+
+      dist = {"A": 0, "B": 0, "C": 0, "D": 0, "F": 0}
+      while True:
+          line = input("이름 점수: ")
+          if line == "종료":
+              break
+          name, score = line.split()
+          score = int(score)
+          grade = to_grade(score)
+          dist[grade] += 1
+          print(f"{name}: {score}점 → {grade}")
+      print(f"등급 분포: {dist}")
+  - name: 나온 등급만 분포에 넣음
+    code: |
+      def to_grade(score):
+          if score >= 90:
+              return "A"
+          if score >= 80:
+              return "B"
+          if score >= 70:
+              return "C"
+          if score >= 60:
+              return "D"
+          return "F"
+
+
+      dist = {}
+      while True:
+          line = input("이름 점수: ")
+          if line == "종료":
+              break
+          name, score = line.split()
+          score = int(score)
+          grade = to_grade(score)
+          dist[grade] = dist.get(grade, 0) + 1
+          print(f"{name}: {score}점 → {grade}")
+      print(f"등급 분포: {dist}")
+tests:
+  - stdin: "민수 87\n지은 90\n하늘 59\n도윤 80\n종료\n"
+    public: true
+  - stdin: "종료\n"
+    note: 학생 없음
+  - stdin: "가람 100\n나래 70\n다온 60\n라희 69\n종료\n"
+  - stdin: "서준 0\n종료\n"
+hints:
+  - "높은 등급부터 `if score >= 90: return \"A\"`처럼 검사하면, 위에서 반환된 경우는 아래로 내려오지 않으므로 `elif` 없이도 됩니다."
+  - "분포 딕셔너리를 처음부터 `{\"A\": 0, \"B\": 0, \"C\": 0, \"D\": 0, \"F\": 0}`으로 만들어 두면 순서와 0인 등급이 모두 지켜집니다."
+explanation: |
+  `return`이 함수를 끝내므로, 조건을 위에서부터 차례로 검사해 맞으면 바로 반환하는 구조가 깔끔합니다.
+  경계값(90, 80, …)은 '이상'이므로 `>=`입니다.

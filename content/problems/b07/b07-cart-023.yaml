@@ -1,0 +1,253 @@
+id: b07-cart-023
+title: 장바구니 딕셔너리를 바꾸는 함수
+unit: b07
+difficulty: 4
+tags: [func.dict-arg, func.mutation, func.bool-return]
+statement: |
+  상품 가격표 `PRICES`가 주어진다 (시작 코드). 장바구니 딕셔너리 `cart`(`{상품: 수량}`)를 다루는 함수들을 정의하시오.
+
+  - `add_item(cart, name, qty)`: 장바구니에 상품을 qty개 더한다 (반환값 없음, `cart`를 직접 바꾼다)
+  - `remove_item(cart, name, qty)`: 담긴 수량이 qty보다 적으면 아무것도 바꾸지 않고 `False`. 아니면 빼고 `True`. 수량이 0이 되면 장바구니에서 그 상품을 지운다
+  - `total_price(cart)`: 총액을 반환
+
+  `명령: ` 프롬프트로 `종료`가 입력될 때까지 명령을 처리하시오.
+
+  | 명령 | 출력 |
+  |---|---|
+  | `담기 사과 3` | `담기 완료: 사과 3개` (가격표에 없는 상품이면 `없는 상품입니다`) |
+  | `빼기 사과 1` | `빼기 완료: 사과 1개` (수량이 모자라면 `수량이 부족합니다`) |
+  | `계산` | 담긴 순서대로 `사과 x2 = 2000원`, 마지막에 `총액: 4500원` (비었으면 `장바구니가 비었습니다`) |
+starter: |
+  PRICES = {"사과": 1000, "바나나": 500, "우유": 2500, "빵": 3000}
+
+
+  def add_item(cart, name, qty):
+      pass
+
+
+  def remove_item(cart, name, qty):
+      pass
+
+
+  def total_price(cart):
+      pass
+
+
+  cart = {}
+solution: |
+  PRICES = {"사과": 1000, "바나나": 500, "우유": 2500, "빵": 3000}
+
+
+  def add_item(cart, name, qty):
+      cart[name] = cart.get(name, 0) + qty
+
+
+  def remove_item(cart, name, qty):
+      if cart.get(name, 0) < qty:
+          return False
+      cart[name] -= qty
+      if cart[name] == 0:
+          del cart[name]
+      return True
+
+
+  def total_price(cart):
+      total = 0
+      for name in cart:
+          total += PRICES[name] * cart[name]
+      return total
+
+
+  cart = {}
+  while True:
+      parts = input("명령: ").split()
+      if parts[0] == "종료":
+          break
+      if parts[0] == "담기":
+          name = parts[1]
+          qty = int(parts[2])
+          if name not in PRICES:
+              print("없는 상품입니다")
+          else:
+              add_item(cart, name, qty)
+              print(f"담기 완료: {name} {qty}개")
+      elif parts[0] == "빼기":
+          name = parts[1]
+          qty = int(parts[2])
+          if remove_item(cart, name, qty):
+              print(f"빼기 완료: {name} {qty}개")
+          else:
+              print("수량이 부족합니다")
+      elif parts[0] == "계산":
+          if len(cart) == 0:
+              print("장바구니가 비었습니다")
+          else:
+              for name in cart:
+                  print(f"{name} x{cart[name]} = {PRICES[name] * cart[name]}원")
+              print(f"총액: {total_price(cart)}원")
+alt_solutions:
+  - |
+    PRICES = {"사과": 1000, "바나나": 500, "우유": 2500, "빵": 3000}
+
+
+    def add_item(cart, name, qty):
+        if name in cart:
+            cart[name] += qty
+        else:
+            cart[name] = qty
+
+
+    def remove_item(cart, name, qty):
+        have = cart[name] if name in cart else 0
+        if have >= qty:
+            if have == qty:
+                cart.pop(name)
+            else:
+                cart[name] = have - qty
+            return True
+        return False
+
+
+    def total_price(cart):
+        return sum([PRICES[k] * v for k, v in cart.items()])
+
+
+    cart = {}
+    cmd = input("명령: ").split()
+    while cmd[0] != "종료":
+        if cmd[0] == "담기":
+            if cmd[1] in PRICES:
+                add_item(cart, cmd[1], int(cmd[2]))
+                print("담기 완료: " + cmd[1] + " " + cmd[2] + "개")
+            else:
+                print("없는 상품입니다")
+        elif cmd[0] == "빼기":
+            if remove_item(cart, cmd[1], int(cmd[2])):
+                print("빼기 완료: " + cmd[1] + " " + cmd[2] + "개")
+            else:
+                print("수량이 부족합니다")
+        elif cmd[0] == "계산":
+            if not cart:
+                print("장바구니가 비었습니다")
+            else:
+                for k, v in cart.items():
+                    print(k + " x" + str(v) + " = " + str(PRICES[k] * v) + "원")
+                print("총액: " + str(total_price(cart)) + "원")
+        cmd = input("명령: ").split()
+mutants:
+  - name: 수량이 0이 되어도 지우지 않음
+    code: |
+      PRICES = {"사과": 1000, "바나나": 500, "우유": 2500, "빵": 3000}
+
+
+      def add_item(cart, name, qty):
+          cart[name] = cart.get(name, 0) + qty
+
+
+      def remove_item(cart, name, qty):
+          if cart.get(name, 0) < qty:
+              return False
+          cart[name] -= qty
+          return True
+
+
+      def total_price(cart):
+          total = 0
+          for name in cart:
+              total += PRICES[name] * cart[name]
+          return total
+
+
+      cart = {}
+      while True:
+          parts = input("명령: ").split()
+          if parts[0] == "종료":
+              break
+          if parts[0] == "담기":
+              name = parts[1]
+              qty = int(parts[2])
+              if name not in PRICES:
+                  print("없는 상품입니다")
+              else:
+                  add_item(cart, name, qty)
+                  print(f"담기 완료: {name} {qty}개")
+          elif parts[0] == "빼기":
+              name = parts[1]
+              qty = int(parts[2])
+              if remove_item(cart, name, qty):
+                  print(f"빼기 완료: {name} {qty}개")
+              else:
+                  print("수량이 부족합니다")
+          elif parts[0] == "계산":
+              if len(cart) == 0:
+                  print("장바구니가 비었습니다")
+              else:
+                  for name in cart:
+                      print(f"{name} x{cart[name]} = {PRICES[name] * cart[name]}원")
+                  print(f"총액: {total_price(cart)}원")
+  - name: 이미 담긴 상품의 수량을 덮어씀
+    code: |
+      PRICES = {"사과": 1000, "바나나": 500, "우유": 2500, "빵": 3000}
+
+
+      def add_item(cart, name, qty):
+          cart[name] = qty
+
+
+      def remove_item(cart, name, qty):
+          if cart.get(name, 0) < qty:
+              return False
+          cart[name] -= qty
+          if cart[name] == 0:
+              del cart[name]
+          return True
+
+
+      def total_price(cart):
+          total = 0
+          for name in cart:
+              total += PRICES[name] * cart[name]
+          return total
+
+
+      cart = {}
+      while True:
+          parts = input("명령: ").split()
+          if parts[0] == "종료":
+              break
+          if parts[0] == "담기":
+              name = parts[1]
+              qty = int(parts[2])
+              if name not in PRICES:
+                  print("없는 상품입니다")
+              else:
+                  add_item(cart, name, qty)
+                  print(f"담기 완료: {name} {qty}개")
+          elif parts[0] == "빼기":
+              name = parts[1]
+              qty = int(parts[2])
+              if remove_item(cart, name, qty):
+                  print(f"빼기 완료: {name} {qty}개")
+              else:
+                  print("수량이 부족합니다")
+          elif parts[0] == "계산":
+              if len(cart) == 0:
+                  print("장바구니가 비었습니다")
+              else:
+                  for name in cart:
+                      print(f"{name} x{cart[name]} = {PRICES[name] * cart[name]}원")
+                  print(f"총액: {total_price(cart)}원")
+tests:
+  - stdin: "담기 사과 3\n담기 우유 1\n빼기 사과 1\n계산\n종료\n"
+    public: true
+  - stdin: "담기 사과 1\n빼기 사과 1\n계산\n종료\n"
+    note: 다 빼면 장바구니가 빔
+  - stdin: "담기 수박 1\n빼기 빵 1\n담기 빵 2\n담기 빵 1\n계산\n종료\n"
+  - stdin: "계산\n종료\n"
+  - stdin: "담기 바나나 4\n빼기 바나나 5\n빼기 바나나 2\n담기 사과 2\n계산\n종료\n"
+hints:
+  - "딕셔너리를 인자로 받은 함수가 `cart[name] = …`처럼 바꾸면, 호출한 쪽의 `cart`도 바뀝니다. 그래서 `add_item`은 반환값이 없어도 됩니다."
+  - "딕셔너리에서 키를 지우려면 `del cart[name]`."
+explanation: |
+  리스트·딕셔너리는 함수에 넘겨도 복사되지 않으므로 함수 안에서 바로 고칠 수 있습니다 (앞의 행렬 문제와 반대로, 여기서는 그것이 목적입니다).
+  수량이 0인 상품을 지우지 않으면 `계산`에 `사과 x0 = 0원`이 남고, 장바구니가 빈 것도 알아채지 못합니다.

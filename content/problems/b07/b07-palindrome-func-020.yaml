@@ -1,0 +1,137 @@
+id: b07-palindrome-func-020
+title: 문장 정리 함수로 회문 판별
+unit: b07
+difficulty: 3
+tags: [func.compose, func.bool-return, str.isalnum]
+statement: |
+  두 함수를 정의하시오.
+
+  - `clean(s)`: 문자열에서 글자와 숫자(`isalnum()`이 참인 문자)만 남기고 모두 소문자로 바꾼 문자열을 반환
+  - `is_palindrome(s)`: `clean`으로 정리한 문자열이 앞뒤로 읽어도 같으면 `True`를 반환
+
+  문장을 `종료`가 입력될 때까지 입력받으며 판별 결과를 출력하시오.
+
+  - 입력 프롬프트: `문장: `
+  - 문장마다 `회문입니다` 또는 `회문이 아닙니다`
+  - 마지막 줄: `회문 개수: 2/3` (회문 수 / 입력한 문장 수)
+starter: |
+  def clean(s):
+      pass
+
+
+  def is_palindrome(s):
+      pass
+solution: |
+  def clean(s):
+      result = ""
+      for ch in s:
+          if ch.isalnum():
+              result += ch.lower()
+      return result
+
+
+  def is_palindrome(s):
+      c = clean(s)
+      return c == c[::-1]
+
+
+  total = 0
+  found = 0
+  while True:
+      s = input("문장: ")
+      if s == "종료":
+          break
+      total += 1
+      if is_palindrome(s):
+          found += 1
+          print("회문입니다")
+      else:
+          print("회문이 아닙니다")
+  print(f"회문 개수: {found}/{total}")
+alt_solutions:
+  - |
+    def clean(s):
+        return "".join([ch for ch in s.lower() if ch.isalnum()])
+
+
+    def is_palindrome(s):
+        c = clean(s)
+        for i in range(len(c) // 2):
+            if c[i] != c[len(c) - 1 - i]:
+                return False
+        return True
+
+
+    results = []
+    s = input("문장: ")
+    while s != "종료":
+        results.append(is_palindrome(s))
+        print("회문입니다" if results[-1] else "회문이 아닙니다")
+        s = input("문장: ")
+    print("회문 개수: " + str(results.count(True)) + "/" + str(len(results)))
+mutants:
+  - name: 소문자로 바꾸지 않음
+    code: |
+      def clean(s):
+          result = ""
+          for ch in s:
+              if ch.isalnum():
+                  result += ch
+          return result
+
+
+      def is_palindrome(s):
+          c = clean(s)
+          return c == c[::-1]
+
+
+      total = 0
+      found = 0
+      while True:
+          s = input("문장: ")
+          if s == "종료":
+              break
+          total += 1
+          if is_palindrome(s):
+              found += 1
+              print("회문입니다")
+          else:
+              print("회문이 아닙니다")
+      print(f"회문 개수: {found}/{total}")
+  - name: 공백만 지우고 문장부호는 남김
+    code: |
+      def clean(s):
+          return s.replace(" ", "").lower()
+
+
+      def is_palindrome(s):
+          c = clean(s)
+          return c == c[::-1]
+
+
+      total = 0
+      found = 0
+      while True:
+          s = input("문장: ")
+          if s == "종료":
+              break
+          total += 1
+          if is_palindrome(s):
+              found += 1
+              print("회문입니다")
+          else:
+              print("회문이 아닙니다")
+      print(f"회문 개수: {found}/{total}")
+tests:
+  - stdin: "Was it a car or a cat I saw?\nhello\n다시 합창합시다\n종료\n"
+    public: true
+  - stdin: "A man, a plan, a canal: Panama\n종료\n"
+  - stdin: "종료\n"
+    note: 문장 없음
+  - stdin: "ab\nAbBa\n12321\n종료\n"
+hints:
+  - "`ch.isalnum()`은 영문자, 숫자, 한글이면 `True`입니다. 공백과 문장부호는 `False`."
+  - "문자열을 뒤집는 가장 쉬운 방법은 슬라이싱 `c[::-1]`입니다."
+explanation: |
+  `is_palindrome` 안에서 `clean`을 호출해 '정리'와 '판별'을 나눴습니다. 이렇게 역할을 나누면 각 함수를 따로 확인하고 고치기 쉽습니다.
+  `return c == c[::-1]`처럼 비교식의 결과(`True`/`False`)를 바로 반환할 수 있습니다.
