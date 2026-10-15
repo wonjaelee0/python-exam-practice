@@ -1,0 +1,152 @@
+id: core3-06-student-grades
+title: '[3주차 응용1] 학생 객체 목록과 학점'
+unit: core3
+difficulty: 2
+tags:
+- core.w3
+- class.method
+- list.objects
+statement: |
+  > 컴퓨팅 핵심 3주차 도전문제 1(두 사람의 동아리 회원증)과 도전문제 2(카페 주문 금액 계산기)를 응용한 문제입니다.
+
+  학생 한 명을 `Student` 객체 하나로 표현하고, 여러 학생 객체를 리스트에 모아 학점을 출력하시오.
+
+  | 항목 | 역할 |
+  |---|---|
+  | `Student(name, score)` | 이름과 점수(정수)를 속성 `name`, `score`에 저장 |
+  | `grade()` | 90점 이상 `A`, 80점 이상 `B`, 70점 이상 `C`, 나머지 `F`를 반환 (출력하지 않음) |
+
+  - 입력 프롬프트: `학생 수: `, 학생마다 `이름과 점수: `
+  - 출력: 입력 순서대로 `민수: 92점 (A)`, 마지막 줄에 `A학점: 1명`
+  - 조건: 학생 수는 1 이상, 점수는 0 이상 100 이하의 정수이다. 같은 이름이 있을 수 있다.
+starter: |
+  class Student:
+      def __init__(self, name, score):
+          pass
+
+      def grade(self):
+          pass
+
+
+  n = int(input("학생 수: "))
+  students = []
+solution: |
+  class Student:
+      def __init__(self, name, score):
+          self.name = name
+          self.score = score
+
+      def grade(self):
+          if self.score >= 90:
+              return "A"
+          elif self.score >= 80:
+              return "B"
+          elif self.score >= 70:
+              return "C"
+          return "F"
+
+
+  n = int(input("학생 수: "))
+  students = []
+  for _ in range(n):
+      name, score = input("이름과 점수: ").split()
+      students.append(Student(name, int(score)))
+  count_a = 0
+  for s in students:
+      g = s.grade()
+      print(f"{s.name}: {s.score}점 ({g})")
+      if g == "A":
+          count_a += 1
+  print(f"A학점: {count_a}명")
+alt_solutions:
+- |
+  class Student:
+      def __init__(self, name, score):
+          self.name = name
+          self.score = score
+
+      def grade(self):
+          for cut, letter in ((90, "A"), (80, "B"), (70, "C")):
+              if self.score >= cut:
+                  return letter
+          return "F"
+
+
+  n = int(input("학생 수: "))
+  students = []
+  for i in range(n):
+      parts = input("이름과 점수: ").split()
+      students.append(Student(parts[0], int(parts[1])))
+  for s in students:
+      print(s.name + ": " + str(s.score) + "점 (" + s.grade() + ")")
+  print("A학점: " + str(len([s for s in students if s.grade() == "A"])) + "명")
+mutants:
+- name: 경계 점수를 아래 학점으로 (>)
+  code: |
+    class Student:
+        def __init__(self, name, score):
+            self.name = name
+            self.score = score
+
+        def grade(self):
+            if self.score > 90:
+                return "A"
+            elif self.score > 80:
+                return "B"
+            elif self.score > 70:
+                return "C"
+            return "F"
+
+
+    n = int(input("학생 수: "))
+    students = []
+    for _ in range(n):
+        name, score = input("이름과 점수: ").split()
+        students.append(Student(name, int(score)))
+    count_a = 0
+    for s in students:
+        g = s.grade()
+        print(f"{s.name}: {s.score}점 ({g})")
+        if g == "A":
+            count_a += 1
+    print(f"A학점: {count_a}명")
+- name: 70점 조건을 먼저 검사
+  code: |
+    class Student:
+        def __init__(self, name, score):
+            self.name = name
+            self.score = score
+
+        def grade(self):
+            if self.score >= 70:
+                return "C"
+            elif self.score >= 80:
+                return "B"
+            elif self.score >= 90:
+                return "A"
+            return "F"
+
+
+    n = int(input("학생 수: "))
+    students = []
+    for _ in range(n):
+        name, score = input("이름과 점수: ").split()
+        students.append(Student(name, int(score)))
+    count_a = 0
+    for s in students:
+        g = s.grade()
+        print(f"{s.name}: {s.score}점 ({g})")
+        if g == "A":
+            count_a += 1
+    print(f"A학점: {count_a}명")
+tests:
+- stdin: "3\n민수 92\n지우 85\n하늘 64\n"
+  public: true
+- stdin: "4\na 90\nb 80\nc 70\nd 69\n"
+- stdin: "1\n만점 100\n"
+- stdin: "3\nx 0\nx 95\ny 79\n"
+hints:
+- '`if-elif`는 위에서부터 처음 참인 곳 하나만 실행되므로, 높은 기준부터 검사합니다.'
+explanation: |
+  객체를 리스트에 담아 두면 반복문으로 각 객체의 속성(`s.name`)과 메서드(`s.grade()`)를 차례로 사용할 수 있습니다.
+  `elif` 사슬은 위에서부터 검사하므로 70점 조건을 먼저 두면 90점도 `C`가 됩니다.

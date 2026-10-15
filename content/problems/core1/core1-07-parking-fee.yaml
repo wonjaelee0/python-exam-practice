@@ -1,0 +1,91 @@
+id: core1-07-parking-fee
+title: '[1주차 응용3] 캠퍼스 주차 요금'
+unit: core1
+difficulty: 3
+tags:
+- core.w1
+- arith.ceil
+- if.order
+statement: |
+  > 컴퓨팅 핵심 1주차 도전문제 3(캠퍼스 카페 주문서)을 응용한 문제입니다.
+
+  캠퍼스 주차장의 요금 규칙에 따라 주차 요금을 계산하시오.
+
+  1. 처음 30분까지는 무료이다.
+  2. 30분을 넘는 시간은 **10분마다 500원**이다. 10분이 안 되는 시간도 10분으로 계산한다. (예: 30분 초과분이 11분이면 20분 요금)
+  3. 하루 최대 요금은 **15000원**이다. 계산한 요금이 이보다 크면 15000원으로 한다.
+  4. 경차는 3번까지 적용한 요금의 **50%** 를 받는다 (원 미만 버림, `// 2`).
+
+  - 입력 프롬프트: `주차 시간(분): `, `경차인가요? (Y/N): `
+  - 출력 (두 줄): `주차 시간: 95분`, `주차 요금: 3500원`
+  - 조건: 주차 시간은 0 이상 1440 이하의 정수이다.
+starter: |
+  minutes = int(input("주차 시간(분): "))
+  small = input("경차인가요? (Y/N): ")
+solution: |
+  minutes = int(input("주차 시간(분): "))
+  small = input("경차인가요? (Y/N): ")
+  if minutes <= 30:
+      fee = 0
+  else:
+      fee = (minutes - 30 + 9) // 10 * 500
+  if fee > 15000:
+      fee = 15000
+  if small == "Y":
+      fee = fee // 2
+  print(f"주차 시간: {minutes}분")
+  print(f"주차 요금: {fee}원")
+alt_solutions:
+- |
+  import math
+
+  minutes = int(input("주차 시간(분): "))
+  small = input("경차인가요? (Y/N): ") == "Y"
+  units = math.ceil(max(minutes - 30, 0) / 10)
+  fee = min(units * 500, 15000)
+  if small:
+      fee //= 2
+  print("주차 시간: " + str(minutes) + "분")
+  print("주차 요금: " + str(fee) + "원")
+mutants:
+- name: 10분 미만을 버림
+  code: |
+    minutes = int(input("주차 시간(분): "))
+    small = input("경차인가요? (Y/N): ")
+    if minutes <= 30:
+        fee = 0
+    else:
+        fee = (minutes - 30) // 10 * 500
+    if fee > 15000:
+        fee = 15000
+    if small == "Y":
+        fee = fee // 2
+    print(f"주차 시간: {minutes}분")
+    print(f"주차 요금: {fee}원")
+- name: 경차 할인을 최대 요금보다 먼저 적용
+  code: |
+    minutes = int(input("주차 시간(분): "))
+    small = input("경차인가요? (Y/N): ")
+    if minutes <= 30:
+        fee = 0
+    else:
+        fee = (minutes - 30 + 9) // 10 * 500
+    if small == "Y":
+        fee = fee // 2
+    if fee > 15000:
+        fee = 15000
+    print(f"주차 시간: {minutes}분")
+    print(f"주차 요금: {fee}원")
+tests:
+- stdin: "95\nN\n"
+  public: true
+- stdin: "30\nN\n"
+- stdin: "31\nY\n"
+- stdin: "400\nY\n"
+- stdin: "1440\nN\n"
+- stdin: "200\nN\n"
+hints:
+- 올림 나눗셈은 `(x + 9) // 10`처럼 쓸 수 있습니다.
+- 규칙을 적힌 순서(최대 요금 → 경차 할인)대로 적용하세요.
+explanation: |
+  조건 적용 순서가 바뀌면 결과가 달라집니다. 400분 경차는 18500원 → 최대 15000원 → 절반 7500원이지만, 할인을 먼저 하면 9250원이 됩니다.

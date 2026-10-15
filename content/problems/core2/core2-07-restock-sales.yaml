@@ -1,0 +1,97 @@
+id: core2-07-restock-sales
+title: '[2주차 응용2] 판매 후 재입고 목록'
+unit: core2
+difficulty: 3
+tags:
+- core.w2
+- zip
+- sorted.key
+- enumerate
+statement: |
+  > 컴퓨팅 핵심 2주차 도전문제 2(축제 매점 재입고 목록)를 응용한 문제입니다.
+
+  상품명, 처음 재고, 판매 수량을 각각 한 줄로 입력받는다. 같은 위치끼리 묶어 **남은 재고 = 처음 재고 − 판매 수량**을 구하고,
+  남은 재고가 기준 **미만**인 상품만 재입고 목록에 넣으시오.
+
+  - 정렬: 남은 재고가 **적은 순서**, 같으면 상품명 **오름차순**
+  - 입력 프롬프트: `상품명을 입력하세요: `, `재고 수량을 입력하세요: `, `판매 수량을 입력하세요: `, `재입고 기준을 입력하세요: `
+  - 출력: `1. 생수: 남은 0개 (부족 4개)` 형식 (부족 = 기준 − 남은 재고). 대상이 없으면 `재입고할 상품이 없습니다.`
+  - 조건: 세 줄의 개수는 같고 1개 이상이다. 상품명은 공백 없이 서로 다르며, 판매 수량은 처음 재고 이하이다.
+starter: |
+  names = input("상품명을 입력하세요: ").split()
+  stocks = list(map(int, input("재고 수량을 입력하세요: ").split()))
+  sold = list(map(int, input("판매 수량을 입력하세요: ").split()))
+  limit = int(input("재입고 기준을 입력하세요: "))
+solution: |
+  names = input("상품명을 입력하세요: ").split()
+  stocks = list(map(int, input("재고 수량을 입력하세요: ").split()))
+  sold = list(map(int, input("판매 수량을 입력하세요: ").split()))
+  limit = int(input("재입고 기준을 입력하세요: "))
+  left = [(name, s - k) for name, s, k in zip(names, stocks, sold)]
+  need = [item for item in left if item[1] < limit]
+  need = sorted(need, key=lambda x: (x[1], x[0]))
+  if need:
+      for i, (name, remain) in enumerate(need, 1):
+          print(f"{i}. {name}: 남은 {remain}개 (부족 {limit - remain}개)")
+  else:
+      print("재입고할 상품이 없습니다.")
+alt_solutions:
+- |
+  names = input("상품명을 입력하세요: ").split()
+  stocks = [int(x) for x in input("재고 수량을 입력하세요: ").split()]
+  sold = [int(x) for x in input("판매 수량을 입력하세요: ").split()]
+  limit = int(input("재입고 기준을 입력하세요: "))
+  need = []
+  for i in range(len(names)):
+      remain = stocks[i] - sold[i]
+      if remain < limit:
+          need.append([remain, names[i]])
+  need.sort()
+  if len(need) == 0:
+      print("재입고할 상품이 없습니다.")
+  no = 1
+  for remain, name in need:
+      print(str(no) + ". " + name + ": 남은 " + str(remain) + "개 (부족 " + str(limit - remain) + "개)")
+      no += 1
+mutants:
+- name: 남은 재고로만 정렬 (이름 순서 무시)
+  code: |
+    names = input("상품명을 입력하세요: ").split()
+    stocks = list(map(int, input("재고 수량을 입력하세요: ").split()))
+    sold = list(map(int, input("판매 수량을 입력하세요: ").split()))
+    limit = int(input("재입고 기준을 입력하세요: "))
+    left = [(name, s - k) for name, s, k in zip(names, stocks, sold)]
+    need = [item for item in left if item[1] < limit]
+    need = sorted(need, key=lambda x: x[1])
+    if need:
+        for i, (name, remain) in enumerate(need, 1):
+            print(f"{i}. {name}: 남은 {remain}개 (부족 {limit - remain}개)")
+    else:
+        print("재입고할 상품이 없습니다.")
+- name: 기준과 같은 상품도 넣음 (<=)
+  code: |
+    names = input("상품명을 입력하세요: ").split()
+    stocks = list(map(int, input("재고 수량을 입력하세요: ").split()))
+    sold = list(map(int, input("판매 수량을 입력하세요: ").split()))
+    limit = int(input("재입고 기준을 입력하세요: "))
+    left = [(name, s - k) for name, s, k in zip(names, stocks, sold)]
+    need = [item for item in left if item[1] <= limit]
+    need = sorted(need, key=lambda x: (x[1], x[0]))
+    if need:
+        for i, (name, remain) in enumerate(need, 1):
+            print(f"{i}. {name}: 남은 {remain}개 (부족 {limit - remain}개)")
+    else:
+        print("재입고할 상품이 없습니다.")
+tests:
+- stdin: "샌드위치 주스 쿠키 생수\n5 3 9 4\n2 3 1 4\n4\n"
+  public: true
+- stdin: "b a c\n1 1 5\n0 0 0\n3\n"
+- stdin: "x y\n5 5\n1 2\n4\n"
+- stdin: "p\n10\n0\n3\n"
+  note: 대상 없음
+- stdin: "ab aa\n7 2\n7 2\n1\n"
+hints:
+- '`zip(names, stocks, sold)`로 세 리스트를 한 번에 묶을 수 있습니다.'
+- 정렬 키를 튜플 `(남은 재고, 이름)`으로 주면 두 기준이 차례로 적용됩니다.
+explanation: |
+  여러 리스트의 같은 위치를 묶을 때는 `zip`, 번호를 붙일 때는 `enumerate(…, 1)`, 여러 기준 정렬은 튜플 키를 씁니다.

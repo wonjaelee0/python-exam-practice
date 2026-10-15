@@ -1,0 +1,89 @@
+id: core1-08-rising-digits
+title: '[1주차 응용4] 자릿수가 커지는 번호 찾기'
+unit: core1
+difficulty: 2
+tags:
+- core.w1
+- loop.range
+- arith.digits
+statement: |
+  > 컴퓨팅 핵심 1주차 추가문제 1(짝수 숫자 보관함 찾기)을 응용한 문제입니다.
+
+  세 자리 번호 중 **백의 자리 < 십의 자리 < 일의 자리**인 번호(예: 147)를 찾으려 한다.
+  시작 번호부터 끝 번호까지(끝 번호 포함) 차례로 확인해 조건에 맞는 번호를 쉼표로 이어 출력하고, 다음 줄에 개수를 출력하시오.
+
+  - 입력 프롬프트: `시작 번호를 입력하세요: `, `끝 번호를 입력하세요: `
+  - 출력: `123,124,125` (쉼표 뒤 공백 없음, 없으면 빈 줄), 다음 줄 `개수: 3개`
+  - 조건: 두 번호는 100 이상 999 이하이고 시작 번호 ≤ 끝 번호이다. 같은 숫자가 이어지면(예: 113) 조건에 맞지 않는다.
+starter: |
+  start = int(input("시작 번호를 입력하세요: "))
+  end = int(input("끝 번호를 입력하세요: "))
+solution: |
+  start = int(input("시작 번호를 입력하세요: "))
+  end = int(input("끝 번호를 입력하세요: "))
+  found = []
+  for num in range(start, end + 1):
+      a = num // 100
+      b = num // 10 % 10
+      c = num % 10
+      if a < b < c:
+          found.append(str(num))
+  print(",".join(found))
+  print(f"개수: {len(found)}개")
+alt_solutions:
+- |
+  start = int(input("시작 번호를 입력하세요: "))
+  end = int(input("끝 번호를 입력하세요: "))
+  result = ""
+  count = 0
+  num = start
+  while num <= end:
+      s = str(num)
+      if s[0] < s[1] and s[1] < s[2]:
+          if result != "":
+              result += ","
+          result += s
+          count += 1
+      num += 1
+  print(result)
+  print("개수:", str(count) + "개")
+mutants:
+- name: 같은 숫자도 허용 (<=)
+  code: |
+    start = int(input("시작 번호를 입력하세요: "))
+    end = int(input("끝 번호를 입력하세요: "))
+    found = []
+    for num in range(start, end + 1):
+        a = num // 100
+        b = num // 10 % 10
+        c = num % 10
+        if a <= b <= c:
+            found.append(str(num))
+    print(",".join(found))
+    print(f"개수: {len(found)}개")
+- name: 끝 번호를 빼먹음
+  code: |
+    start = int(input("시작 번호를 입력하세요: "))
+    end = int(input("끝 번호를 입력하세요: "))
+    found = []
+    for num in range(start, end):
+        a = num // 100
+        b = num // 10 % 10
+        c = num % 10
+        if a < b < c:
+            found.append(str(num))
+    print(",".join(found))
+    print(f"개수: {len(found)}개")
+tests:
+- stdin: "120\n140\n"
+  public: true
+- stdin: "900\n999\n"
+  note: 없음
+- stdin: "789\n789\n"
+- stdin: "111\n125\n"
+- stdin: "100\n999\n"
+hints:
+- 백의 자리 `n // 100`, 십의 자리 `n // 10 % 10`, 일의 자리 `n % 10`.
+- '`range(start, end + 1)`이어야 끝 번호까지 확인합니다.'
+explanation: |
+  파이썬은 `a < b < c`처럼 비교를 이어 쓸 수 있습니다. `a < b and b < c`와 같은 뜻입니다.

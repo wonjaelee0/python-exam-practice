@@ -1,0 +1,145 @@
+id: core3-08-taxi-fare
+title: '[3주차 응용3] 택시 요금 객체'
+unit: core3
+difficulty: 3
+tags:
+- core.w3
+- class.method
+- arith.ceil
+statement: |
+  > 컴퓨팅 핵심 3주차 도전문제 2(카페 주문 금액 계산기)를 응용한 문제입니다.
+
+  택시 한 번의 이동을 `TaxiRide` 객체로 표현하고, 메서드가 요금을 계산해 **반환**하게 만드시오.
+
+  | 항목 | 역할 |
+  |---|---|
+  | `TaxiRide(distance, night)` | 이동 거리(m)와 심야 여부(`True`/`False`)를 속성 `distance`, `night`에 저장 |
+  | `fare()` | 기본+거리 요금 반환: 1600m까지 4800원, 넘는 거리는 **131m마다 100원** (131m가 안 되는 거리도 131m로 계산) |
+  | `total()` | 심야면 `fare()`의 20% 할증(`* 120 // 100`), 아니면 `fare()` 그대로 반환 |
+
+  - 메서드는 속성을 바꾸지 않고 출력하지 않는다. `total()`은 `fare()`를 호출해 계산한다.
+  - 입력 프롬프트: `이동 거리(m): `, `심야인가요? (Y/N): `
+  - 출력 (두 줄): `기본+거리 요금: 5900원`, `최종 요금: 5900원`
+  - 조건: 거리는 0 이상 100000 이하의 정수이다.
+starter: |
+  class TaxiRide:
+      def __init__(self, distance, night):
+          pass
+
+      def fare(self):
+          pass
+
+      def total(self):
+          pass
+
+
+  distance = int(input("이동 거리(m): "))
+  night = input("심야인가요? (Y/N): ") == "Y"
+solution: |
+  class TaxiRide:
+      def __init__(self, distance, night):
+          self.distance = distance
+          self.night = night
+
+      def fare(self):
+          if self.distance <= 1600:
+              return 4800
+          extra = self.distance - 1600
+          return 4800 + (extra + 130) // 131 * 100
+
+      def total(self):
+          if self.night:
+              return self.fare() * 120 // 100
+          return self.fare()
+
+
+  distance = int(input("이동 거리(m): "))
+  night = input("심야인가요? (Y/N): ") == "Y"
+  ride = TaxiRide(distance, night)
+  print(f"기본+거리 요금: {ride.fare()}원")
+  print(f"최종 요금: {ride.total()}원")
+alt_solutions:
+- |
+  class TaxiRide:
+      def __init__(self, distance, night):
+          self.distance = distance
+          self.night = night
+
+      def fare(self):
+          extra = max(0, self.distance - 1600)
+          units = extra // 131
+          if extra % 131 != 0:
+              units += 1
+          return 4800 + units * 100
+
+      def total(self):
+          base = self.fare()
+          return base * 120 // 100 if self.night else base
+
+
+  ride = TaxiRide(int(input("이동 거리(m): ")), input("심야인가요? (Y/N): ") == "Y")
+  print("기본+거리 요금: " + str(ride.fare()) + "원")
+  print("최종 요금: " + str(ride.total()) + "원")
+mutants:
+- name: 131m 미만 거리를 버림
+  code: |
+    class TaxiRide:
+        def __init__(self, distance, night):
+            self.distance = distance
+            self.night = night
+
+        def fare(self):
+            if self.distance <= 1600:
+                return 4800
+            extra = self.distance - 1600
+            return 4800 + extra // 131 * 100
+
+        def total(self):
+            if self.night:
+                return self.fare() * 120 // 100
+            return self.fare()
+
+
+    distance = int(input("이동 거리(m): "))
+    night = input("심야인가요? (Y/N): ") == "Y"
+    ride = TaxiRide(distance, night)
+    print(f"기본+거리 요금: {ride.fare()}원")
+    print(f"최종 요금: {ride.total()}원")
+- name: 기본요금에만 할증
+  code: |
+    class TaxiRide:
+        def __init__(self, distance, night):
+            self.distance = distance
+            self.night = night
+
+        def fare(self):
+            if self.distance <= 1600:
+                return 4800
+            extra = self.distance - 1600
+            return 4800 + (extra + 130) // 131 * 100
+
+        def total(self):
+            if self.night:
+                return self.fare() + 4800 * 20 // 100
+            return self.fare()
+
+
+    distance = int(input("이동 거리(m): "))
+    night = input("심야인가요? (Y/N): ") == "Y"
+    ride = TaxiRide(distance, night)
+    print(f"기본+거리 요금: {ride.fare()}원")
+    print(f"최종 요금: {ride.total()}원")
+tests:
+- stdin: "3000\nN\n"
+  public: true
+- stdin: "1600\nY\n"
+- stdin: "1601\nN\n"
+- stdin: "1731\nN\n"
+- stdin: "1732\nN\n"
+- stdin: "10000\nY\n"
+- stdin: "0\nN\n"
+hints:
+- '131m 단위 올림: `(extra + 130) // 131`'
+- '`total()` 안에서 `self.fare()`를 호출하면 같은 계산을 두 번 쓰지 않아도 됩니다.'
+explanation: |
+  한 메서드가 같은 객체의 다른 메서드를 `self.메서드()`로 불러 쓸 수 있습니다. 계산 규칙을 메서드로 나눠 두면 요금 규칙이 바뀌어도 한 곳만 고치면 됩니다.

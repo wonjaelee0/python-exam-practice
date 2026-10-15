@@ -1,0 +1,106 @@
+id: core6-07-insertion-trace
+title: '[6주차 응용2] 삽입 정렬 단계별 추적'
+unit: core6
+difficulty: 3
+tags:
+- core.w6
+- sort.insertion
+- trace
+statement: |
+  > 컴퓨팅 핵심 6주차 도전문제 3(달리기 기록표 정리)을 응용한 문제입니다.
+
+  정수들을 오름차순으로 삽입 정렬하면서, 단계마다 삽입한 값과 들어간 위치, 그 단계가 끝난 리스트를 출력하시오.
+
+  | 함수 | 역할 |
+  |---|---|
+  | `insertion_sort(values)` | 두 번째 원소부터 key로 두고, 앞쪽에서 key보다 **큰** 값만 오른쪽으로 옮긴 뒤 빈 자리(인덱스)에 key를 놓는다. 단계마다 한 줄 출력 |
+
+  - 출력 한 줄: `1단계 | 값 2 → 위치 0 | [2, 5, 9, 1]` (단계 번호는 1부터, 위치는 0부터 센 인덱스)
+  - 원소가 1개면 단계 출력이 없다. `sort()`, `sorted()`, `insert()`를 쓰지 않는다.
+  - 입력 프롬프트: `정수 목록(공백 구분): `
+  - 마지막 줄: `결과: [1, 2, 5, 9]`
+starter: |
+  def insertion_sort(values):
+      pass
+
+
+  values = list(map(int, input("정수 목록(공백 구분): ").split()))
+  insertion_sort(values)
+  print(f"결과: {values}")
+solution: |
+  def insertion_sort(values):
+      for i in range(1, len(values)):
+          key = values[i]
+          j = i - 1
+          while j >= 0 and values[j] > key:
+              values[j + 1] = values[j]
+              j -= 1
+          values[j + 1] = key
+          print(f"{i}단계 | 값 {key} → 위치 {j + 1} | {values}")
+
+
+  values = list(map(int, input("정수 목록(공백 구분): ").split()))
+  insertion_sort(values)
+  print(f"결과: {values}")
+alt_solutions:
+- |
+  def insertion_sort(values):
+      for i in range(1, len(values)):
+          key = values[i]
+          pos = i
+          while pos > 0 and values[pos - 1] > key:
+              values[pos] = values[pos - 1]
+              pos -= 1
+          values[pos] = key
+          print(str(i) + "단계 | 값 " + str(key) + " → 위치 " + str(pos) + " | " + str(values))
+
+
+  values = [int(x) for x in input("정수 목록(공백 구분): ").split()]
+  insertion_sort(values)
+  print("결과:", values)
+mutants:
+- name: 같은 값도 옮김 (>=)
+  code: |
+    def insertion_sort(values):
+        for i in range(1, len(values)):
+            key = values[i]
+            j = i - 1
+            while j >= 0 and values[j] >= key:
+                values[j + 1] = values[j]
+                j -= 1
+            values[j + 1] = key
+            print(f"{i}단계 | 값 {key} → 위치 {j + 1} | {values}")
+
+
+    values = list(map(int, input("정수 목록(공백 구분): ").split()))
+    insertion_sort(values)
+    print(f"결과: {values}")
+- name: 위치를 j로 출력 (하나 작게)
+  code: |
+    def insertion_sort(values):
+        for i in range(1, len(values)):
+            key = values[i]
+            j = i - 1
+            while j >= 0 and values[j] > key:
+                values[j + 1] = values[j]
+                j -= 1
+            values[j + 1] = key
+            print(f"{i}단계 | 값 {key} → 위치 {j} | {values}")
+
+
+    values = list(map(int, input("정수 목록(공백 구분): ").split()))
+    insertion_sort(values)
+    print(f"결과: {values}")
+tests:
+- stdin: "5 2 9 1\n"
+  public: true
+- stdin: "7\n"
+- stdin: "3 3 1\n"
+  note: 같은 값
+- stdin: "1 2 3\n"
+- stdin: "4 3 2 1\n"
+- stdin: "-1 5 -1 0\n"
+hints:
+- while이 끝났을 때 `j`는 key보다 작거나 같은 값의 위치(또는 -1)이므로, key의 자리는 `j + 1`입니다.
+explanation: |
+  삽입 정렬은 앞부분이 늘 정렬된 상태를 유지하며 한 칸씩 넓혀 갑니다. 같은 값은 옮기지 않아야(`>`) 안정 정렬이 되고, 같은 값 뒤에 새 값이 놓입니다.

@@ -1,0 +1,122 @@
+id: core4-07-to-binary
+title: '[4주차 응용2] 재귀로 2진수 만들기'
+unit: core4
+difficulty: 3
+tags:
+- core.w4
+- recursion.digits
+- recursion.string
+statement: |
+  > 컴퓨팅 핵심 4주차 도전문제 1(물품 코드의 확인 숫자)을 응용한 문제입니다.
+
+  0 이상의 정수를 2진수 문자열로 바꾸고, 그 안의 `1`의 개수를 세시오. 두 함수 모두 **재귀 함수**로 작성한다.
+
+  | 함수 | 역할 |
+  |---|---|
+  | `to_binary(n)` | n의 2진수 문자열을 반환 (`0` → `"0"`, `6` → `"110"`) |
+  | `count_ones(text)` | 문자열에서 `"1"`의 개수를 반환 |
+
+  - 반복문, `bin()`, `format()`, `count()`를 쓰지 않는다.
+  - 힌트: n의 2진수 = (n // 2의 2진수) 뒤에 (n % 2)를 붙인 것
+  - 입력 프롬프트: `10진수: `
+  - 출력: `2진수: 1011`, `1의 개수: 3개`
+  - 조건: 0 이상 1000000 이하의 정수
+starter: |
+  def to_binary(n):
+      pass
+
+
+  def count_ones(text):
+      pass
+
+
+  n = int(input("10진수: "))
+solution: |
+  def to_binary(n):
+      if n < 2:
+          return str(n)
+      return to_binary(n // 2) + str(n % 2)
+
+
+  def count_ones(text):
+      if text == "":
+          return 0
+      first = 1 if text[0] == "1" else 0
+      return first + count_ones(text[1:])
+
+
+  n = int(input("10진수: "))
+  binary = to_binary(n)
+  print(f"2진수: {binary}")
+  print(f"1의 개수: {count_ones(binary)}개")
+alt_solutions:
+- |
+  def to_binary(n):
+      if n == 0 or n == 1:
+          return "01"[n]
+      return to_binary(n // 2) + "01"[n % 2]
+
+
+  def count_ones(text):
+      if len(text) == 0:
+          return 0
+      return count_ones(text[:-1]) + (text[-1] == "1")
+
+
+  n = int(input("10진수: "))
+  b = to_binary(n)
+  print("2진수: " + b)
+  print("1의 개수: " + str(count_ones(b)) + "개")
+mutants:
+- name: 자리를 거꾸로 붙임
+  code: |
+    def to_binary(n):
+        if n < 2:
+            return str(n)
+        return str(n % 2) + to_binary(n // 2)
+
+
+    def count_ones(text):
+        if text == "":
+            return 0
+        first = 1 if text[0] == "1" else 0
+        return first + count_ones(text[1:])
+
+
+    n = int(input("10진수: "))
+    binary = to_binary(n)
+    print(f"2진수: {binary}")
+    print(f"1의 개수: {count_ones(binary)}개")
+- name: 종료 조건이 n == 0 → 빈 문자열
+  code: |
+    def to_binary(n):
+        if n == 0:
+            return ""
+        return to_binary(n // 2) + str(n % 2)
+
+
+    def count_ones(text):
+        if text == "":
+            return 0
+        first = 1 if text[0] == "1" else 0
+        return first + count_ones(text[1:])
+
+
+    n = int(input("10진수: "))
+    binary = to_binary(n)
+    print(f"2진수: {binary}")
+    print(f"1의 개수: {count_ones(binary)}개")
+tests:
+- stdin: "11\n"
+  public: true
+- stdin: "0\n"
+  note: '0'
+- stdin: "1\n"
+- stdin: "6\n"
+- stdin: "1000000\n"
+- stdin: "255\n"
+hints:
+- '종료 조건: n이 0 또는 1이면 그 숫자 하나가 답입니다.'
+- 재귀 결과 **뒤에** 마지막 자리(`n % 2`)를 붙여야 높은 자리부터 나옵니다.
+explanation: |
+  2로 나눈 나머지는 낮은 자리부터 나오므로, 재귀 호출 결과(높은 자리들) 뒤에 이번 나머지를 붙이면 반복문 없이 올바른 순서가 됩니다.

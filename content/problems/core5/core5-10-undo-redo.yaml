@@ -1,0 +1,144 @@
+id: core5-10-undo-redo
+title: '[5주차 응용5] 두 스택으로 되돌리기와 다시 하기'
+unit: core5
+difficulty: 4
+tags:
+- core.w5
+- stack.list
+- undo
+statement: |
+  > 컴퓨팅 핵심 5주차 추가문제 1(인쇄 처리 되돌리기)을 응용한 문제입니다.
+
+  메모장에 단어를 하나씩 입력하는 편집기를 만든다. **완료 스택**과 **취소 스택** 두 개(리스트, 끝이 맨 위)로 되돌리기(취소)와 다시 하기를 구현하시오.
+
+  - `입력 단어`: 완료 스택에 넣는다. **새 입력이 생기면 취소 스택을 비운다.** 출력 없음.
+  - `취소`: 완료 스택의 맨 위를 꺼내 취소 스택에 넣고 `취소: 단어`. 완료 스택이 비어 있으면 `취소할 작업이 없습니다.`
+  - `다시`: 취소 스택의 맨 위를 꺼내 완료 스택에 넣고 `다시: 단어`. 취소 스택이 비어 있으면 `다시 할 작업이 없습니다.`
+  - `보기`: 완료 스택을 아래부터 공백으로 이어 `문서: 오늘 날씨 맑음`, 비어 있으면 `문서: (비어 있음)`
+
+  - 입력 프롬프트: `명령 수: `, 명령마다 `명령: `
+  - 조건: 단어에는 공백이 없다. 같은 단어가 여러 번 나올 수 있다.
+starter: |
+  done = []
+  undone = []
+  n = int(input("명령 수: "))
+  for _ in range(n):
+      parts = input("명령: ").split()
+solution: |
+  done = []
+  undone = []
+  n = int(input("명령 수: "))
+  for _ in range(n):
+      parts = input("명령: ").split()
+      cmd = parts[0]
+      if cmd == "입력":
+          done.append(parts[1])
+          undone.clear()
+      elif cmd == "취소":
+          if done:
+              word = done.pop()
+              undone.append(word)
+              print(f"취소: {word}")
+          else:
+              print("취소할 작업이 없습니다.")
+      elif cmd == "다시":
+          if undone:
+              word = undone.pop()
+              done.append(word)
+              print(f"다시: {word}")
+          else:
+              print("다시 할 작업이 없습니다.")
+      else:
+          print("문서: " + (" ".join(done) if done else "(비어 있음)"))
+alt_solutions:
+- |
+  done = []
+  undone = []
+  for _ in range(int(input("명령 수: "))):
+      parts = input("명령: ").split()
+      if parts[0] == "입력":
+          done = done + [parts[1]]
+          undone = []
+      elif parts[0] == "취소":
+          if len(done) == 0:
+              print("취소할 작업이 없습니다.")
+          else:
+              undone.append(done.pop())
+              print("취소:", undone[-1])
+      elif parts[0] == "다시":
+          if len(undone) == 0:
+              print("다시 할 작업이 없습니다.")
+          else:
+              done.append(undone.pop())
+              print("다시:", done[-1])
+      elif len(done) == 0:
+          print("문서: (비어 있음)")
+      else:
+          print("문서:", " ".join(done))
+mutants:
+- name: 새 입력 뒤에도 취소 스택을 유지
+  code: |
+    done = []
+    undone = []
+    n = int(input("명령 수: "))
+    for _ in range(n):
+        parts = input("명령: ").split()
+        cmd = parts[0]
+        if cmd == "입력":
+            done.append(parts[1])
+        elif cmd == "취소":
+            if done:
+                word = done.pop()
+                undone.append(word)
+                print(f"취소: {word}")
+            else:
+                print("취소할 작업이 없습니다.")
+        elif cmd == "다시":
+            if undone:
+                word = undone.pop()
+                done.append(word)
+                print(f"다시: {word}")
+            else:
+                print("다시 할 작업이 없습니다.")
+        else:
+            print("문서: " + (" ".join(done) if done else "(비어 있음)"))
+- name: 다시 하기를 가장 오래된 취소부터
+  code: |
+    done = []
+    undone = []
+    n = int(input("명령 수: "))
+    for _ in range(n):
+        parts = input("명령: ").split()
+        cmd = parts[0]
+        if cmd == "입력":
+            done.append(parts[1])
+            undone.clear()
+        elif cmd == "취소":
+            if done:
+                word = done.pop()
+                undone.append(word)
+                print(f"취소: {word}")
+            else:
+                print("취소할 작업이 없습니다.")
+        elif cmd == "다시":
+            if undone:
+                word = undone.pop(0)
+                done.append(word)
+                print(f"다시: {word}")
+            else:
+                print("다시 할 작업이 없습니다.")
+        else:
+            print("문서: " + (" ".join(done) if done else "(비어 있음)"))
+tests:
+- stdin: "7\n입력 오늘\n입력 날씨\n입력 흐림\n취소\n입력 맑음\n다시\n보기\n"
+  public: true
+- stdin: "4\n취소\n다시\n보기\n입력 a\n"
+- stdin: "8\n입력 a\n입력 b\n입력 c\n취소\n취소\n다시\n다시\n보기\n"
+- stdin: "6\n입력 x\n취소\n취소\n다시\n다시\n보기\n"
+- stdin: "5\n입력 a\n취소\n입력 b\n다시\n보기\n"
+  note: 새 입력 뒤 다시 하기
+hints:
+- 취소와 다시는 서로 반대 방향으로 맨 위 원소를 옮기는 연산입니다.
+- 새 입력이 들어오면 `undone.clear()`로 다시 하기 기록을 지웁니다.
+explanation: |
+  되돌리기와 다시 하기는 둘 다 '가장 최근 것부터'이므로 스택 두 개로 구현합니다. 새 작업이 생기면 이전에 취소한 작업으로 돌아갈 수 없으므로 취소 스택을 비우는 것이 일반적인 편집기의 규칙입니다.

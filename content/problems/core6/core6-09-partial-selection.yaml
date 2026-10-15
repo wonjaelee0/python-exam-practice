@@ -1,0 +1,107 @@
+id: core6-09-partial-selection
+title: '[6주차 응용4] 선택 정렬 k회로 k번째 작은 값 찾기'
+unit: core6
+difficulty: 3
+tags:
+- core.w6
+- sort.selection
+- kth
+statement: |
+  > 컴퓨팅 핵심 6주차 도전문제 2(축제 부스 점수 정리)를 응용한 문제입니다.
+
+  오름차순 선택 정렬은 i회차가 끝나면 앞의 i자리가 확정된다. 이 성질을 이용해, 선택 정렬을 **k회차까지만** 수행하고 k번째로 작은 값을 구하시오.
+
+  | 함수 | 역할 |
+  |---|---|
+  | `partial_selection(values, k)` | 선택 정렬의 바깥 반복을 k번만 수행해 리스트 자체를 바꾼다. 회차마다 남은 부분의 최솟값(같으면 가장 앞의 것) 위치와 현재 자리를 교환한다 (같은 자리면 그대로) |
+
+  - `sort()`, `sorted()`, `min()`을 쓰지 않는다.
+  - 입력 프롬프트: `정수 목록(공백 구분): `, `k: `
+  - 출력: `3회차 후: [1, 2, 4, 9, 7]`, `3번째로 작은 값: 4`
+  - 조건: 정수는 1개 이상 10개 이하, k는 1 이상 정수 개수 이하
+starter: |
+  def partial_selection(values, k):
+      pass
+
+
+  values = list(map(int, input("정수 목록(공백 구분): ").split()))
+  k = int(input("k: "))
+solution: |
+  def partial_selection(values, k):
+      for i in range(k):
+          min_index = i
+          for j in range(i + 1, len(values)):
+              if values[j] < values[min_index]:
+                  min_index = j
+          values[i], values[min_index] = values[min_index], values[i]
+
+
+  values = list(map(int, input("정수 목록(공백 구분): ").split()))
+  k = int(input("k: "))
+  partial_selection(values, k)
+  print(f"{k}회차 후: {values}")
+  print(f"{k}번째로 작은 값: {values[k - 1]}")
+alt_solutions:
+- |
+  def partial_selection(values, k):
+      i = 0
+      while i < k:
+          small = i
+          for j in range(i, len(values)):
+              if values[j] < values[small]:
+                  small = j
+          if small != i:
+              values[i], values[small] = values[small], values[i]
+          i += 1
+
+
+  values = [int(v) for v in input("정수 목록(공백 구분): ").split()]
+  k = int(input("k: "))
+  partial_selection(values, k)
+  print(str(k) + "회차 후:", values)
+  print(str(k) + "번째로 작은 값:", values[k - 1])
+mutants:
+- name: k − 1회만 수행
+  code: |
+    def partial_selection(values, k):
+        for i in range(k - 1):
+            min_index = i
+            for j in range(i + 1, len(values)):
+                if values[j] < values[min_index]:
+                    min_index = j
+            values[i], values[min_index] = values[min_index], values[i]
+
+
+    values = list(map(int, input("정수 목록(공백 구분): ").split()))
+    k = int(input("k: "))
+    partial_selection(values, k)
+    print(f"{k}회차 후: {values}")
+    print(f"{k}번째로 작은 값: {values[k - 1]}")
+- name: 마지막 원소를 보지 않음
+  code: |
+    def partial_selection(values, k):
+        for i in range(k):
+            min_index = i
+            for j in range(i + 1, len(values) - 1):
+                if values[j] < values[min_index]:
+                    min_index = j
+            values[i], values[min_index] = values[min_index], values[i]
+
+
+    values = list(map(int, input("정수 목록(공백 구분): ").split()))
+    k = int(input("k: "))
+    partial_selection(values, k)
+    print(f"{k}회차 후: {values}")
+    print(f"{k}번째로 작은 값: {values[k - 1]}")
+tests:
+- stdin: "7 2 9 4 1\n3\n"
+  public: true
+- stdin: "5\n1\n"
+- stdin: "3 1 2\n3\n"
+- stdin: "4 4 1 4\n2\n"
+- stdin: "9 8 7 6 5 4 3 2 1 0\n1\n"
+- stdin: "2 3 1\n1\n"
+hints:
+- 바깥 반복의 횟수만 `n - 1`에서 `k`로 바꾸면 됩니다.
+explanation: |
+  선택 정렬의 i회차는 i번째로 작은 값을 제자리에 놓습니다. 그래서 k회차만 하면 전체를 정렬하지 않고도 k번째로 작은 값을 알 수 있습니다.

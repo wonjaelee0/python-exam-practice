@@ -1,0 +1,88 @@
+id: core2-08-vote-tally
+title: '[2주차 응용3] 희망 도서 투표 집계'
+unit: core2
+difficulty: 3
+tags:
+- core.w2
+- dict.count
+- sorted.key
+statement: |
+  > 컴퓨팅 핵심 2주차 도전문제 3(희망 도서 우선구매 목록)을 응용한 문제입니다.
+
+  이번에는 표 수가 아니라 **투표 기록**이 주어진다. 한 사람이 한 권씩 투표했고, 투표한 도서명이 공백으로 구분되어 한 줄에 들어온다.
+  도서별 표 수를 세어 최소 표 수 **이상**인 도서만 우선구매 목록에 넣으시오.
+
+  - 정렬: 표가 **많은 순서**, 같으면 도서명 **오름차순**
+  - 입력 프롬프트: `투표한 도서명을 입력하세요: `, `최소 표 수를 입력하세요: `
+  - 출력: `1위 알고리즘 (3표)` 형식 (순위는 1부터 차례대로). 대상이 없으면 `구매할 도서가 없습니다.`
+  - 조건: 투표는 1개 이상, 도서명에는 공백이 없다. 최소 표 수는 1 이상이다.
+starter: |
+  votes = input("투표한 도서명을 입력하세요: ").split()
+  minimum = int(input("최소 표 수를 입력하세요: "))
+solution: |
+  votes = input("투표한 도서명을 입력하세요: ").split()
+  minimum = int(input("최소 표 수를 입력하세요: "))
+  counts = {}
+  for title in votes:
+      counts[title] = counts.get(title, 0) + 1
+  result = [(t, c) for t, c in counts.items() if c >= minimum]
+  result = sorted(result, key=lambda x: (-x[1], x[0]))
+  if result:
+      for rank, (title, c) in enumerate(result, 1):
+          print(f"{rank}위 {title} ({c}표)")
+  else:
+      print("구매할 도서가 없습니다.")
+alt_solutions:
+- |
+  votes = input("투표한 도서명을 입력하세요: ").split()
+  minimum = int(input("최소 표 수를 입력하세요: "))
+  titles = sorted(set(votes))
+  table = [(votes.count(t), t) for t in titles if votes.count(t) >= minimum]
+  table.sort(key=lambda p: p[0], reverse=True)
+  if not table:
+      print("구매할 도서가 없습니다.")
+  else:
+      for i in range(len(table)):
+          print(str(i + 1) + "위 " + table[i][1] + " (" + str(table[i][0]) + "표)")
+mutants:
+- name: 동점이면 먼저 나온 도서가 앞
+  code: |
+    votes = input("투표한 도서명을 입력하세요: ").split()
+    minimum = int(input("최소 표 수를 입력하세요: "))
+    counts = {}
+    for title in votes:
+        counts[title] = counts.get(title, 0) + 1
+    result = [(t, c) for t, c in counts.items() if c >= minimum]
+    result = sorted(result, key=lambda x: x[1], reverse=True)
+    if result:
+        for rank, (title, c) in enumerate(result, 1):
+            print(f"{rank}위 {title} ({c}표)")
+    else:
+        print("구매할 도서가 없습니다.")
+- name: 최소 표 수를 초과해야 포함 (>)
+  code: |
+    votes = input("투표한 도서명을 입력하세요: ").split()
+    minimum = int(input("최소 표 수를 입력하세요: "))
+    counts = {}
+    for title in votes:
+        counts[title] = counts.get(title, 0) + 1
+    result = [(t, c) for t, c in counts.items() if c > minimum]
+    result = sorted(result, key=lambda x: (-x[1], x[0]))
+    if result:
+        for rank, (title, c) in enumerate(result, 1):
+            print(f"{rank}위 {title} ({c}표)")
+    else:
+        print("구매할 도서가 없습니다.")
+tests:
+- stdin: "파이썬 자료구조 알고리즘 자료구조 알고리즘 파이썬 알고리즘\n2\n"
+  public: true
+- stdin: "b a b a c\n1\n"
+- stdin: "x y z\n2\n"
+  note: 대상 없음
+- stdin: "k k k\n3\n"
+- stdin: "d c b a d c b d c d\n2\n"
+hints:
+- '`counts[title] = counts.get(title, 0) + 1`로 개수를 셉니다.'
+- 표 수 내림차순 + 이름 오름차순은 키 `(-표수, 이름)`으로 한 번에 정렬할 수 있습니다.
+explanation: |
+  딕셔너리로 개수를 센 뒤 `items()`로 (이름, 개수) 쌍을 꺼내 거르고 정렬합니다. 숫자 키에 `-`를 붙이면 그 기준만 내림차순이 됩니다.

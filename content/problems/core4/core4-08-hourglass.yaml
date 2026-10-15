@@ -1,0 +1,102 @@
+id: core4-08-hourglass
+title: '[4주차 응용3] 재귀 호출 전후로 별 찍기'
+unit: core4
+difficulty: 3
+tags:
+- core.w4
+- recursion.order
+statement: |
+  > 컴퓨팅 핵심 4주차 도전문제 2(대여 물품 반납 안내)를 응용한 문제입니다.
+
+  재귀 호출 **앞과 뒤**에 출력을 두어 모래시계 모양을 만드시오.
+
+  | 함수 | 역할 |
+  |---|---|
+  | `hourglass(n)` | n이 0이면 아무것도 하지 않고 0을 반환. 아니면 별 n개를 출력 → `hourglass(n - 1)` 호출 → 별 n개를 다시 출력하고, **출력한 줄 수**를 반환 |
+
+  크기가 3이면 다음과 같다.
+
+  ```
+  ***
+  **
+  *
+  *
+  **
+  ***
+  ```
+
+  - 반복문을 쓰지 않는다 (`"*" * n`은 사용 가능).
+  - 입력 프롬프트: `크기: `
+  - 출력: 모래시계 모양 다음 줄에 `출력한 줄: 6줄`
+  - 조건: 크기는 1 이상 20 이하
+starter: |
+  def hourglass(n):
+      pass
+
+
+  n = int(input("크기: "))
+solution: |
+  def hourglass(n):
+      if n == 0:
+          return 0
+      print("*" * n)
+      lines = hourglass(n - 1)
+      print("*" * n)
+      return lines + 2
+
+
+  n = int(input("크기: "))
+  total = hourglass(n)
+  print(f"출력한 줄: {total}줄")
+alt_solutions:
+- |
+  def hourglass(n):
+      if n <= 0:
+          return 0
+      row = "*" * n
+      print(row)
+      count = 2 + hourglass(n - 1)
+      print(row)
+      return count
+
+
+  print("출력한 줄: " + str(hourglass(int(input("크기: ")))) + "줄")
+mutants:
+- name: 호출 뒤의 출력을 빠뜨림
+  code: |
+    def hourglass(n):
+        if n == 0:
+            return 0
+        print("*" * n)
+        lines = hourglass(n - 1)
+        return lines + 2
+
+
+    n = int(input("크기: "))
+    total = hourglass(n)
+    print(f"출력한 줄: {total}줄")
+- name: n == 1에서 별 하나만 찍고 끝냄
+  code: |
+    def hourglass(n):
+        if n == 1:
+            print("*")
+            return 1
+        print("*" * n)
+        lines = hourglass(n - 1)
+        print("*" * n)
+        return lines + 2
+
+
+    n = int(input("크기: "))
+    total = hourglass(n)
+    print(f"출력한 줄: {total}줄")
+tests:
+- stdin: "3\n"
+  public: true
+- stdin: "1\n"
+- stdin: "5\n"
+- stdin: "20\n"
+hints:
+- 재귀 호출 앞의 출력은 큰 것부터, 호출이 끝나고 돌아오면서 하는 출력은 작은 것부터 나옵니다.
+explanation: |
+  각 호출은 자기 차례의 앞 출력 → 더 작은 문제 전체 → 자기 차례의 뒤 출력 순서로 실행됩니다. 호출이 끝나고 되돌아올 때 뒤쪽 출력이 역순으로 나오는 것이 재귀의 호출 스택 구조입니다.

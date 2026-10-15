@@ -1,0 +1,134 @@
+id: core2-10-unique-order
+title: '[2주차 응용5] 중복 번호를 막는 발표 순서표'
+unit: core2
+difficulty: 4
+tags:
+- core.w2
+- raise
+- zip
+- sorted.key
+- set
+statement: |
+  > 컴퓨팅 핵심 2주차 추가문제 1(발표 순서표 안전 생성기)을 응용한 문제입니다.
+
+  팀 이름들과 배정 번호들을 입력받아 **번호가 작은 팀부터** 발표 순서표를 만드시오. 순서표는 함수 `make_order(teams, numbers)`가 문자열 리스트로 반환한다.
+
+  함수 안에서 다음 순서로 검사하고, 문제가 있으면 `ValueError`를 발생시킨다.
+
+  1. 팀이 하나도 없으면: `ValueError("팀 목록이 비어 있습니다")`
+  2. 팀과 번호의 개수가 다르면: `ValueError("팀과 번호의 개수가 다릅니다")`
+  3. 같은 번호가 두 번 이상 있으면: `ValueError("배정 번호가 중복되었습니다")`
+
+  - 함수 밖에서 `try-except`로 받아 `입력 오류: 팀 목록이 비어 있습니다`처럼 출력한다. 문제가 없으면 순서표를 한 줄씩 출력한다.
+  - 순서표 한 줄: `1. 별빛팀 (1번)`
+  - 입력 프롬프트: `팀 이름을 입력하세요: `, `배정 번호를 입력하세요: ` (두 줄을 모두 먼저 입력받는다)
+  - 조건: 번호는 모두 정수이다(음수 가능). 팀 이름에는 공백이 없다.
+starter: |
+  def make_order(teams, numbers):
+      pass
+
+
+  teams = input("팀 이름을 입력하세요: ").split()
+  numbers = list(map(int, input("배정 번호를 입력하세요: ").split()))
+solution: |
+  def make_order(teams, numbers):
+      if len(teams) == 0:
+          raise ValueError("팀 목록이 비어 있습니다")
+      if len(teams) != len(numbers):
+          raise ValueError("팀과 번호의 개수가 다릅니다")
+      if len(set(numbers)) != len(numbers):
+          raise ValueError("배정 번호가 중복되었습니다")
+      pairs = sorted(zip(teams, numbers), key=lambda p: p[1])
+      return [f"{i}. {team} ({num}번)" for i, (team, num) in enumerate(pairs, 1)]
+
+
+  teams = input("팀 이름을 입력하세요: ").split()
+  numbers = list(map(int, input("배정 번호를 입력하세요: ").split()))
+  try:
+      lines = make_order(teams, numbers)
+  except ValueError as e:
+      print(f"입력 오류: {e}")
+  else:
+      for line in lines:
+          print(line)
+alt_solutions:
+- |
+  def make_order(teams, numbers):
+      if not teams:
+          raise ValueError("팀 목록이 비어 있습니다")
+      elif len(numbers) != len(teams):
+          raise ValueError("팀과 번호의 개수가 다릅니다")
+      for i in range(len(numbers)):
+          if numbers[i] in numbers[i + 1:]:
+              raise ValueError("배정 번호가 중복되었습니다")
+      order = sorted(range(len(teams)), key=lambda i: numbers[i])
+      result = []
+      for rank, idx in enumerate(order):
+          result.append(str(rank + 1) + ". " + teams[idx] + " (" + str(numbers[idx]) + "번)")
+      return result
+
+
+  teams = input("팀 이름을 입력하세요: ").split()
+  numbers = list(map(int, input("배정 번호를 입력하세요: ").split()))
+  try:
+      print("\n".join(make_order(teams, numbers)))
+  except ValueError as error:
+      print("입력 오류: " + str(error))
+mutants:
+- name: 중복 번호를 검사하지 않음
+  code: |
+    def make_order(teams, numbers):
+        if len(teams) == 0:
+            raise ValueError("팀 목록이 비어 있습니다")
+        if len(teams) != len(numbers):
+            raise ValueError("팀과 번호의 개수가 다릅니다")
+        pairs = sorted(zip(teams, numbers), key=lambda p: p[1])
+        return [f"{i}. {team} ({num}번)" for i, (team, num) in enumerate(pairs, 1)]
+
+
+    teams = input("팀 이름을 입력하세요: ").split()
+    numbers = list(map(int, input("배정 번호를 입력하세요: ").split()))
+    try:
+        lines = make_order(teams, numbers)
+    except ValueError as e:
+        print(f"입력 오류: {e}")
+    else:
+        for line in lines:
+            print(line)
+- name: 개수 검사를 빈 목록 검사보다 먼저 함
+  code: |
+    def make_order(teams, numbers):
+        if len(teams) != len(numbers):
+            raise ValueError("팀과 번호의 개수가 다릅니다")
+        if len(teams) == 0:
+            raise ValueError("팀 목록이 비어 있습니다")
+        if len(set(numbers)) != len(numbers):
+            raise ValueError("배정 번호가 중복되었습니다")
+        pairs = sorted(zip(teams, numbers), key=lambda p: p[1])
+        return [f"{i}. {team} ({num}번)" for i, (team, num) in enumerate(pairs, 1)]
+
+
+    teams = input("팀 이름을 입력하세요: ").split()
+    numbers = list(map(int, input("배정 번호를 입력하세요: ").split()))
+    try:
+        lines = make_order(teams, numbers)
+    except ValueError as e:
+        print(f"입력 오류: {e}")
+    else:
+        for line in lines:
+            print(line)
+tests:
+- stdin: "햇살팀 별빛팀 바다팀\n3 1 2\n"
+  public: true
+- stdin: "a b c\n2 2 1\n"
+- stdin: "\n1\n"
+  note: 빈 팀 목록 + 번호 1개
+- stdin: "\n\n"
+- stdin: "a b\n1\n"
+- stdin: "x y z\n0 -3 5\n"
+hints:
+- '`len(set(numbers)) != len(numbers)`이면 중복이 있습니다.'
+- 검사 순서가 출력 문장을 결정합니다. 지문에 적힌 순서대로 검사하세요.
+explanation: |
+  함수는 문제를 발견하면 `raise`로 알리고, 출력은 함수를 부른 쪽의 `try-except`가 담당합니다. 이렇게 하면 함수는 순서표 만들기에만 집중할 수 있습니다.
+  팀이 0개이고 번호가 1개인 입력은 두 조건에 모두 걸리므로, 어느 검사를 먼저 하느냐에 따라 출력이 달라집니다.

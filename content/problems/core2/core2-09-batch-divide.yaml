@@ -1,0 +1,136 @@
+id: core2-09-batch-divide
+title: '[2주차 응용4] 여러 줄 나눗셈과 예외 구분'
+unit: core2
+difficulty: 3
+tags:
+- core.w2
+- try.except
+- try.else
+- IndexError
+statement: |
+  > 컴퓨팅 핵심 2주차 도전문제 4(안전한 조별 평균 계산기)를 응용한 문제입니다.
+
+  여러 줄의 `a b`를 입력받아 줄마다 `a // b`를 계산하시오. 한 줄에서 오류가 나도 다음 줄을 계속 처리하며, **예외 종류마다** 다른 문장을 출력한다.
+  `try-except-else`를 사용하시오.
+
+  - 줄마다 `parts = 입력.split()` 후 `int(parts[0])`, `int(parts[1])`, `a // b` 순서로 처리한다 (세 번째 값부터는 무시).
+  - 성공: `7 // 2 = 3`
+  - `ValueError` (정수가 아닌 값): `정수가 아닌 값이 있습니다.`
+  - `IndexError` (값이 두 개보다 적음): `값이 두 개 필요합니다.`
+  - `ZeroDivisionError`: `0으로 나눌 수 없습니다.`
+  - 입력 프롬프트: `계산할 줄 수: `, 줄마다 `나눌 두 수: `
+  - 마지막 줄: `성공 2건, 실패 3건`
+starter: |
+  n = int(input("계산할 줄 수: "))
+  ok = 0
+  fail = 0
+  for _ in range(n):
+      line = input("나눌 두 수: ")
+solution: |
+  n = int(input("계산할 줄 수: "))
+  ok = 0
+  fail = 0
+  for _ in range(n):
+      line = input("나눌 두 수: ")
+      try:
+          parts = line.split()
+          a = int(parts[0])
+          b = int(parts[1])
+          result = a // b
+      except ValueError:
+          print("정수가 아닌 값이 있습니다.")
+          fail += 1
+      except IndexError:
+          print("값이 두 개 필요합니다.")
+          fail += 1
+      except ZeroDivisionError:
+          print("0으로 나눌 수 없습니다.")
+          fail += 1
+      else:
+          print(f"{a} // {b} = {result}")
+          ok += 1
+  print(f"성공 {ok}건, 실패 {fail}건")
+alt_solutions:
+- |
+  n = int(input("계산할 줄 수: "))
+  counts = [0, 0]
+  for _ in range(n):
+      parts = input("나눌 두 수: ").split()
+      message = None
+      try:
+          a, b = int(parts[0]), int(parts[1])
+          q = a // b
+      except IndexError:
+          message = "값이 두 개 필요합니다."
+      except ZeroDivisionError:
+          message = "0으로 나눌 수 없습니다."
+      except ValueError:
+          message = "정수가 아닌 값이 있습니다."
+      else:
+          print(str(a) + " // " + str(b) + " = " + str(q))
+          counts[0] += 1
+      if message is not None:
+          print(message)
+          counts[1] += 1
+  print("성공 " + str(counts[0]) + "건, 실패 " + str(counts[1]) + "건")
+mutants:
+- name: ValueError와 IndexError를 한 문장으로 처리
+  code: |
+    n = int(input("계산할 줄 수: "))
+    ok = 0
+    fail = 0
+    for _ in range(n):
+        line = input("나눌 두 수: ")
+        try:
+            parts = line.split()
+            a = int(parts[0])
+            b = int(parts[1])
+            result = a // b
+        except (ValueError, IndexError):
+            print("정수가 아닌 값이 있습니다.")
+            fail += 1
+        except ZeroDivisionError:
+            print("0으로 나눌 수 없습니다.")
+            fail += 1
+        else:
+            print(f"{a} // {b} = {result}")
+            ok += 1
+    print(f"성공 {ok}건, 실패 {fail}건")
+- name: 나누기 전에 성공으로 셈
+  code: |
+    n = int(input("계산할 줄 수: "))
+    ok = 0
+    fail = 0
+    for _ in range(n):
+        line = input("나눌 두 수: ")
+        try:
+            parts = line.split()
+            a = int(parts[0])
+            b = int(parts[1])
+            ok += 1
+            result = a // b
+        except ValueError:
+            print("정수가 아닌 값이 있습니다.")
+            fail += 1
+        except IndexError:
+            print("값이 두 개 필요합니다.")
+            fail += 1
+        except ZeroDivisionError:
+            print("0으로 나눌 수 없습니다.")
+            fail += 1
+        else:
+            print(f"{a} // {b} = {result}")
+    print(f"성공 {ok}건, 실패 {fail}건")
+tests:
+- stdin: "5\n7 2\n9 0\n3 x\n5\n-7 2\n"
+  public: true
+- stdin: "1\n\n"
+- stdin: "3\n10 3 99\nx 0\n0 5\n"
+- stdin: "2\n4.5 2\n100 7\n"
+- stdin: "1\n8 0\n"
+hints:
+- '`except`를 여러 개 두면 예외 종류마다 다른 처리를 할 수 있습니다.'
+- 성공했을 때만 할 일(출력, 성공 횟수)은 `else:`에 둡니다.
+explanation: |
+  `else`는 `try` 안에서 예외가 **하나도 나지 않았을 때만** 실행됩니다. 성공 횟수를 `try` 안에서 미리 세면, 그 뒤에 예외가 나도 성공으로 세어지는 실수가 생깁니다.
+  `-7 // 2`는 -3이 아니라 **-4**입니다 (`//`는 더 작은 쪽 정수로 내림).

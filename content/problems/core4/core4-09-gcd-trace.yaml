@@ -1,0 +1,92 @@
+id: core4-09-gcd-trace
+title: '[4주차 응용4] 유클리드 호제법 호출 추적'
+unit: core4
+difficulty: 3
+tags:
+- core.w4
+- recursion.gcd
+- recursion.trace
+statement: |
+  > 컴퓨팅 핵심 4주차 도전문제 1(물품 코드의 확인 숫자)을 응용한 문제입니다.
+
+  유클리드 호제법으로 두 자연수의 최대공약수를 구하는 **재귀 함수**를 만들고, 호출될 때마다 인자를 출력해 과정을 추적하시오.
+
+  | 함수 | 역할 |
+  |---|---|
+  | `gcd(a, b)` | 호출되자마자 `gcd(48, 18)` 형식으로 인자를 출력한다. `b`가 0이면 `a`를 반환하고, 아니면 `gcd(b, a % b)`의 결과를 반환 |
+
+  - 반복문과 `math.gcd`를 쓰지 않는다.
+  - 입력 프롬프트: `두 자연수: ` (공백 구분)
+  - 출력: 호출 추적 줄들, 그다음 `최대공약수: 6`, `최소공배수: 144` (최소공배수 = a × b ÷ 최대공약수, 정수로 출력)
+  - 조건: 두 수는 1 이상 100000 이하
+starter: |
+  def gcd(a, b):
+      pass
+
+
+  a, b = map(int, input("두 자연수: ").split())
+solution: |
+  def gcd(a, b):
+      print(f"gcd({a}, {b})")
+      if b == 0:
+          return a
+      return gcd(b, a % b)
+
+
+  a, b = map(int, input("두 자연수: ").split())
+  g = gcd(a, b)
+  print(f"최대공약수: {g}")
+  print(f"최소공배수: {a * b // g}")
+alt_solutions:
+- |
+  def gcd(a, b):
+      print("gcd(" + str(a) + ", " + str(b) + ")")
+      return a if b == 0 else gcd(b, a % b)
+
+
+  x, y = [int(t) for t in input("두 자연수: ").split()]
+  g = gcd(x, y)
+  print("최대공약수:", g)
+  print("최소공배수:", x // g * y)
+mutants:
+- name: 재귀 호출 뒤에 출력함 (순서가 거꾸로)
+  code: |
+    def gcd(a, b):
+        if b == 0:
+            print(f"gcd({a}, {b})")
+            return a
+        result = gcd(b, a % b)
+        print(f"gcd({a}, {b})")
+        return result
+
+
+    a, b = map(int, input("두 자연수: ").split())
+    g = gcd(a, b)
+    print(f"최대공약수: {g}")
+    print(f"최소공배수: {a * b // g}")
+- name: 최소공배수를 / 로 계산 (실수)
+  code: |
+    def gcd(a, b):
+        print(f"gcd({a}, {b})")
+        if b == 0:
+            return a
+        return gcd(b, a % b)
+
+
+    a, b = map(int, input("두 자연수: ").split())
+    g = gcd(a, b)
+    print(f"최대공약수: {g}")
+    print(f"최소공배수: {a * b / g}")
+tests:
+- stdin: "48 18\n"
+  public: true
+- stdin: "18 48\n"
+- stdin: "7 7\n"
+- stdin: "1 100\n"
+- stdin: "17 5\n"
+- stdin: "100000 99999\n"
+hints:
+- 인자 출력은 함수의 첫 줄에 둡니다.
+- '`/`의 결과는 실수(`144.0`)이므로 정수 나눗셈 `//`를 씁니다.'
+explanation: |
+  `gcd(a, b) = gcd(b, a % b)`이고 `b`가 0이 되면 `a`가 답입니다. 첫 수가 더 작아도(`18 48`) 한 번 호출하면 두 수가 자동으로 바뀝니다.

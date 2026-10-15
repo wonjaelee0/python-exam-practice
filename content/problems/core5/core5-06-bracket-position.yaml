@@ -1,0 +1,123 @@
+id: core5-06-bracket-position
+title: '[5주차 응용1] 괄호 오류 위치 찾기'
+unit: core5
+difficulty: 3
+tags:
+- core.w5
+- stack.list
+- brackets
+statement: |
+  > 컴퓨팅 핵심 5주차 도전문제 1(포스터 편집 작업 되돌리기)을 응용한 문제입니다. 스택의 맨 위만 보고 판단합니다.
+
+  수식의 괄호 `()`, `[]`, `{}`가 올바르게 짝지어졌는지 스택(리스트의 끝이 맨 위)으로 검사하시오. 괄호가 아닌 문자는 무시한다.
+
+  - 여는 괄호는 스택에 넣는다.
+  - 닫는 괄호를 만났을 때 스택이 비어 있거나 맨 위가 짝이 맞는 여는 괄호가 아니면, **그 문자의 위치(1부터 셈)** 에서 검사를 멈춘다.
+  - 끝까지 읽었는데 스택에 여는 괄호가 남아 있으면 닫히지 않은 괄호가 있는 것이다.
+
+  - 입력 프롬프트: `수식: `
+  - 출력 (한 줄): `5번째 문자에서 짝이 맞지 않습니다.` / `닫히지 않은 괄호 2개가 있습니다.` / `올바른 괄호입니다.`
+  - 조건: 수식은 공백을 포함할 수 있고 길이는 0 이상 200 이하이다.
+starter: |
+  pairs = {")": "(", "]": "[", "}": "{"}
+  text = input("수식: ")
+  stack = []
+solution: |
+  pairs = {")": "(", "]": "[", "}": "{"}
+  text = input("수식: ")
+  stack = []
+  error = 0
+  for i, ch in enumerate(text, 1):
+      if ch in "([{":
+          stack.append(ch)
+      elif ch in ")]}":
+          if not stack or stack[-1] != pairs[ch]:
+              error = i
+              break
+          stack.pop()
+  if error:
+      print(f"{error}번째 문자에서 짝이 맞지 않습니다.")
+  elif stack:
+      print(f"닫히지 않은 괄호 {len(stack)}개가 있습니다.")
+  else:
+      print("올바른 괄호입니다.")
+alt_solutions:
+- |
+  text = input("수식: ")
+  opening = "([{"
+  closing = ")]}"
+  stack = []
+  bad = None
+  pos = 0
+  while pos < len(text) and bad is None:
+      ch = text[pos]
+      if ch in opening:
+          stack.append(ch)
+      elif ch in closing:
+          if len(stack) > 0 and opening.index(stack[-1]) == closing.index(ch):
+              stack.pop()
+          else:
+              bad = pos + 1
+      pos += 1
+  if bad is not None:
+      print(str(bad) + "번째 문자에서 짝이 맞지 않습니다.")
+  elif len(stack) > 0:
+      print("닫히지 않은 괄호 " + str(len(stack)) + "개가 있습니다.")
+  else:
+      print("올바른 괄호입니다.")
+mutants:
+- name: 괄호 종류를 비교하지 않음
+  code: |
+    pairs = {")": "(", "]": "[", "}": "{"}
+    text = input("수식: ")
+    stack = []
+    error = 0
+    for i, ch in enumerate(text, 1):
+        if ch in "([{":
+            stack.append(ch)
+        elif ch in ")]}":
+            if not stack:
+                error = i
+                break
+            stack.pop()
+    if error:
+        print(f"{error}번째 문자에서 짝이 맞지 않습니다.")
+    elif stack:
+        print(f"닫히지 않은 괄호 {len(stack)}개가 있습니다.")
+    else:
+        print("올바른 괄호입니다.")
+- name: 위치를 0부터 셈
+  code: |
+    pairs = {")": "(", "]": "[", "}": "{"}
+    text = input("수식: ")
+    stack = []
+    error = None
+    for i, ch in enumerate(text):
+        if ch in "([{":
+            stack.append(ch)
+        elif ch in ")]}":
+            if not stack or stack[-1] != pairs[ch]:
+                error = i
+                break
+            stack.pop()
+    if error is not None:
+        print(f"{error}번째 문자에서 짝이 맞지 않습니다.")
+    elif stack:
+        print(f"닫히지 않은 괄호 {len(stack)}개가 있습니다.")
+    else:
+        print("올바른 괄호입니다.")
+tests:
+- stdin: "(a+b)*[c-{d/e}]\n"
+  public: true
+- stdin: "x{(})y\n"
+- stdin: "((1+2)\n"
+- stdin: "\n"
+  note: 빈 수식
+- stdin: "]\n"
+- stdin: "{[()()]}(\n"
+- stdin: "abc)\n"
+hints:
+- '`enumerate(text, 1)`을 쓰면 위치를 1부터 셀 수 있습니다.'
+- 닫는 괄호에 맞는 여는 괄호는 딕셔너리 `pairs[ch]`로 찾습니다.
+explanation: |
+  가장 최근에 연 괄호가 가장 먼저 닫혀야 하므로 스택이 알맞습니다. 오류가 나는 순간 멈춰야 정확한 위치를 알릴 수 있습니다.

@@ -1,0 +1,116 @@
+id: core5-08-recent-views
+title: '[5주차 응용3] 최근 본 상품 목록'
+unit: core5
+difficulty: 3
+tags:
+- core.w5
+- deque
+statement: |
+  > 컴퓨팅 핵심 5주차 도전문제 3(양쪽 출입구의 물품 보관대)을 응용한 문제입니다.
+
+  쇼핑몰의 '최근 본 상품' 목록을 `deque`로 관리하시오. 목록의 **왼쪽 끝이 가장 최근**에 본 상품이다.
+
+  - `보기 상품명`: 이미 목록에 있으면 그 상품을 빼고, 왼쪽 끝에 넣는다. 그 결과 개수가 최대 보관 개수보다 많으면 **가장 오래된 상품(오른쪽 끝)** 을 버린다. 출력 없음.
+  - `목록`: `최근 본 상품: 양말, 모자, 셔츠`(왼쪽부터), 비어 있으면 `최근 본 상품: 없음`
+
+  - 입력 프롬프트: `최대 보관 개수: `, `명령 수: `, 명령마다 `명령: `
+  - 사용할 연산: `appendleft`, `pop`, `remove`, `in`
+  - 조건: 최대 보관 개수는 1 이상 10 이하, 상품명에는 공백이 없다.
+starter: |
+  from collections import deque
+
+  k = int(input("최대 보관 개수: "))
+  n = int(input("명령 수: "))
+  recent = deque()
+solution: |
+  from collections import deque
+
+  k = int(input("최대 보관 개수: "))
+  n = int(input("명령 수: "))
+  recent = deque()
+  for _ in range(n):
+      parts = input("명령: ").split()
+      if parts[0] == "보기":
+          item = parts[1]
+          if item in recent:
+              recent.remove(item)
+          recent.appendleft(item)
+          if len(recent) > k:
+              recent.pop()
+      else:
+          if recent:
+              print("최근 본 상품: " + ", ".join(recent))
+          else:
+              print("최근 본 상품: 없음")
+alt_solutions:
+- |
+  from collections import deque
+
+  k = int(input("최대 보관 개수: "))
+  recent = deque()
+  for _ in range(int(input("명령 수: "))):
+      parts = input("명령: ").split()
+      if parts[0] == "목록":
+          print("최근 본 상품:", ", ".join(recent) if len(recent) > 0 else "없음")
+          continue
+      kept = deque()
+      for x in recent:
+          if x != parts[1]:
+              kept.append(x)
+      kept.appendleft(parts[1])
+      while len(kept) > k:
+          kept.pop()
+      recent = kept
+mutants:
+- name: 이미 본 상품을 빼지 않음
+  code: |
+    from collections import deque
+
+    k = int(input("최대 보관 개수: "))
+    n = int(input("명령 수: "))
+    recent = deque()
+    for _ in range(n):
+        parts = input("명령: ").split()
+        if parts[0] == "보기":
+            item = parts[1]
+            recent.appendleft(item)
+            if len(recent) > k:
+                recent.pop()
+        else:
+            if recent:
+                print("최근 본 상품: " + ", ".join(recent))
+            else:
+                print("최근 본 상품: 없음")
+- name: 가장 최근 상품을 버림
+  code: |
+    from collections import deque
+
+    k = int(input("최대 보관 개수: "))
+    n = int(input("명령 수: "))
+    recent = deque()
+    for _ in range(n):
+        parts = input("명령: ").split()
+        if parts[0] == "보기":
+            item = parts[1]
+            if item in recent:
+                recent.remove(item)
+            recent.appendleft(item)
+            if len(recent) > k:
+                recent.popleft()
+        else:
+            if recent:
+                print("최근 본 상품: " + ", ".join(recent))
+            else:
+                print("최근 본 상품: 없음")
+tests:
+- stdin: "3\n6\n보기 셔츠\n보기 모자\n보기 양말\n목록\n보기 모자\n목록\n"
+  public: true
+- stdin: "2\n5\n목록\n보기 a\n보기 b\n보기 c\n목록\n"
+- stdin: "1\n4\n보기 x\n보기 x\n보기 y\n목록\n"
+- stdin: "3\n5\n보기 p\n보기 q\n보기 p\n보기 r\n목록\n"
+- stdin: "3\n4\n보기 a\n보기 b\n보기 a\n목록\n"
+  note: 다시 본 상품
+hints:
+- '`item in recent`로 이미 있는지 확인하고, `recent.remove(item)`으로 그 상품을 뺍니다.'
+explanation: |
+  최근 순서를 유지하는 목록은 '앞에 넣고 뒤에서 버리는' 덱 구조가 자연스럽습니다. 이미 본 상품을 다시 보면 맨 앞으로 옮겨야 같은 상품이 두 번 나오지 않습니다.

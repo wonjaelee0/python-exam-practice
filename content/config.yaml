@@ -25,6 +25,3 @@ courses:
     exam_date: "2026-10-20"
   - id: core
     title: 컴퓨팅 핵심
-    subtitle: 상위 과목 대비
-    exam_label: 시험
-    exam_date: null

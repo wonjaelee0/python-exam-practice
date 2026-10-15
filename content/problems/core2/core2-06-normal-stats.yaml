@@ -1,0 +1,83 @@
+id: core2-06-normal-stats
+title: '[2주차 응용1] 정상 측정값 통계'
+unit: core2
+difficulty: 2
+tags:
+- core.w2
+- list.comprehension
+- format.float
+statement: |
+  > 컴퓨팅 핵심 2주차 도전문제 1(실험실 센서값 정리)을 응용한 문제입니다.
+
+  정상 범위의 최솟값과 최댓값, 측정값들을 입력받아 정상 범위 안의 값(경계 포함)만 골라 통계를 출력하시오.
+
+  - 입력 프롬프트: `정상 범위를 입력하세요: ` (최솟값 최댓값), `측정값을 입력하세요: ` (공백 구분, 1개 이상)
+  - 출력 (세 줄): `정상 개수: 3개`, `정상 평균: 21.7` (소수 첫째 자리까지, `:.1f`), `정상 최솟값: 18, 최댓값: 26`
+  - 정상 값이 하나도 없으면 `정상 측정값이 없습니다.` 한 줄만 출력한다.
+  - 조건: 모든 입력은 정수이고 최솟값 ≤ 최댓값이다.
+starter: |
+  low, high = map(int, input("정상 범위를 입력하세요: ").split())
+  values = list(map(int, input("측정값을 입력하세요: ").split()))
+solution: |
+  low, high = map(int, input("정상 범위를 입력하세요: ").split())
+  values = list(map(int, input("측정값을 입력하세요: ").split()))
+  normal = [v for v in values if low <= v <= high]
+  if normal:
+      avg = sum(normal) / len(normal)
+      print(f"정상 개수: {len(normal)}개")
+      print(f"정상 평균: {avg:.1f}")
+      print(f"정상 최솟값: {min(normal)}, 최댓값: {max(normal)}")
+  else:
+      print("정상 측정값이 없습니다.")
+alt_solutions:
+- |
+  low, high = map(int, input("정상 범위를 입력하세요: ").split())
+  values = list(map(int, input("측정값을 입력하세요: ").split()))
+  normal = []
+  for v in values:
+      if v >= low and v <= high:
+          normal.append(v)
+  if len(normal) == 0:
+      print("정상 측정값이 없습니다.")
+  else:
+      print("정상 개수: " + str(len(normal)) + "개")
+      print("정상 평균: " + format(sum(normal) / len(normal), ".1f"))
+      print("정상 최솟값: " + str(min(normal)) + ", 최댓값: " + str(max(normal)))
+mutants:
+- name: 경계값을 뺌
+  code: |
+    low, high = map(int, input("정상 범위를 입력하세요: ").split())
+    values = list(map(int, input("측정값을 입력하세요: ").split()))
+    normal = [v for v in values if low < v < high]
+    if normal:
+        avg = sum(normal) / len(normal)
+        print(f"정상 개수: {len(normal)}개")
+        print(f"정상 평균: {avg:.1f}")
+        print(f"정상 최솟값: {min(normal)}, 최댓값: {max(normal)}")
+    else:
+        print("정상 측정값이 없습니다.")
+- name: 전체 값으로 평균을 냄
+  code: |
+    low, high = map(int, input("정상 범위를 입력하세요: ").split())
+    values = list(map(int, input("측정값을 입력하세요: ").split()))
+    normal = [v for v in values if low <= v <= high]
+    if normal:
+        avg = sum(values) / len(values)
+        print(f"정상 개수: {len(normal)}개")
+        print(f"정상 평균: {avg:.1f}")
+        print(f"정상 최솟값: {min(normal)}, 최댓값: {max(normal)}")
+    else:
+        print("정상 측정값이 없습니다.")
+tests:
+- stdin: "18 26\n15 18 21 26 30\n"
+  public: true
+- stdin: "5 5\n5 4 6 5\n"
+- stdin: "0 1\n5 9\n"
+  note: 정상 값 없음
+- stdin: "-10 0\n-5 -20 0 3 -1\n"
+- stdin: "1 100\n7\n"
+- stdin: "10 20\n10 20 15 99\n"
+hints:
+- 리스트 컴프리헨션 `[v for v in values if 조건]`으로 거른 뒤 `sum`, `len`, `min`, `max`를 씁니다.
+explanation: |
+  걸러낸 리스트(`normal`)를 따로 만들어 두면 개수·평균·최솟값·최댓값을 모두 같은 리스트로 계산할 수 있습니다. `f"{avg:.1f}"`는 소수 둘째 자리에서 반올림해 첫째 자리까지 보여 줍니다.

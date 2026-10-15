@@ -1,0 +1,103 @@
+id: core4-10-stairs
+title: '[4주차 응용5] 고장 난 칸을 피해 계단 오르기'
+unit: core4
+difficulty: 4
+tags:
+- core.w4
+- recursion.count
+statement: |
+  > 컴퓨팅 핵심 4주차 도전문제 4(체험용 리본 나누기)를 응용한 문제입니다. 두 갈래로 재귀 호출하고 결과를 더합니다.
+
+  계단을 한 번에 **1칸 또는 2칸**씩 올라 n번째 칸에 도착하는 방법의 수를 재귀로 구하시오.
+  단, 고장 난 칸이 하나 있으면 그 칸은 밟을 수 없다.
+
+  | 함수 | 역할 |
+  |---|---|
+  | `ways(n, broken)` | 0번 칸(바닥)에서 n번 칸까지 가는 방법의 수를 반환 |
+
+  - 규칙: n이 음수면 0, n이 0이면 1(바닥에 이미 있음), n이 고장 난 칸이면 0, 그 밖에는 `ways(n - 1) + ways(n - 2)`
+  - 검사 순서를 위와 같이 한다 (고장 난 칸이 없으면 broken은 0이고, 0번 칸은 항상 밟을 수 있다).
+  - 반복문을 쓰지 않는다.
+  - 입력 프롬프트: `계단 수: `, `고장 난 칸(없으면 0): `
+  - 출력: `오르는 방법: 8가지`
+  - 조건: 계단 수는 1 이상 20 이하, 고장 난 칸은 0 또는 1 이상 계단 수 미만
+starter: |
+  def ways(n, broken):
+      pass
+
+
+  n = int(input("계단 수: "))
+  broken = int(input("고장 난 칸(없으면 0): "))
+solution: |
+  def ways(n, broken):
+      if n < 0:
+          return 0
+      if n == 0:
+          return 1
+      if n == broken:
+          return 0
+      return ways(n - 1, broken) + ways(n - 2, broken)
+
+
+  n = int(input("계단 수: "))
+  broken = int(input("고장 난 칸(없으면 0): "))
+  print(f"오르는 방법: {ways(n, broken)}가지")
+alt_solutions:
+- |
+  def ways(n, broken):
+      if n == 0:
+          return 1
+      if n < 0 or (broken > 0 and n == broken):
+          return 0
+      one = ways(n - 1, broken)
+      two = ways(n - 2, broken)
+      return one + two
+
+
+  steps = int(input("계단 수: "))
+  bad = int(input("고장 난 칸(없으면 0): "))
+  print("오르는 방법: " + str(ways(steps, bad)) + "가지")
+mutants:
+- name: 고장 난 칸을 무시
+  code: |
+    def ways(n, broken):
+        if n < 0:
+            return 0
+        if n == 0:
+            return 1
+        return ways(n - 1, broken) + ways(n - 2, broken)
+
+
+    n = int(input("계단 수: "))
+    broken = int(input("고장 난 칸(없으면 0): "))
+    print(f"오르는 방법: {ways(n, broken)}가지")
+- name: 바닥(0칸)을 0가지로 셈
+  code: |
+    def ways(n, broken):
+        if n < 0:
+            return 0
+        if n == 0:
+            return 0
+        if n == 1:
+            return 1
+        if n == broken:
+            return 0
+        return ways(n - 1, broken) + ways(n - 2, broken)
+
+
+    n = int(input("계단 수: "))
+    broken = int(input("고장 난 칸(없으면 0): "))
+    print(f"오르는 방법: {ways(n, broken)}가지")
+tests:
+- stdin: "5\n0\n"
+  public: true
+- stdin: "5\n2\n"
+- stdin: "1\n0\n"
+- stdin: "20\n0\n"
+- stdin: "10\n1\n"
+- stdin: "6\n5\n"
+hints:
+- 마지막 한 걸음은 n-1번 칸이나 n-2번 칸에서 옵니다. 두 경우의 방법 수를 더합니다.
+- 고장 난 칸까지 가는 방법을 0으로 두면 그 칸을 거치는 모든 경로가 빠집니다.
+explanation: |
+  `ways(n) = ways(n-1) + ways(n-2)`는 피보나치와 같은 구조입니다. 종료 조건(음수 → 0, 바닥 → 1)이 결과 전체를 좌우하므로, 가장 작은 경우를 직접 따져 보고 정하세요.

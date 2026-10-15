@@ -1,0 +1,82 @@
+id: core5-07-hot-potato
+title: '[5주차 응용2] 덱으로 하는 폭탄 돌리기'
+unit: core5
+difficulty: 3
+tags:
+- core.w5
+- deque
+- queue.rotate
+statement: |
+  > 컴퓨팅 핵심 5주차 도전문제 2(도서관 프린터 대기열)와 도전문제 3(양쪽 출입구의 물품 보관대)을 응용한 문제입니다.
+
+  참가자들이 원 모양으로 앉아 폭탄을 돌린다. 맨 앞 사람이 폭탄을 들고 시작하며, 폭탄을 들고 있는 사람을 1번째로 세어 **k번째 사람이 탈락**한다.
+  탈락한 사람의 다음 사람이 다시 1번째가 된다. 한 명이 남을 때까지 반복하시오.
+
+  - `collections.deque`로 원을 표현한다. 앞사람을 맨 뒤로 보내는 것은 `append(popleft())`이다.
+  - 입력 프롬프트: `참가자(공백 구분): `, `넘기는 횟수: `
+  - 출력: 탈락할 때마다 `탈락: 나래`, 마지막 줄 `우승: 다온`
+  - 조건: 참가자는 1명 이상 20명 이하이고 이름은 공백이 없다. k는 1 이상 50 이하
+starter: |
+  from collections import deque
+
+  names = input("참가자(공백 구분): ").split()
+  k = int(input("넘기는 횟수: "))
+solution: |
+  from collections import deque
+
+  names = input("참가자(공백 구분): ").split()
+  k = int(input("넘기는 횟수: "))
+  circle = deque(names)
+  while len(circle) > 1:
+      for _ in range(k - 1):
+          circle.append(circle.popleft())
+      print(f"탈락: {circle.popleft()}")
+  print(f"우승: {circle[0]}")
+alt_solutions:
+- |
+  from collections import deque
+
+  circle = deque(input("참가자(공백 구분): ").split())
+  k = int(input("넘기는 횟수: "))
+  while len(circle) > 1:
+      circle.rotate(-(k - 1))
+      out = circle.popleft()
+      print("탈락:", out)
+  print("우승:", circle.popleft())
+mutants:
+- name: 한 번 더 넘김 (k + 1번째 탈락)
+  code: |
+    from collections import deque
+
+    names = input("참가자(공백 구분): ").split()
+    k = int(input("넘기는 횟수: "))
+    circle = deque(names)
+    while len(circle) > 1:
+        for _ in range(k):
+            circle.append(circle.popleft())
+        print(f"탈락: {circle.popleft()}")
+    print(f"우승: {circle[0]}")
+- name: 탈락자를 맨 뒤에서 뺌
+  code: |
+    from collections import deque
+
+    names = input("참가자(공백 구분): ").split()
+    k = int(input("넘기는 횟수: "))
+    circle = deque(names)
+    while len(circle) > 1:
+        for _ in range(k - 1):
+            circle.append(circle.popleft())
+        print(f"탈락: {circle.pop()}")
+    print(f"우승: {circle[0]}")
+tests:
+- stdin: "가온 나래 다온 라온 마루\n2\n"
+  public: true
+- stdin: "a b c\n1\n"
+- stdin: "혼자\n3\n"
+  note: 한 명
+- stdin: "a b c\n5\n"
+- stdin: "p q r s t u v\n3\n"
+hints:
+- k번째를 맨 앞으로 오게 하려면 앞사람을 k − 1번 맨 뒤로 보냅니다.
+explanation: |
+  덱의 `popleft()`와 `append()`를 함께 쓰면 원을 한 칸씩 돌릴 수 있습니다. 리스트의 `pop(0)`과 달리 덱은 앞에서 꺼내도 남은 원소를 옮기지 않아 빠릅니다.

@@ -1,0 +1,105 @@
+id: core1-09-multi-order
+title: '[1주차 응용5] 여러 메뉴 주문서와 할인'
+unit: core1
+difficulty: 3
+tags:
+- core.w1
+- dict
+- loop.for
+- if
+statement: |
+  > 컴퓨팅 핵심 1주차 도전문제 3(캠퍼스 카페 주문서)을 응용한 문제입니다.
+
+  카페에서 여러 메뉴를 한 번에 주문한다. 주문 줄 수를 먼저 입력받고, 줄마다 `메뉴 수량`을 입력받아 합계를 구하시오.
+
+  | 메뉴 | 가격 |
+  |---|---|
+  | 아메리카노 | 3,000원 |
+  | 카페라테 | 4,000원 |
+  | 레몬에이드 | 4,500원 |
+
+  - 표에 없는 메뉴는 그 줄을 입력받은 직후 `없는 메뉴: 녹차`를 출력하고 합계에 넣지 않는다.
+  - 합계가 **20000원 이상**이면 2000원을 할인한다.
+  - 입력 프롬프트: `주문 줄 수: `, 줄마다 `메뉴와 수량: `
+  - 출력 (마지막 세 줄): `합계: 21000원`, `할인: 2000원`(할인이 없으면 `할인: 0원`), `결제 금액: 19000원`
+  - 조건: 줄 수와 수량은 1 이상의 정수, 메뉴 이름에는 공백이 없다.
+starter: |
+  prices = {"아메리카노": 3000, "카페라테": 4000, "레몬에이드": 4500}
+  n = int(input("주문 줄 수: "))
+solution: |
+  prices = {"아메리카노": 3000, "카페라테": 4000, "레몬에이드": 4500}
+  n = int(input("주문 줄 수: "))
+  total = 0
+  for _ in range(n):
+      menu, qty = input("메뉴와 수량: ").split()
+      if menu in prices:
+          total += prices[menu] * int(qty)
+      else:
+          print(f"없는 메뉴: {menu}")
+  discount = 2000 if total >= 20000 else 0
+  print(f"합계: {total}원")
+  print(f"할인: {discount}원")
+  print(f"결제 금액: {total - discount}원")
+alt_solutions:
+- |
+  n = int(input("주문 줄 수: "))
+  total = 0
+  for i in range(n):
+      parts = input("메뉴와 수량: ").split()
+      menu = parts[0]
+      qty = int(parts[1])
+      if menu == "아메리카노":
+          total += 3000 * qty
+      elif menu == "카페라테":
+          total += 4000 * qty
+      elif menu == "레몬에이드":
+          total += 4500 * qty
+      else:
+          print("없는 메뉴:", menu)
+  discount = 0
+  if total >= 20000:
+      discount = 2000
+  print("합계: " + str(total) + "원")
+  print("할인: " + str(discount) + "원")
+  print("결제 금액: " + str(total - discount) + "원")
+mutants:
+- name: 20000원 초과일 때만 할인
+  code: |
+    prices = {"아메리카노": 3000, "카페라테": 4000, "레몬에이드": 4500}
+    n = int(input("주문 줄 수: "))
+    total = 0
+    for _ in range(n):
+        menu, qty = input("메뉴와 수량: ").split()
+        if menu in prices:
+            total += prices[menu] * int(qty)
+        else:
+            print(f"없는 메뉴: {menu}")
+    discount = 2000 if total > 20000 else 0
+    print(f"합계: {total}원")
+    print(f"할인: {discount}원")
+    print(f"결제 금액: {total - discount}원")
+- name: 없는 메뉴를 알리지 않음
+  code: |
+    prices = {"아메리카노": 3000, "카페라테": 4000, "레몬에이드": 4500}
+    n = int(input("주문 줄 수: "))
+    total = 0
+    for _ in range(n):
+        menu, qty = input("메뉴와 수량: ").split()
+        total += prices.get(menu, 0) * int(qty)
+    discount = 2000 if total >= 20000 else 0
+    print(f"합계: {total}원")
+    print(f"할인: {discount}원")
+    print(f"결제 금액: {total - discount}원")
+tests:
+- stdin: "3\n아메리카노 2\n카페라테 1\n녹차 1\n"
+  public: true
+- stdin: "1\n카페라테 5\n"
+  note: 정확히 20000원
+- stdin: "2\n레몬에이드 4\n아메리카노 1\n"
+- stdin: "1\n쿠키 3\n"
+- stdin: "2\n아메리카노 10\n스무디 2\n"
+hints:
+- 딕셔너리에 메뉴가 있는지는 `menu in prices`로 확인합니다.
+- '`이상`은 `>=`입니다.'
+explanation: |
+  반복문 안에서는 합계만 누적하고, 할인과 최종 금액은 반복이 끝난 뒤 한 번 계산합니다. 경계값(정확히 20000원)이 할인 대상인지 확인하세요.

@@ -1,0 +1,87 @@
+id: core1-06-student-id
+title: '[1주차 응용2] 학번 정리 도우미'
+unit: core1
+difficulty: 2
+tags:
+- core.w1
+- str.isdigit
+- if.elif
+statement: |
+  > 컴퓨팅 핵심 1주차 도전문제 2(전화번호 정리 도우미)를 응용한 문제입니다.
+
+  학번 10자리에 공백·하이픈·점 같은 구분자가 섞여 들어온다. 숫자(0~9)만 모은 뒤 앞 4자리(입학 연도)와 나머지 6자리 사이에 하이픈을 넣어 정리하시오.
+
+  - 입력 프롬프트: `학번을 입력하세요: `
+  - 숫자가 정확히 10개가 아니면 `잘못된 학번입니다. 숫자 10개를 입력하세요.`
+  - 숫자가 10개이지만 앞 4자리(입학 연도)가 2000 이상 2026 이하가 아니면 `입학 연도가 올바르지 않습니다.`
+  - 올바르면 `2025-123456`처럼 앞 4자리와 나머지 6자리 사이에 하이픈을 넣어 출력한다.
+  - 숫자가 아닌 문자는 모두 구분자로 보고 무시한다.
+starter: |
+  raw = input("학번을 입력하세요: ")
+solution: |
+  raw = input("학번을 입력하세요: ")
+  digits = ""
+  for ch in raw:
+      if ch in "0123456789":
+          digits += ch
+  if len(digits) != 10:
+      print("잘못된 학번입니다. 숫자 10개를 입력하세요.")
+  else:
+      year = int(digits[:4])
+      if 2000 <= year <= 2026:
+          print(digits[:4] + "-" + digits[4:])
+      else:
+          print("입학 연도가 올바르지 않습니다.")
+alt_solutions:
+- |
+  raw = input("학번을 입력하세요: ")
+  digits = "".join([c for c in raw if c.isdigit()])
+  if len(digits) == 10 and 2000 <= int(digits[0:4]) <= 2026:
+      print(f"{digits[0:4]}-{digits[4:10]}")
+  elif len(digits) == 10:
+      print("입학 연도가 올바르지 않습니다.")
+  else:
+      print("잘못된 학번입니다. 숫자 10개를 입력하세요.")
+mutants:
+- name: 2026년을 빼먹음 (< 2026)
+  code: |
+    raw = input("학번을 입력하세요: ")
+    digits = ""
+    for ch in raw:
+        if ch in "0123456789":
+            digits += ch
+    if len(digits) != 10:
+        print("잘못된 학번입니다. 숫자 10개를 입력하세요.")
+    else:
+        year = int(digits[:4])
+        if 2000 <= year < 2026:
+            print(digits[:4] + "-" + digits[4:])
+        else:
+            print("입학 연도가 올바르지 않습니다.")
+- name: 하이픈만 지움
+  code: |
+    raw = input("학번을 입력하세요: ")
+    digits = ""
+    for ch in raw.replace("-", ""):
+        digits += ch
+    if len(digits) != 10:
+        print("잘못된 학번입니다. 숫자 10개를 입력하세요.")
+    else:
+        year = int(digits[:4])
+        if 2000 <= year <= 2026:
+            print(digits[:4] + "-" + digits[4:])
+        else:
+            print("입학 연도가 올바르지 않습니다.")
+tests:
+- stdin: "2025-123 456\n"
+  public: true
+- stdin: "2026.000001\n"
+- stdin: "1999-123456\n"
+  note: 연도 범위 밖
+- stdin: "20251234\n"
+- stdin: "학번 2024 / 98 76 54\n"
+- stdin: "2000000000\n"
+hints:
+- 문자 하나씩 보면서 숫자일 때만 새 문자열에 이어 붙입니다. 슬라이싱 `digits[:4]`, `digits[4:]`로 나눕니다.
+explanation: |
+  먼저 개수를 검사하고, 개수가 맞을 때만 연도를 검사해야 두 오류 문장을 정확히 구분할 수 있습니다. 경계값(2000, 2026)이 포함되는지 꼭 확인하세요.

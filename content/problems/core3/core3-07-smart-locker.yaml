@@ -1,0 +1,251 @@
+id: core3-07-smart-locker
+title: '[3주차 응용2] 세 번 틀리면 잠기는 사물함'
+unit: core3
+difficulty: 4
+tags:
+- core.w3
+- class.encapsulation
+- class.state
+statement: |
+  > 컴퓨팅 핵심 3주차 도전문제 3(잔여 매수를 지키는 인쇄 카드)을 응용한 문제입니다.
+
+  비밀번호 사물함 객체를 만드시오. 비밀번호와 연속 실패 횟수는 객체 안에 숨겨 두고(`self.__password`, `self.__fails`), 바깥 코드는 메서드로만 사용한다.
+
+  | 메서드 | 역할 |
+  |---|---|
+  | `Locker(password)` | 처음 비밀번호 저장, 연속 실패 0회 |
+  | `is_locked()` | 연속 실패가 **3회 이상**이면 `True` |
+  | `get_fails()` | 현재 연속 실패 횟수 반환 |
+  | `open(password)` | 잠겨 있으면 `False`. 맞으면 연속 실패를 0으로 되돌리고 `True`, 틀리면 연속 실패를 1 늘리고 `False` |
+  | `change(old, new)` | 잠겨 있지 않고, `old`가 맞고, `new`가 숫자 4자리일 때만 바꾸고 `True`. 아니면 `False` (실패 횟수는 그대로) |
+
+  명령 (첫 줄에 명령 수, 다음 줄부터 한 줄씩):
+
+  - `열기 1234`: 잠겨 있으면 `잠긴 사물함입니다.`, 열리면 `열렸습니다.`, 틀리면 `비밀번호가 틀렸습니다. (연속 2회)` — 이 실패로 잠기게 되면 다음 줄에 `사물함이 잠겼습니다.`
+  - `변경 1234 5678`: `비밀번호를 바꿨습니다.` 또는 `비밀번호를 바꾸지 못했습니다.`
+
+  - 입력 프롬프트: `처음 비밀번호: `, `명령 수: `, 명령마다 `명령: `
+  - 메서드 안에서는 출력하지 않는다.
+starter: |
+  class Locker:
+      def __init__(self, password):
+          self.__password = password
+          self.__fails = 0
+
+      def is_locked(self):
+          pass
+
+      def get_fails(self):
+          pass
+
+      def open(self, password):
+          pass
+
+      def change(self, old, new):
+          pass
+
+
+  locker = Locker(input("처음 비밀번호: "))
+  n = int(input("명령 수: "))
+solution: |
+  class Locker:
+      def __init__(self, password):
+          self.__password = password
+          self.__fails = 0
+
+      def is_locked(self):
+          return self.__fails >= 3
+
+      def get_fails(self):
+          return self.__fails
+
+      def open(self, password):
+          if self.is_locked():
+              return False
+          if password == self.__password:
+              self.__fails = 0
+              return True
+          self.__fails += 1
+          return False
+
+      def change(self, old, new):
+          if self.is_locked() or old != self.__password:
+              return False
+          if len(new) != 4 or not new.isdigit():
+              return False
+          self.__password = new
+          return True
+
+
+  locker = Locker(input("처음 비밀번호: "))
+  n = int(input("명령 수: "))
+  for _ in range(n):
+      parts = input("명령: ").split()
+      if parts[0] == "열기":
+          if locker.is_locked():
+              print("잠긴 사물함입니다.")
+          elif locker.open(parts[1]):
+              print("열렸습니다.")
+          else:
+              print(f"비밀번호가 틀렸습니다. (연속 {locker.get_fails()}회)")
+              if locker.is_locked():
+                  print("사물함이 잠겼습니다.")
+      else:
+          if locker.change(parts[1], parts[2]):
+              print("비밀번호를 바꿨습니다.")
+          else:
+              print("비밀번호를 바꾸지 못했습니다.")
+alt_solutions:
+- |
+  class Locker:
+      def __init__(self, password):
+          self.__password = password
+          self.__fails = 0
+
+      def is_locked(self):
+          return not self.__fails < 3
+
+      def get_fails(self):
+          return self.__fails
+
+      def open(self, password):
+          if self.__fails >= 3:
+              return False
+          ok = password == self.__password
+          self.__fails = 0 if ok else self.__fails + 1
+          return ok
+
+      def change(self, old, new):
+          valid = len(new) == 4 and new.isdigit()
+          if not self.is_locked() and old == self.__password and valid:
+              self.__password = new
+              return True
+          return False
+
+
+  locker = Locker(input("처음 비밀번호: "))
+  for _ in range(int(input("명령 수: "))):
+      cmd = input("명령: ").split()
+      if cmd[0] == "변경":
+          print("비밀번호를 바꿨습니다." if locker.change(cmd[1], cmd[2]) else "비밀번호를 바꾸지 못했습니다.")
+          continue
+      if locker.is_locked():
+          print("잠긴 사물함입니다.")
+          continue
+      if locker.open(cmd[1]):
+          print("열렸습니다.")
+      else:
+          print("비밀번호가 틀렸습니다. (연속 " + str(locker.get_fails()) + "회)")
+          if locker.is_locked():
+              print("사물함이 잠겼습니다.")
+mutants:
+- name: 성공해도 실패 횟수를 되돌리지 않음
+  code: |
+    class Locker:
+        def __init__(self, password):
+            self.__password = password
+            self.__fails = 0
+
+        def is_locked(self):
+            return self.__fails >= 3
+
+        def get_fails(self):
+            return self.__fails
+
+        def open(self, password):
+            if self.is_locked():
+                return False
+            if password == self.__password:
+                return True
+            self.__fails += 1
+            return False
+
+        def change(self, old, new):
+            if self.is_locked() or old != self.__password:
+                return False
+            if len(new) != 4 or not new.isdigit():
+                return False
+            self.__password = new
+            return True
+
+
+    locker = Locker(input("처음 비밀번호: "))
+    n = int(input("명령 수: "))
+    for _ in range(n):
+        parts = input("명령: ").split()
+        if parts[0] == "열기":
+            if locker.is_locked():
+                print("잠긴 사물함입니다.")
+            elif locker.open(parts[1]):
+                print("열렸습니다.")
+            else:
+                print(f"비밀번호가 틀렸습니다. (연속 {locker.get_fails()}회)")
+                if locker.is_locked():
+                    print("사물함이 잠겼습니다.")
+        else:
+            if locker.change(parts[1], parts[2]):
+                print("비밀번호를 바꿨습니다.")
+            else:
+                print("비밀번호를 바꾸지 못했습니다.")
+- name: 4번 틀려야 잠김 (> 3)
+  code: |
+    class Locker:
+        def __init__(self, password):
+            self.__password = password
+            self.__fails = 0
+
+        def is_locked(self):
+            return self.__fails > 3
+
+        def get_fails(self):
+            return self.__fails
+
+        def open(self, password):
+            if self.is_locked():
+                return False
+            if password == self.__password:
+                self.__fails = 0
+                return True
+            self.__fails += 1
+            return False
+
+        def change(self, old, new):
+            if self.is_locked() or old != self.__password:
+                return False
+            if len(new) != 4 or not new.isdigit():
+                return False
+            self.__password = new
+            return True
+
+
+    locker = Locker(input("처음 비밀번호: "))
+    n = int(input("명령 수: "))
+    for _ in range(n):
+        parts = input("명령: ").split()
+        if parts[0] == "열기":
+            if locker.is_locked():
+                print("잠긴 사물함입니다.")
+            elif locker.open(parts[1]):
+                print("열렸습니다.")
+            else:
+                print(f"비밀번호가 틀렸습니다. (연속 {locker.get_fails()}회)")
+                if locker.is_locked():
+                    print("사물함이 잠겼습니다.")
+        else:
+            if locker.change(parts[1], parts[2]):
+                print("비밀번호를 바꿨습니다.")
+            else:
+                print("비밀번호를 바꾸지 못했습니다.")
+tests:
+- stdin: "1234\n6\n열기 1111\n열기 1234\n열기 0000\n변경 1234 5678\n열기 1234\n열기 5678\n"
+  public: true
+- stdin: "0000\n5\n열기 1\n열기 2\n열기 3\n열기 0000\n변경 0000 1111\n"
+  note: 세 번 틀려 잠김
+- stdin: "4321\n5\n열기 1\n열기 2\n열기 4321\n열기 3\n열기 4321\n"
+  note: 성공하면 연속 실패가 초기화
+- stdin: "9999\n4\n변경 9999 12a4\n변경 9999 123\n변경 1111 2222\n변경 9999 0007\n"
+hints:
+- 연속 실패는 `open()`이 성공할 때 0으로 되돌립니다.
+- 잠김 여부는 매번 `__fails`를 직접 보지 말고 `is_locked()`를 통해 확인하세요.
+explanation: |
+  객체가 '상태'(연속 실패 횟수)를 기억하고, 그 상태에 따라 같은 메서드가 다르게 동작합니다. 상태를 바꾸는 규칙(실패 시 +1, 성공 시 0)을 클래스 안에 모아 두면 바깥 코드가 규칙을 어길 수 없습니다.

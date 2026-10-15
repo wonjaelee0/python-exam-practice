@@ -1,0 +1,218 @@
+id: core3-09-student-card
+title: '[3주차 응용4] 상속으로 학생 할인 결제 더하기'
+unit: core3
+difficulty: 3
+tags:
+- core.w3
+- class.inheritance
+statement: |
+  > 컴퓨팅 핵심 3주차 도전문제 4(상속으로 보고서 인쇄 기능 더하기)를 응용한 문제입니다.
+
+  잔액을 관리하는 `TransitCard`(완성 코드 제공)를 상속받는 `StudentCard`를 만들고, 학생 할인 요금으로 결제하는 기능을 더하시오.
+
+  | 항목 | 역할 |
+  |---|---|
+  | `StudentCard(TransitCard)` | 부모의 `__init__`, `get_balance()`, `pay()`를 물려받는다 |
+  | `student_fare(fare)` | 학생 요금(`fare * 80 // 100`)을 반환 |
+  | `pay_student(fare)` | 학생 요금을 구해 물려받은 `pay()`에 전달하고, **그 반환값을 그대로 반환** |
+
+  명령 (첫 줄에 명령 수, 다음 줄부터 한 줄씩):
+
+  - `일반 1250`: 부모의 `pay(1250)` → `일반 1250원 결제 성공 | 잔액 8750원` (실패면 `결제 실패`)
+  - `학생 1250`: `pay_student(1250)` → `학생 1000원 결제 성공 | 잔액 7750원` (학생 요금을 출력, 실패면 `결제 실패`)
+
+  - 입력 프롬프트: `이름: `, `처음 잔액: `, `명령 수: `, 명령마다 `명령: `
+  - 자식 클래스는 `__balance`를 직접 다루지 않는다. 카드 객체는 반복문 앞에서 한 번만 만든다.
+starter: |
+  class TransitCard:
+      def __init__(self, name, balance):
+          self.name = name
+          self.__balance = balance
+
+      def get_balance(self):
+          return self.__balance
+
+      def pay(self, amount):
+          if 1 <= amount <= self.__balance:
+              self.__balance -= amount
+              return True
+          return False
+
+
+  class StudentCard(TransitCard):
+      def student_fare(self, fare):
+          pass
+
+      def pay_student(self, fare):
+          pass
+
+
+  name = input("이름: ")
+  balance = int(input("처음 잔액: "))
+solution: |
+  class TransitCard:
+      def __init__(self, name, balance):
+          self.name = name
+          self.__balance = balance
+
+      def get_balance(self):
+          return self.__balance
+
+      def pay(self, amount):
+          if 1 <= amount <= self.__balance:
+              self.__balance -= amount
+              return True
+          return False
+
+
+  class StudentCard(TransitCard):
+      def student_fare(self, fare):
+          return fare * 80 // 100
+
+      def pay_student(self, fare):
+          return self.pay(self.student_fare(fare))
+
+
+  name = input("이름: ")
+  balance = int(input("처음 잔액: "))
+  card = StudentCard(name, balance)
+  n = int(input("명령 수: "))
+  for _ in range(n):
+      kind, fare = input("명령: ").split()
+      fare = int(fare)
+      if kind == "학생":
+          amount = card.student_fare(fare)
+          ok = card.pay_student(fare)
+      else:
+          amount = fare
+          ok = card.pay(fare)
+      result = "성공" if ok else "실패"
+      print(f"{kind} {amount}원 결제 {result} | 잔액 {card.get_balance()}원")
+alt_solutions:
+- |
+  class TransitCard:
+      def __init__(self, name, balance):
+          self.name = name
+          self.__balance = balance
+
+      def get_balance(self):
+          return self.__balance
+
+      def pay(self, amount):
+          if 1 <= amount <= self.__balance:
+              self.__balance -= amount
+              return True
+          return False
+
+
+  class StudentCard(TransitCard):
+      def student_fare(self, fare):
+          return fare - fare * 20 // 100 if fare * 20 % 100 == 0 else fare * 80 // 100
+
+      def pay_student(self, fare):
+          success = self.pay(self.student_fare(fare))
+          return success
+
+
+  card = StudentCard(input("이름: "), int(input("처음 잔액: ")))
+  for _ in range(int(input("명령 수: "))):
+      parts = input("명령: ").split()
+      fare = int(parts[1])
+      if parts[0] == "학생":
+          shown, ok = card.student_fare(fare), card.pay_student(fare)
+      else:
+          shown, ok = fare, card.pay(fare)
+      print(parts[0], str(shown) + "원 결제", ("성공" if ok else "실패"), "| 잔액 " + str(card.get_balance()) + "원")
+mutants:
+- name: pay_student가 결과를 반환하지 않음
+  code: |
+    class TransitCard:
+        def __init__(self, name, balance):
+            self.name = name
+            self.__balance = balance
+
+        def get_balance(self):
+            return self.__balance
+
+        def pay(self, amount):
+            if 1 <= amount <= self.__balance:
+                self.__balance -= amount
+                return True
+            return False
+
+
+    class StudentCard(TransitCard):
+        def student_fare(self, fare):
+            return fare * 80 // 100
+
+        def pay_student(self, fare):
+            self.pay(self.student_fare(fare))
+
+
+    name = input("이름: ")
+    balance = int(input("처음 잔액: "))
+    card = StudentCard(name, balance)
+    n = int(input("명령 수: "))
+    for _ in range(n):
+        kind, fare = input("명령: ").split()
+        fare = int(fare)
+        if kind == "학생":
+            amount = card.student_fare(fare)
+            ok = card.pay_student(fare)
+        else:
+            amount = fare
+            ok = card.pay(fare)
+        result = "성공" if ok else "실패"
+        print(f"{kind} {amount}원 결제 {result} | 잔액 {card.get_balance()}원")
+- name: 할인 요금을 0.8로 곱함 (실수)
+  code: |
+    class TransitCard:
+        def __init__(self, name, balance):
+            self.name = name
+            self.__balance = balance
+
+        def get_balance(self):
+            return self.__balance
+
+        def pay(self, amount):
+            if 1 <= amount <= self.__balance:
+                self.__balance -= amount
+                return True
+            return False
+
+
+    class StudentCard(TransitCard):
+        def student_fare(self, fare):
+            return fare * 0.8
+
+        def pay_student(self, fare):
+            return self.pay(self.student_fare(fare))
+
+
+    name = input("이름: ")
+    balance = int(input("처음 잔액: "))
+    card = StudentCard(name, balance)
+    n = int(input("명령 수: "))
+    for _ in range(n):
+        kind, fare = input("명령: ").split()
+        fare = int(fare)
+        if kind == "학생":
+            amount = card.student_fare(fare)
+            ok = card.pay_student(fare)
+        else:
+            amount = fare
+            ok = card.pay(fare)
+        result = "성공" if ok else "실패"
+        print(f"{kind} {amount}원 결제 {result} | 잔액 {card.get_balance()}원")
+tests:
+- stdin: "민지\n10000\n3\n일반 1250\n학생 1250\n학생 9000\n"
+  public: true
+- stdin: "a\n1000\n2\n학생 1250\n학생 1\n"
+- stdin: "b\n800\n2\n일반 1000\n학생 1001\n"
+  note: 800원을 정확히 사용
+- stdin: "c\n0\n1\n일반 1\n"
+hints:
+- 자식 메서드에서 `self.pay(...)`로 부모의 기능을 씁니다. `self`는 지금의 학생 카드 객체입니다.
+- '`return`을 빠뜨리면 메서드는 `None`을 반환합니다.'
+explanation: |
+  상속을 쓰면 잔액 검사·차감 규칙(`pay`)을 다시 쓰지 않고 할인 계산만 더할 수 있습니다. 자식은 부모의 비공개 속성 `__balance`를 직접 건드리지 않고 물려받은 메서드로만 다룹니다.

@@ -1,0 +1,195 @@
+id: core6-10-stable-vs-unstable
+title: '[6주차 응용5] 선택 정렬과 삽입 정렬의 안정성 비교'
+unit: core6
+difficulty: 4
+tags:
+- core.w6
+- sort.stable
+- sort.selection
+- sort.insertion
+statement: |
+  > 컴퓨팅 핵심 6주차 추가문제 1(사진 공모전 전시작 선정)을 응용한 문제입니다.
+
+  같은 참가자 기록을 **점수 내림차순**으로 선택 정렬과 삽입 정렬로 각각 정렬해 결과를 비교하시오.
+
+  | 함수 | 역할 |
+  |---|---|
+  | `selection_desc(records)` | 회차마다 남은 부분에서 점수가 가장 큰 기록(같으면 가장 앞의 것, `>` 비교)을 찾아 현재 자리와 교환 (같은 자리면 그대로) |
+  | `insertion_desc(records)` | key보다 점수가 **작은** 기록만 오른쪽으로 옮기는 삽입 정렬 |
+
+  - 두 함수에는 원본의 서로 다른 복사본(`records[:]`)을 넘긴다. `sort()`, `sorted()`를 쓰지 않는다.
+  - 입력 프롬프트: `참가자 수: `, 참가자마다 `이름과 점수: `
+  - 출력 (세 줄): `선택 정렬: 서연 95, 지우 80, 민수 80`, `삽입 정렬: 서연 95, 민수 80, 지우 80`, 마지막 줄 `두 결과가 같습니다.` 또는 `두 결과가 다릅니다.`
+  - 조건: 참가자는 1명 이상 8명 이하, 이름은 서로 다르고 공백이 없다.
+starter: |
+  def selection_desc(records):
+      pass
+
+
+  def insertion_desc(records):
+      pass
+
+
+  n = int(input("참가자 수: "))
+  records = []
+  for _ in range(n):
+      name, score = input("이름과 점수: ").split()
+      records.append((name, int(score)))
+solution: |
+  def selection_desc(records):
+      n = len(records)
+      for i in range(n - 1):
+          max_index = i
+          for j in range(i + 1, n):
+              if records[j][1] > records[max_index][1]:
+                  max_index = j
+          records[i], records[max_index] = records[max_index], records[i]
+
+
+  def insertion_desc(records):
+      for i in range(1, len(records)):
+          key = records[i]
+          j = i - 1
+          while j >= 0 and records[j][1] < key[1]:
+              records[j + 1] = records[j]
+              j -= 1
+          records[j + 1] = key
+
+
+  n = int(input("참가자 수: "))
+  records = []
+  for _ in range(n):
+      name, score = input("이름과 점수: ").split()
+      records.append((name, int(score)))
+  a = records[:]
+  b = records[:]
+  selection_desc(a)
+  insertion_desc(b)
+  print("선택 정렬: " + ", ".join(f"{name} {score}" for name, score in a))
+  print("삽입 정렬: " + ", ".join(f"{name} {score}" for name, score in b))
+  if a == b:
+      print("두 결과가 같습니다.")
+  else:
+      print("두 결과가 다릅니다.")
+alt_solutions:
+- |
+  def selection_desc(records):
+      for i in range(len(records) - 1):
+          best = i
+          for j in range(i + 1, len(records)):
+              if records[best][1] < records[j][1]:
+                  best = j
+          if best != i:
+              records[i], records[best] = records[best], records[i]
+
+
+  def insertion_desc(records):
+      for i in range(1, len(records)):
+          j = i
+          while j > 0 and records[j - 1][1] < records[j][1]:
+              records[j - 1], records[j] = records[j], records[j - 1]
+              j -= 1
+
+
+  def show(records):
+      return ", ".join([r[0] + " " + str(r[1]) for r in records])
+
+
+  records = []
+  for _ in range(int(input("참가자 수: "))):
+      parts = input("이름과 점수: ").split()
+      records.append((parts[0], int(parts[1])))
+  a = list(records)
+  b = list(records)
+  selection_desc(a)
+  insertion_desc(b)
+  print("선택 정렬:", show(a))
+  print("삽입 정렬:", show(b))
+  print("두 결과가 " + ("같습니다." if show(a) == show(b) else "다릅니다."))
+mutants:
+- name: 선택 정렬에서 같은 점수 중 뒤의 것을 고름 (>=)
+  code: |
+    def selection_desc(records):
+        n = len(records)
+        for i in range(n - 1):
+            max_index = i
+            for j in range(i + 1, n):
+                if records[j][1] >= records[max_index][1]:
+                    max_index = j
+            records[i], records[max_index] = records[max_index], records[i]
+
+
+    def insertion_desc(records):
+        for i in range(1, len(records)):
+            key = records[i]
+            j = i - 1
+            while j >= 0 and records[j][1] < key[1]:
+                records[j + 1] = records[j]
+                j -= 1
+            records[j + 1] = key
+
+
+    n = int(input("참가자 수: "))
+    records = []
+    for _ in range(n):
+        name, score = input("이름과 점수: ").split()
+        records.append((name, int(score)))
+    a = records[:]
+    b = records[:]
+    selection_desc(a)
+    insertion_desc(b)
+    print("선택 정렬: " + ", ".join(f"{name} {score}" for name, score in a))
+    print("삽입 정렬: " + ", ".join(f"{name} {score}" for name, score in b))
+    if a == b:
+        print("두 결과가 같습니다.")
+    else:
+        print("두 결과가 다릅니다.")
+- name: 삽입 정렬에서 같은 점수도 옮김 (<=)
+  code: |
+    def selection_desc(records):
+        n = len(records)
+        for i in range(n - 1):
+            max_index = i
+            for j in range(i + 1, n):
+                if records[j][1] > records[max_index][1]:
+                    max_index = j
+            records[i], records[max_index] = records[max_index], records[i]
+
+
+    def insertion_desc(records):
+        for i in range(1, len(records)):
+            key = records[i]
+            j = i - 1
+            while j >= 0 and records[j][1] <= key[1]:
+                records[j + 1] = records[j]
+                j -= 1
+            records[j + 1] = key
+
+
+    n = int(input("참가자 수: "))
+    records = []
+    for _ in range(n):
+        name, score = input("이름과 점수: ").split()
+        records.append((name, int(score)))
+    a = records[:]
+    b = records[:]
+    selection_desc(a)
+    insertion_desc(b)
+    print("선택 정렬: " + ", ".join(f"{name} {score}" for name, score in a))
+    print("삽입 정렬: " + ", ".join(f"{name} {score}" for name, score in b))
+    if a == b:
+        print("두 결과가 같습니다.")
+    else:
+        print("두 결과가 다릅니다.")
+tests:
+- stdin: "3\n민수 80\n지우 80\n서연 95\n"
+  public: true
+- stdin: "1\n혼자 50\n"
+- stdin: "3\na 10\nb 20\nc 30\n"
+- stdin: "4\np 70\nq 90\nr 70\ns 90\n"
+- stdin: "3\nx 5\ny 5\nz 5\n"
+hints:
+- 선택 정렬은 멀리 떨어진 두 기록을 교환하므로, 같은 점수끼리의 순서가 바뀔 수 있습니다.
+explanation: |
+  삽입 정렬(엄격 비교)은 안정 정렬이고, 교환을 하는 선택 정렬은 안정 정렬이 아닙니다. 첫 예시에서 맨 뒤의 95점을 맨 앞과 교환하면서 민수가 지우 뒤로 밀려납니다.
+  동점자의 순서가 중요할 때(먼저 접수한 사람 우선 등)는 안정 정렬을 골라야 합니다.

@@ -1,0 +1,133 @@
+id: core4-06-list-sum-max
+title: '[4주차 응용1] 재귀로 리스트의 합과 최댓값'
+unit: core4
+difficulty: 2
+tags:
+- core.w4
+- recursion.list
+statement: |
+  > 컴퓨팅 핵심 4주차 도전문제 1(물품 코드의 확인 숫자)과 도전문제 2(대여 물품 반납 안내)를 응용한 문제입니다.
+
+  정수 리스트의 합과 최댓값을 **재귀 함수**로 구하시오.
+
+  | 함수 | 역할 |
+  |---|---|
+  | `list_sum(nums)` | 리스트의 합을 반환. 빈 리스트의 합은 0 |
+  | `list_max(nums)` | 원소가 1개 이상인 리스트의 최댓값을 반환 |
+
+  - 반복문, `sum()`, `max()`, `sorted()`를 쓰지 않는다. `nums[0]`과 `nums[1:]`로 문제를 줄여 나간다.
+  - 입력 프롬프트: `정수들(공백 구분): ` (빈 줄일 수 있음)
+  - 출력: `합계: 12`, `최댓값: 7`. 빈 입력이면 `숫자가 없습니다.` 한 줄만 출력한다.
+  - 조건: 정수는 0개 이상 50개 이하이며 음수일 수 있다.
+starter: |
+  def list_sum(nums):
+      pass
+
+
+  def list_max(nums):
+      pass
+
+
+  nums = list(map(int, input("정수들(공백 구분): ").split()))
+solution: |
+  def list_sum(nums):
+      if not nums:
+          return 0
+      return nums[0] + list_sum(nums[1:])
+
+
+  def list_max(nums):
+      if len(nums) == 1:
+          return nums[0]
+      rest = list_max(nums[1:])
+      if nums[0] > rest:
+          return nums[0]
+      return rest
+
+
+  nums = list(map(int, input("정수들(공백 구분): ").split()))
+  if not nums:
+      print("숫자가 없습니다.")
+  else:
+      print(f"합계: {list_sum(nums)}")
+      print(f"최댓값: {list_max(nums)}")
+alt_solutions:
+- |
+  def list_sum(nums):
+      return 0 if len(nums) == 0 else list_sum(nums[:-1]) + nums[-1]
+
+
+  def list_max(nums):
+      if len(nums) == 1:
+          return nums[0]
+      first = nums[0]
+      other = list_max(nums[1:])
+      return first if first >= other else other
+
+
+  nums = [int(x) for x in input("정수들(공백 구분): ").split()]
+  if len(nums) == 0:
+      print("숫자가 없습니다.")
+  else:
+      print("합계:", list_sum(nums))
+      print("최댓값:", list_max(nums))
+mutants:
+- name: 최댓값의 종료 조건을 빈 리스트 → 0으로 둠
+  code: |
+    def list_sum(nums):
+        if not nums:
+            return 0
+        return nums[0] + list_sum(nums[1:])
+
+
+    def list_max(nums):
+        if not nums:
+            return 0
+        rest = list_max(nums[1:])
+        if nums[0] > rest:
+            return nums[0]
+        return rest
+
+
+    nums = list(map(int, input("정수들(공백 구분): ").split()))
+    if not nums:
+        print("숫자가 없습니다.")
+    else:
+        print(f"합계: {list_sum(nums)}")
+        print(f"최댓값: {list_max(nums)}")
+- name: 합계의 종료 조건에서 마지막 원소를 버림
+  code: |
+    def list_sum(nums):
+        if len(nums) <= 1:
+            return 0
+        return nums[0] + list_sum(nums[1:])
+
+
+    def list_max(nums):
+        if len(nums) == 1:
+            return nums[0]
+        rest = list_max(nums[1:])
+        if nums[0] > rest:
+            return nums[0]
+        return rest
+
+
+    nums = list(map(int, input("정수들(공백 구분): ").split()))
+    if not nums:
+        print("숫자가 없습니다.")
+    else:
+        print(f"합계: {list_sum(nums)}")
+        print(f"최댓값: {list_max(nums)}")
+tests:
+- stdin: "3 7 -2 4\n"
+  public: true
+- stdin: "\n"
+  note: 빈 입력
+- stdin: "-5 -2 -9\n"
+- stdin: "42\n"
+- stdin: "1 2 3 4 5 6 7 8 9 10\n"
+hints:
+- '합계: ''첫 원소 + 나머지의 합''. 최댓값: ''첫 원소와 나머지의 최댓값 중 큰 것''.'
+- 최댓값은 빈 리스트에서 정의되지 않으므로 종료 조건을 원소 1개로 둡니다.
+explanation: |
+  최댓값의 종료 조건을 '빈 리스트면 0'으로 두면 모든 값이 음수일 때 0이 답이 되는 오류가 생깁니다. 종료 조건은 문제의 정의에 맞는 가장 작은 경우로 정해야 합니다.

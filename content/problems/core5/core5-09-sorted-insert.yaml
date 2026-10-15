@@ -1,0 +1,257 @@
+id: core5-09-sorted-insert
+title: '[5주차 응용4] 정렬된 연결 리스트에 끼워 넣기'
+unit: core5
+difficulty: 4
+tags:
+- core.w5
+- linked_list
+statement: |
+  > 컴퓨팅 핵심 5주차 도전문제 4(캠퍼스 안내 경로에 방문지 추가하기)를 응용한 문제입니다.
+
+  오름차순으로 연결된 정수 연결 리스트에 새 값을 하나씩 끼워 넣어도 **오름차순이 유지**되게 하시오.
+
+  | 항목 | 역할 |
+  |---|---|
+  | `Node`, `make_list(values)` | 노드 클래스와 초기 리스트 만들기 (제공) |
+  | `insert_sorted(head, value)` | 값이 들어갈 자리를 next를 따라 찾아 새 노드를 연결하고 **새 head**를 반환. 같은 값이 있으면 그 값들 **뒤에** 넣는다 |
+  | `to_list(head)` | next를 따라가며 값을 모은 파이썬 리스트를 반환 |
+
+  - 맨 앞(head보다 작은 값)이나 빈 리스트에 넣을 때 head가 바뀐다.
+  - 탐색과 삽입은 next를 따라 수행한다. 파이썬 리스트로 바꿔 `insert()`나 `sort()`로 고치지 않는다. 함수 안에서는 출력하지 않는다.
+  - 입력 프롬프트: `정렬된 초기 값(공백 구분): `, `추가할 값(공백 구분): ` (둘 다 빈 줄일 수 있음)
+  - 출력: `1 -> 3 -> 4 -> 7`, 다음 줄 `노드 수: 4개`. 비어 있으면 `리스트가 비어 있습니다.`와 `노드 수: 0개`
+starter: |
+  class Node:
+      def __init__(self, data):
+          self.data = data
+          self.next = None
+
+
+  def make_list(values):
+      head = None
+      for value in reversed(values):
+          node = Node(value)
+          node.next = head
+          head = node
+      return head
+
+
+  def insert_sorted(head, value):
+      pass
+
+
+  def to_list(head):
+      pass
+
+
+  initial = list(map(int, input("정렬된 초기 값(공백 구분): ").split()))
+  adds = list(map(int, input("추가할 값(공백 구분): ").split()))
+  head = make_list(initial)
+solution: |
+  class Node:
+      def __init__(self, data):
+          self.data = data
+          self.next = None
+
+
+  def make_list(values):
+      head = None
+      for value in reversed(values):
+          node = Node(value)
+          node.next = head
+          head = node
+      return head
+
+
+  def insert_sorted(head, value):
+      new_node = Node(value)
+      if head is None or value < head.data:
+          new_node.next = head
+          return new_node
+      current = head
+      while current.next is not None and current.next.data <= value:
+          current = current.next
+      new_node.next = current.next
+      current.next = new_node
+      return head
+
+
+  def to_list(head):
+      result = []
+      current = head
+      while current is not None:
+          result.append(current.data)
+          current = current.next
+      return result
+
+
+  initial = list(map(int, input("정렬된 초기 값(공백 구분): ").split()))
+  adds = list(map(int, input("추가할 값(공백 구분): ").split()))
+  head = make_list(initial)
+  for value in adds:
+      head = insert_sorted(head, value)
+  values = to_list(head)
+  if values:
+      print(" -> ".join(str(v) for v in values))
+  else:
+      print("리스트가 비어 있습니다.")
+  print(f"노드 수: {len(values)}개")
+alt_solutions:
+- |
+  class Node:
+      def __init__(self, data):
+          self.data = data
+          self.next = None
+
+
+  def make_list(values):
+      head = None
+      for value in reversed(values):
+          node = Node(value)
+          node.next = head
+          head = node
+      return head
+
+
+  def insert_sorted(head, value):
+      prev = None
+      current = head
+      while current is not None and current.data <= value:
+          prev = current
+          current = current.next
+      node = Node(value)
+      node.next = current
+      if prev is None:
+          return node
+      prev.next = node
+      return head
+
+
+  def to_list(head):
+      if head is None:
+          return []
+      return [head.data] + to_list(head.next)
+
+
+  head = make_list([int(x) for x in input("정렬된 초기 값(공백 구분): ").split()])
+  for v in [int(x) for x in input("추가할 값(공백 구분): ").split()]:
+      head = insert_sorted(head, v)
+  out = to_list(head)
+  print(" -> ".join(map(str, out)) if out else "리스트가 비어 있습니다.")
+  print("노드 수: " + str(len(out)) + "개")
+mutants:
+- name: 새 노드 뒤를 연결하지 않음
+  code: |
+    class Node:
+        def __init__(self, data):
+            self.data = data
+            self.next = None
+
+
+    def make_list(values):
+        head = None
+        for value in reversed(values):
+            node = Node(value)
+            node.next = head
+            head = node
+        return head
+
+
+    def insert_sorted(head, value):
+        new_node = Node(value)
+        if head is None or value < head.data:
+            new_node.next = head
+            return new_node
+        current = head
+        while current.next is not None and current.next.data <= value:
+            current = current.next
+        current.next = new_node
+        return head
+
+
+    def to_list(head):
+        result = []
+        current = head
+        while current is not None:
+            result.append(current.data)
+            current = current.next
+        return result
+
+
+    initial = list(map(int, input("정렬된 초기 값(공백 구분): ").split()))
+    adds = list(map(int, input("추가할 값(공백 구분): ").split()))
+    head = make_list(initial)
+    for value in adds:
+        head = insert_sorted(head, value)
+    values = to_list(head)
+    if values:
+        print(" -> ".join(str(v) for v in values))
+    else:
+        print("리스트가 비어 있습니다.")
+    print(f"노드 수: {len(values)}개")
+- name: 맨 앞에 넣고 옛 head를 반환
+  code: |
+    class Node:
+        def __init__(self, data):
+            self.data = data
+            self.next = None
+
+
+    def make_list(values):
+        head = None
+        for value in reversed(values):
+            node = Node(value)
+            node.next = head
+            head = node
+        return head
+
+
+    def insert_sorted(head, value):
+        new_node = Node(value)
+        if head is None or value < head.data:
+            new_node.next = head
+            return head
+        current = head
+        while current.next is not None and current.next.data <= value:
+            current = current.next
+        new_node.next = current.next
+        current.next = new_node
+        return head
+
+
+    def to_list(head):
+        result = []
+        current = head
+        while current is not None:
+            result.append(current.data)
+            current = current.next
+        return result
+
+
+    initial = list(map(int, input("정렬된 초기 값(공백 구분): ").split()))
+    adds = list(map(int, input("추가할 값(공백 구분): ").split()))
+    head = make_list(initial)
+    for value in adds:
+        head = insert_sorted(head, value)
+    values = to_list(head)
+    if values:
+        print(" -> ".join(str(v) for v in values))
+    else:
+        print("리스트가 비어 있습니다.")
+    print(f"노드 수: {len(values)}개")
+tests:
+- stdin: "1 3 7\n4\n"
+  public: true
+- stdin: "2 5\n1 9 5\n"
+- stdin: "\n3 1 2\n"
+  note: 빈 리스트에서 시작
+- stdin: "\n\n"
+  note: 모두 빈 줄
+- stdin: "10 20 30\n40 0 25\n"
+- stdin: "4 4\n4\n"
+hints:
+- '`current.next.data <= value`인 동안 앞으로 가면 같은 값들 뒤에 자리를 잡습니다.'
+- 새 노드를 연결할 때는 `new_node.next = current.next`를 **먼저** 해야 뒤쪽을 잃어버리지 않습니다.
+explanation: |
+  연결 순서가 중요합니다. `current.next = new_node`를 먼저 하면 원래 뒤에 있던 노드들의 위치를 잃어버립니다.
+  head 앞에 넣는 경우에는 반환한 새 head를 받아 다시 저장해야 합니다 (`head = insert_sorted(head, value)`).

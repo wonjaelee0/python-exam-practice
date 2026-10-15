@@ -1,0 +1,122 @@
+id: core6-06-selection-trace
+title: '[6주차 응용1] 선택 정렬 교환 기록 (이름 가나다순)'
+unit: core6
+difficulty: 3
+tags:
+- core.w6
+- sort.selection
+- str.compare
+statement: |
+  > 컴퓨팅 핵심 6주차 도전문제 2(축제 부스 점수 정리)를 응용한 문제입니다.
+
+  이름들을 **가나다순(문자열 오름차순)** 으로 선택 정렬하면서, 회차마다 어떤 두 이름을 교환했는지 기록하시오.
+
+  | 함수 | 역할 |
+  |---|---|
+  | `selection_sort(names)` | 리스트 자체를 오름차순 정렬. 회차마다 교환하면 `1회차: 민수 <-> 가영`, 교환하지 않으면 `1회차: 교환 없음`을 출력 |
+
+  - i번째 회차에는 i번 자리부터 끝까지에서 가장 앞서는 이름의 위치를 찾는다. 같은 이름이 여러 개면 **가장 앞의 것**을 고른다 (`<` 비교).
+  - 교환 기록은 **교환하기 전의** `i번 자리 이름 <-> 찾은 이름` 순서로 적는다.
+  - 바깥 반복은 `n - 1`번. `sort()`, `sorted()`, `min()`을 쓰지 않는다.
+  - 입력 프롬프트: `이름(공백 구분): `
+  - 출력: 회차 기록 다음 줄에 `결과: 가영 나래 민수`
+  - 조건: 이름은 1개 이상 8개 이하, 공백이 없고 같은 이름이 있을 수 있다.
+starter: |
+  def selection_sort(names):
+      pass
+
+
+  names = input("이름(공백 구분): ").split()
+  selection_sort(names)
+  print("결과: " + " ".join(names))
+solution: |
+  def selection_sort(names):
+      n = len(names)
+      for i in range(n - 1):
+          min_index = i
+          for j in range(i + 1, n):
+              if names[j] < names[min_index]:
+                  min_index = j
+          if min_index != i:
+              print(f"{i + 1}회차: {names[i]} <-> {names[min_index]}")
+              names[i], names[min_index] = names[min_index], names[i]
+          else:
+              print(f"{i + 1}회차: 교환 없음")
+
+
+  names = input("이름(공백 구분): ").split()
+  selection_sort(names)
+  print("결과: " + " ".join(names))
+alt_solutions:
+- |
+  def selection_sort(names):
+      for i in range(len(names) - 1):
+          best = i
+          for j in range(i + 1, len(names)):
+              if names[best] > names[j]:
+                  best = j
+          if best == i:
+              print(str(i + 1) + "회차: 교환 없음")
+              continue
+          before, found = names[i], names[best]
+          names[i] = found
+          names[best] = before
+          print(str(i + 1) + "회차: " + before + " <-> " + found)
+
+
+  names = input("이름(공백 구분): ").split()
+  selection_sort(names)
+  print("결과:", " ".join(names))
+mutants:
+- name: 교환한 뒤에 기록함
+  code: |
+    def selection_sort(names):
+        n = len(names)
+        for i in range(n - 1):
+            min_index = i
+            for j in range(i + 1, n):
+                if names[j] < names[min_index]:
+                    min_index = j
+            if min_index != i:
+                names[i], names[min_index] = names[min_index], names[i]
+                print(f"{i + 1}회차: {names[i]} <-> {names[min_index]}")
+            else:
+                print(f"{i + 1}회차: 교환 없음")
+
+
+    names = input("이름(공백 구분): ").split()
+    selection_sort(names)
+    print("결과: " + " ".join(names))
+- name: 같은 이름 중 뒤의 것을 고름 (<=)
+  code: |
+    def selection_sort(names):
+        n = len(names)
+        for i in range(n - 1):
+            min_index = i
+            for j in range(i + 1, n):
+                if names[j] <= names[min_index]:
+                    min_index = j
+            if min_index != i:
+                print(f"{i + 1}회차: {names[i]} <-> {names[min_index]}")
+                names[i], names[min_index] = names[min_index], names[i]
+            else:
+                print(f"{i + 1}회차: 교환 없음")
+
+
+    names = input("이름(공백 구분): ").split()
+    selection_sort(names)
+    print("결과: " + " ".join(names))
+tests:
+- stdin: "민수 가영 나래\n"
+  public: true
+- stdin: "가 나 다\n"
+- stdin: "민수 가영 민수\n"
+  note: 같은 이름
+- stdin: "하늘\n"
+- stdin: "d c b a\n"
+- stdin: "b a b a\n"
+hints:
+- 교환 기록을 먼저 출력한 뒤 교환해야 '교환 전' 이름이 나옵니다.
+- 문자열도 `<`로 비교할 수 있습니다 (사전 순서).
+explanation: |
+  선택 정렬은 회차마다 최대 한 번 교환합니다. `<=`로 비교하면 같은 값 중 뒤의 것을 골라 같은 이름끼리 쓸데없이 교환하게 됩니다.

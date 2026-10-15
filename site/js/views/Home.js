@@ -39,7 +39,7 @@ export function Home({ manifest, route }) {
         </div>
       </div>
       <div class="hero-stats">
-        <div class="stat"><b>${d == null ? '미정' : d > 0 ? 'D-' + d : d === 0 ? 'D-DAY' : '시험 끝'}</b><span>${course.examLabel} ${course.examDate || '일정'}</span></div>
+        ${d == null ? null : html`<div class="stat"><b>${d > 0 ? 'D-' + d : d === 0 ? 'D-DAY' : '시험 끝'}</b><span>${course.examLabel} ${course.examDate}</span></div>`}
         <div class="stat"><b>${solved} / ${total}</b><span>맞힌 문제</span></div>
       </div>
     </section>
