@@ -1,0 +1,50 @@
+id: lab-w6-05-exchange
+title: "[6주차 1번] 통화별 환전 금액"
+unit: lab
+difficulty: 2
+tags: [lab.w6, dict.iterate, builtin.round]
+statement: |
+  > 엘리스 6주차 실습 1번(행성별 몸무게)과 같은 유형입니다.
+
+  원화 금액을 입력받아 통화별 환전 금액을 출력하시오. 환율 딕셔너리 `rates`(1원당 금액)는 시작 코드에 있다.
+
+  - 환전 금액 = `round(원화 금액 * 환율, 2)` (소수 둘째 자리 반올림, 그대로 출력)
+  - 입력 프롬프트: `원화 금액: `
+  - 출력: 딕셔너리 순서대로 `USD: 72.0` 형식
+starter: |
+  rates = {"USD": 0.00072, "JPY": 0.11, "EUR": 0.00066, "CNY": 0.0052, "VND": 18.5}
+solution: |
+  rates = {"USD": 0.00072, "JPY": 0.11, "EUR": 0.00066, "CNY": 0.0052, "VND": 18.5}
+  won = int(input("원화 금액: "))
+  for code in rates:
+      print(f"{code}: {round(won * rates[code], 2)}")
+alt_solutions:
+  - |
+    rates = {"USD": 0.00072, "JPY": 0.11, "EUR": 0.00066, "CNY": 0.0052, "VND": 18.5}
+    won = int(input("원화 금액: "))
+    for code, rate in rates.items():
+        value = round(won * rate, 2)
+        print(code + ":", value)
+mutants:
+  - name: 환율로 나눔
+    code: |
+      rates = {"USD": 0.00072, "JPY": 0.11, "EUR": 0.00066, "CNY": 0.0052, "VND": 18.5}
+      won = int(input("원화 금액: "))
+      for code in rates:
+          print(f"{code}: {round(won / rates[code], 2)}")
+  - name: 소수 첫째 자리까지 반올림
+    code: |
+      rates = {"USD": 0.00072, "JPY": 0.11, "EUR": 0.00066, "CNY": 0.0052, "VND": 18.5}
+      won = int(input("원화 금액: "))
+      for code in rates:
+          print(f"{code}: {round(won * rates[code], 1)}")
+tests:
+  - stdin: "100000\n"
+    public: true
+  - stdin: "12345\n"
+  - stdin: "1\n"
+  - stdin: "250000\n"
+hints:
+  - "`for code in rates:`는 키를 하나씩 꺼냅니다. 값은 `rates[code]`."
+explanation: |
+  딕셔너리를 반복하면 넣은 순서대로 키가 나옵니다. `round(x, 2)`의 결과는 실수라서 `72.0`처럼 소수점이 붙어 출력됩니다.

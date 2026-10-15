@@ -1,0 +1,62 @@
+id: lab-w6-09-filenames
+title: "[6주차 5번] 파일 이름 목록 정리"
+unit: lab
+difficulty: 2
+tags: [lab.w6, str.clean-pipeline, str.split-join]
+statement: |
+  > 엘리스 6주차 실습 5번(태그 문자열 정리하기)과 같은 유형입니다.
+
+  쉼표로 구분된 파일 이름 목록을 입력받아 아래 순서대로 정리해 출력하시오.
+
+  1. 전체 문자열의 양쪽 공백을 지운다.
+  2. 모두 소문자로 바꾼다.
+  3. 쉼표 기준으로 나눈다.
+  4. 각 이름의 양쪽 공백을 지우고, 이름 안의 공백(하나씩)은 `-`로 바꾼다.
+  5. ` / `로 이어서 출력한다.
+
+  - 입력 프롬프트: `입력: `
+  - 예: `  My Report.FINAL , data SET 1 ,Summary ` → `my-report.final / data-set-1 / summary`
+starter: |
+  raw = input("입력: ")
+solution: |
+  raw = input("입력: ")
+  parts = raw.strip().lower().split(",")
+  cleaned = []
+  for p in parts:
+      cleaned.append(p.strip().replace(" ", "-"))
+  print(" / ".join(cleaned))
+alt_solutions:
+  - |
+    raw = input("입력: ")
+    result = []
+    for name in raw.lower().split(","):
+        name = name.strip()
+        result.append("-".join(name.split(" ")))
+    print(" / ".join(result))
+mutants:
+  - name: 각 이름의 양쪽 공백을 지우지 않음
+    code: |
+      raw = input("입력: ")
+      parts = raw.strip().lower().split(",")
+      cleaned = []
+      for p in parts:
+          cleaned.append(p.replace(" ", "-"))
+      print(" / ".join(cleaned))
+  - name: 공백을 밑줄(_)로 바꿈
+    code: |
+      raw = input("입력: ")
+      parts = raw.strip().lower().split(",")
+      cleaned = []
+      for p in parts:
+          cleaned.append(p.strip().replace(" ", "_"))
+      print(" / ".join(cleaned))
+tests:
+  - stdin: "  My Report.FINAL , data SET 1 ,Summary \n"
+    public: true
+  - stdin: "A,B,C\n"
+  - stdin: "  Hello World  \n"
+  - stdin: "x , y\n"
+hints:
+  - "메서드를 이어 쓸 수 있습니다: `raw.strip().lower().split(\",\")`."
+explanation: |
+  문자열 정제는 '순서'가 중요합니다. 쉼표로 나눈 뒤 **각 조각마다** `strip()`을 해야 쉼표 옆의 공백이 `-`로 바뀌는 실수를 막을 수 있습니다.

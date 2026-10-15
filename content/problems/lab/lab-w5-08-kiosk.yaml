@@ -1,0 +1,163 @@
+id: lab-w5-08-kiosk
+title: "[5주차 추가1] 패스트푸드 키오스크 (3개 주문)"
+unit: lab
+difficulty: 3
+tags: [lab.w5, loop.while, list.pop, cond.if-elif]
+statement: |
+  > 엘리스 5주차 실습 추가 1번(물/커피 자판기)과 같은 유형입니다.
+
+  키오스크에서 **반드시 3개**를 주문해야 한다. 먼저 메뉴를 출력한다.
+
+  ```
+  ***MENU***
+  1. burger 5000
+  2. fries 2000
+  3. cola 1500
+  4. Cancel last menu
+  ***********
+  ```
+
+  주문 목록이 3개가 될 때까지 `Enter a number in the MENU: `로 입력받는다.
+
+  - 1~3: 주문 목록에 추가하고 가격을 더한 뒤 `Ordered burger.`와 빈 줄을 출력
+  - 4: 마지막 주문을 취소(목록에서 삭제, 가격 빼기)하고 `Canceled cola.`와 빈 줄을 출력. 취소할 주문이 없으면 `Nothing to cancel.`과 빈 줄
+  - 그 밖의 입력: `Wrong MENU. Enter again.` (빈 줄 없음)
+
+  3개가 되면 `Order complete.`, `The total amount is: 8500`, `The list of items ordered: ['burger', 'fries', 'cola']`를 출력한다.
+starter: |
+  names = ["burger", "fries", "cola"]
+  prices = [5000, 2000, 1500]
+solution: |
+  names = ["burger", "fries", "cola"]
+  prices = [5000, 2000, 1500]
+  print("***MENU***")
+  print("1. burger 5000")
+  print("2. fries 2000")
+  print("3. cola 1500")
+  print("4. Cancel last menu")
+  print("***********")
+  orders = []
+  total = 0
+  while len(orders) < 3:
+      choice = input("Enter a number in the MENU: ")
+      if choice in ["1", "2", "3"]:
+          idx = int(choice) - 1
+          orders.append(names[idx])
+          total += prices[idx]
+          print(f"Ordered {names[idx]}.")
+          print()
+      elif choice == "4":
+          if len(orders) == 0:
+              print("Nothing to cancel.")
+          else:
+              last = orders.pop()
+              total -= prices[names.index(last)]
+              print(f"Canceled {last}.")
+          print()
+      else:
+          print("Wrong MENU. Enter again.")
+  print("Order complete.")
+  print(f"The total amount is: {total}")
+  print(f"The list of items ordered: {orders}")
+alt_solutions:
+  - |
+    names = ["burger", "fries", "cola"]
+    prices = [5000, 2000, 1500]
+    for line in ["***MENU***", "1. burger 5000", "2. fries 2000", "3. cola 1500", "4. Cancel last menu", "***********"]:
+        print(line)
+    orders = []
+    while True:
+        if len(orders) == 3:
+            break
+        c = input("Enter a number in the MENU: ")
+        if c == "1" or c == "2" or c == "3":
+            orders.append(names[int(c) - 1])
+            print("Ordered " + orders[-1] + ".\n")
+        elif c == "4":
+            if orders:
+                print("Canceled " + orders.pop() + ".\n")
+            else:
+                print("Nothing to cancel.\n")
+        else:
+            print("Wrong MENU. Enter again.")
+    total = 0
+    for item in orders:
+        total += prices[names.index(item)]
+    print("Order complete.")
+    print("The total amount is:", total)
+    print("The list of items ordered:", orders)
+mutants:
+  - name: 빈 목록에서도 취소를 시도
+    code: |
+      names = ["burger", "fries", "cola"]
+      prices = [5000, 2000, 1500]
+      print("***MENU***")
+      print("1. burger 5000")
+      print("2. fries 2000")
+      print("3. cola 1500")
+      print("4. Cancel last menu")
+      print("***********")
+      orders = []
+      total = 0
+      while len(orders) < 3:
+          choice = input("Enter a number in the MENU: ")
+          if choice in ["1", "2", "3"]:
+              idx = int(choice) - 1
+              orders.append(names[idx])
+              total += prices[idx]
+              print(f"Ordered {names[idx]}.")
+              print()
+          elif choice == "4":
+              last = orders.pop()
+              total -= prices[names.index(last)]
+              print(f"Canceled {last}.")
+              print()
+          else:
+              print("Wrong MENU. Enter again.")
+      print("Order complete.")
+      print(f"The total amount is: {total}")
+      print(f"The list of items ordered: {orders}")
+  - name: 취소할 때 가격을 빼지 않음
+    code: |
+      names = ["burger", "fries", "cola"]
+      prices = [5000, 2000, 1500]
+      print("***MENU***")
+      print("1. burger 5000")
+      print("2. fries 2000")
+      print("3. cola 1500")
+      print("4. Cancel last menu")
+      print("***********")
+      orders = []
+      total = 0
+      while len(orders) < 3:
+          choice = input("Enter a number in the MENU: ")
+          if choice in ["1", "2", "3"]:
+              idx = int(choice) - 1
+              orders.append(names[idx])
+              total += prices[idx]
+              print(f"Ordered {names[idx]}.")
+              print()
+          elif choice == "4":
+              if len(orders) == 0:
+                  print("Nothing to cancel.")
+              else:
+                  last = orders.pop()
+                  print(f"Canceled {last}.")
+              print()
+          else:
+              print("Wrong MENU. Enter again.")
+      print("Order complete.")
+      print(f"The total amount is: {total}")
+      print(f"The list of items ordered: {orders}")
+tests:
+  - stdin: "1\n3\n4\n2\n9\n3\n"
+    public: true
+  - stdin: "4\n1\n1\n1\n"
+    note: 처음부터 취소
+  - stdin: "2\n2\n4\n4\n3\n3\n1\n"
+  - stdin: "0\n5\n1\n2\n3\n"
+hints:
+  - "반복 조건을 `while len(orders) < 3:`으로 두면 취소로 개수가 줄었을 때 자동으로 더 입력받습니다."
+  - "`orders.pop()`은 마지막 항목을 꺼내 돌려줍니다. 빈 리스트에서 `pop()`하면 오류가 납니다."
+explanation: |
+  '취소' 기능은 목록과 금액을 **둘 다** 되돌려야 합니다. 리스트(`append`/`pop`)와 누적 변수(`+=`/`-=`)가 항상 짝을 이루는지 확인하세요.

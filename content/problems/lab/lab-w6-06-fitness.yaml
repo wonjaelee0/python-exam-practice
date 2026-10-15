@@ -1,0 +1,96 @@
+id: lab-w6-06-fitness
+title: "[6주차 2번] 체력 측정 등급 딕셔너리"
+unit: lab
+difficulty: 2
+tags: [lab.w6, dict.build, cond.if-elif]
+statement: |
+  > 엘리스 6주차 실습 2번(과목별 점수 → 등급 딕셔너리)과 같은 유형입니다.
+
+  측정 항목 리스트 `items`(시작 코드)의 순서대로 횟수를 입력받아 딕셔너리에 등급으로 저장한 뒤, 한 줄로 출력하시오.
+
+  - 등급: 50회 이상 `Gold`, 30회 이상 `Silver`, 15회 이상 `Bronze`, 나머지 `None`
+  - 입력 프롬프트: `Count of push-up: `처럼 `Count of <항목>: `
+  - 출력: `push-up: Gold / sit-up: Silver / squat: Bronze / plank: None / burpee: Gold` (항목 사이는 ` / `)
+  - 리스트, 딕셔너리, 반복문, 조건문을 사용한다.
+starter: |
+  items = ["push-up", "sit-up", "squat", "plank", "burpee"]
+  levels = {}
+solution: |
+  items = ["push-up", "sit-up", "squat", "plank", "burpee"]
+  levels = {}
+  for item in items:
+      count = int(input(f"Count of {item}: "))
+      if count >= 50:
+          levels[item] = "Gold"
+      elif count >= 30:
+          levels[item] = "Silver"
+      elif count >= 15:
+          levels[item] = "Bronze"
+      else:
+          levels[item] = "None"
+  parts = []
+  for item in items:
+      parts.append(f"{item}: {levels[item]}")
+  print(" / ".join(parts))
+alt_solutions:
+  - |
+    items = ["push-up", "sit-up", "squat", "plank", "burpee"]
+    counts = {}
+    for item in items:
+        counts[item] = int(input("Count of " + item + ": "))
+    levels = {}
+    for item, c in counts.items():
+        if c >= 50:
+            levels[item] = "Gold"
+        elif c >= 30:
+            levels[item] = "Silver"
+        elif c >= 15:
+            levels[item] = "Bronze"
+        else:
+            levels[item] = "None"
+    line = ""
+    for k, v in levels.items():
+        if line != "":
+            line += " / "
+        line += k + ": " + v
+    print(line)
+mutants:
+  - name: 경계 횟수를 놓침 (> 사용)
+    code: |
+      items = ["push-up", "sit-up", "squat", "plank", "burpee"]
+      levels = {}
+      for item in items:
+          count = int(input(f"Count of {item}: "))
+          if count > 50:
+              levels[item] = "Gold"
+          elif count > 30:
+              levels[item] = "Silver"
+          elif count > 15:
+              levels[item] = "Bronze"
+          else:
+              levels[item] = "None"
+      parts = []
+      for item in items:
+          parts.append(f"{item}: {levels[item]}")
+      print(" / ".join(parts))
+  - name: 등급 대신 횟수를 저장
+    code: |
+      items = ["push-up", "sit-up", "squat", "plank", "burpee"]
+      levels = {}
+      for item in items:
+          count = int(input(f"Count of {item}: "))
+          levels[item] = count
+      parts = []
+      for item in items:
+          parts.append(f"{item}: {levels[item]}")
+      print(" / ".join(parts))
+tests:
+  - stdin: "55\n30\n20\n3\n50\n"
+    public: true
+  - stdin: "0\n0\n0\n0\n0\n"
+  - stdin: "49\n29\n14\n15\n30\n"
+  - stdin: "100\n50\n31\n16\n1\n"
+hints:
+  - "입력 → 등급 변환 → `levels[item] = 등급`으로 저장한 뒤, 다시 `items` 순서대로 꺼내 출력합니다."
+explanation: |
+  원 문제처럼 '입력받아 저장 → 변환해 다시 저장 → 출력'의 단계를 나누면 각 단계를 확인하기 쉽습니다. 경계값(50, 30, 15)은 '이상'이므로 `>=`.

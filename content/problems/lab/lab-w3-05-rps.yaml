@@ -1,0 +1,107 @@
+id: lab-w3-05-rps
+title: "[3주차 4번] 가위바위보 승부"
+unit: lab
+difficulty: 3
+tags: [lab.w3, random.seed, cond.logic-op]
+statement: |
+  > 엘리스 3주차 실습 4번(가위바위보 맞히기)과 같은 유형입니다.
+
+  컴퓨터와 가위바위보를 하는 프로그램을 만드시오. 시작 코드의 `random.seed(1)`은 지우지 말 것.
+
+  - 입력 프롬프트: `Enter rock, scissor, paper: `
+  - 컴퓨터의 선택: `random.randint(1, 3)`을 **입력을 받은 뒤 한 번** 호출한다 (1: rock, 2: scissor, 3: paper).
+  - 입력이 rock, scissor, paper가 아니면 `Error`를 출력한다.
+  - 올바른 입력이면 `Computer: rock`처럼 컴퓨터의 선택을 출력하고, 결과를 `You win!`, `You lose!`, `Draw!` 중 하나로 출력한다.
+    (rock은 scissor를, scissor는 paper를, paper는 rock을 이긴다)
+starter: |
+  import random
+  random.seed(1)
+  ##############################
+solution: |
+  import random
+  random.seed(1)
+  ##############################
+  names = ["rock", "scissor", "paper"]
+  user = input("Enter rock, scissor, paper: ")
+  computer = names[random.randint(1, 3) - 1]
+  if user not in names:
+      print("Error")
+  else:
+      print(f"Computer: {computer}")
+      if user == computer:
+          print("Draw!")
+      elif (user == "rock" and computer == "scissor") or (user == "scissor" and computer == "paper") or (user == "paper" and computer == "rock"):
+          print("You win!")
+      else:
+          print("You lose!")
+alt_solutions:
+  - |
+    import random
+    random.seed(1)
+    user = input("Enter rock, scissor, paper: ")
+    n = random.randint(1, 3)
+    if n == 1:
+        computer = "rock"
+    elif n == 2:
+        computer = "scissor"
+    else:
+        computer = "paper"
+    beats = {"rock": "scissor", "scissor": "paper", "paper": "rock"}
+    if user in beats:
+        print("Computer:", computer)
+        if user == computer:
+            print("Draw!")
+        elif beats[user] == computer:
+            print("You win!")
+        else:
+            print("You lose!")
+    else:
+        print("Error")
+mutants:
+  - name: 보가 바위를 이기는 경우를 빠뜨림
+    code: |
+      import random
+      random.seed(1)
+      names = ["rock", "scissor", "paper"]
+      user = input("Enter rock, scissor, paper: ")
+      computer = names[random.randint(1, 3) - 1]
+      if user not in names:
+          print("Error")
+      else:
+          print(f"Computer: {computer}")
+          if user == computer:
+              print("Draw!")
+          elif (user == "rock" and computer == "scissor") or (user == "scissor" and computer == "paper"):
+              print("You win!")
+          else:
+              print("You lose!")
+  - name: 번호를 리스트 인덱스로 그대로 씀
+    code: |
+      import random
+      random.seed(1)
+      names = ["rock", "scissor", "paper"]
+      user = input("Enter rock, scissor, paper: ")
+      computer = names[random.randint(1, 3) % 3]
+      if user not in names:
+          print("Error")
+      else:
+          print(f"Computer: {computer}")
+          if user == computer:
+              print("Draw!")
+          elif (user == "rock" and computer == "scissor") or (user == "scissor" and computer == "paper") or (user == "paper" and computer == "rock"):
+              print("You win!")
+          else:
+              print("You lose!")
+tests:
+  - stdin: "rock\n"
+    public: true
+  - stdin: "paper\n"
+  - stdin: "scissor\n"
+  - stdin: "Rock\n"
+    note: 대소문자가 다르면 잘못된 입력
+  - stdin: "spock\n"
+hints:
+  - "이기는 경우 3가지를 `or`로 묶고, 비기는 경우를 먼저 검사하면 나머지는 지는 경우입니다."
+  - "1~3의 번호를 리스트 인덱스(0~2)로 쓰려면 1을 빼야 합니다."
+explanation: |
+  `{"rock": "scissor", ...}`처럼 '무엇이 무엇을 이기는지'를 딕셔너리로 두면 조건문이 짧아집니다 (6주차 내용). 3주차 방식대로라면 `and`/`or` 조합으로 씁니다.

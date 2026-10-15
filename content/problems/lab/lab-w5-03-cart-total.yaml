@@ -1,0 +1,77 @@
+id: lab-w5-03-cart-total
+title: "[5주차 1번] 장바구니 총합 (sum 없이)"
+unit: lab
+difficulty: 1
+tags: [lab.w5, list.append, loop.accumulate]
+statement: |
+  > 엘리스 5주차 실습 1번(장바구니 총합 계산하기)과 같은 유형입니다.
+
+  장바구니에 담긴 상품 가격들을 입력받아 (1) 총합을 출력하고, (2) 새 상품 가격을 리스트에 추가한 뒤 다시 총합과 상품 수를 출력하시오.
+  연습을 위해 `sum()`을 쓰지 말고 반복문으로 더해 보자.
+
+  - 입력 프롬프트: `가격들: ` (공백으로 구분된 정수), `추가 상품 가격: `
+  - 출력: `장바구니 총합: 30400원`, `상품 추가 후 총합: 34400원`, `상품 수: 5개`
+starter: |
+  prices = [int(x) for x in input("가격들: ").split()]
+solution: |
+  prices = [int(x) for x in input("가격들: ").split()]
+  total = 0
+  for p in prices:
+      total += p
+  print(f"장바구니 총합: {total}원")
+  new = int(input("추가 상품 가격: "))
+  prices.append(new)
+  total = 0
+  for p in prices:
+      total += p
+  print(f"상품 추가 후 총합: {total}원")
+  print(f"상품 수: {len(prices)}개")
+alt_solutions:
+  - |
+    prices = [int(x) for x in input("가격들: ").split()]
+    total = 0
+    for i in range(len(prices)):
+        total = total + prices[i]
+    print("장바구니 총합: " + str(total) + "원")
+    new = int(input("추가 상품 가격: "))
+    prices.append(new)
+    total = total + new
+    print("상품 추가 후 총합: " + str(total) + "원")
+    print("상품 수: " + str(len(prices)) + "개")
+mutants:
+  - name: 추가 후 총합을 다시 구하지 않음
+    code: |
+      prices = [int(x) for x in input("가격들: ").split()]
+      total = 0
+      for p in prices:
+          total += p
+      print(f"장바구니 총합: {total}원")
+      new = int(input("추가 상품 가격: "))
+      prices.append(new)
+      print(f"상품 추가 후 총합: {total}원")
+      print(f"상품 수: {len(prices)}개")
+  - name: 상품 수를 추가 전에 셈
+    code: |
+      prices = [int(x) for x in input("가격들: ").split()]
+      count = len(prices)
+      total = 0
+      for p in prices:
+          total += p
+      print(f"장바구니 총합: {total}원")
+      new = int(input("추가 상품 가격: "))
+      prices.append(new)
+      total = 0
+      for p in prices:
+          total += p
+      print(f"상품 추가 후 총합: {total}원")
+      print(f"상품 수: {count}개")
+tests:
+  - stdin: "12000 5500 9900 3000\n4000\n"
+    public: true
+  - stdin: "1000\n0\n"
+  - stdin: "500 500\n250\n"
+  - stdin: "99999 1\n100000\n"
+hints:
+  - "합계 변수를 0에서 시작해 `for p in prices:`로 하나씩 더합니다."
+explanation: |
+  리스트에 값을 추가(`append`)한 뒤에는 그 리스트로 계산한 값(총합, 개수)도 새로 구해야 합니다. 이미 구한 총합에 새 값만 더해도 됩니다.

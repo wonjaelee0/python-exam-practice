@@ -1,0 +1,134 @@
+id: lab-w5-06-lucky-ox
+title: "[5주차 4번] 행운 번호 맞히기 (O/X)"
+unit: lab
+difficulty: 3
+tags: [lab.w5, random.seed, list.in, io.end]
+statement: |
+  > 엘리스 5주차 실습 4번(로또 번호 맞히기)과 같은 유형입니다.
+
+  1~20 사이의 행운 번호 4개를 만들고, 사용자가 입력한 4개의 숫자와 비교하시오. 시작 코드의 `random.seed(1)`은 지우지 말 것.
+
+  1. 행운 번호: `random.randint(1, 20)`을 반복 호출해 **이미 뽑은 수가 아니면** 리스트에 추가하고, 4개가 될 때까지 반복한다 (while과 `not in` 활용).
+  2. 사용자 입력: `Enter a number between 1-20: ` 프롬프트로 4번 입력받는다 (중복 없음).
+  3. 결과 출력
+
+  ```
+  =====Result=====
+  3 O 7 X 9 O 12 X
+  ================
+  Lucky number: [5, 19, 3, 9]
+  Correct: 2
+  ```
+  - 두 번째 줄은 각 숫자 뒤에 맞으면 `O`, 틀리면 `X`를 붙이고, **맨 뒤에 공백이 하나 있다** (`print(값, "O", end=" ")` 방식).
+starter: |
+  import random
+  random.seed(1)
+  ##############################
+solution: |
+  import random
+  random.seed(1)
+  ##############################
+  lucky = []
+  while len(lucky) < 4:
+      n = random.randint(1, 20)
+      if n not in lucky:
+          lucky.append(n)
+  user = []
+  for i in range(4):
+      user.append(int(input("Enter a number between 1-20: ")))
+  correct = 0
+  print("=====Result=====")
+  for u in user:
+      if u in lucky:
+          print(u, "O", end=" ")
+          correct += 1
+      else:
+          print(u, "X", end=" ")
+  print()
+  print("================")
+  print("Lucky number:", lucky)
+  print("Correct:", correct)
+alt_solutions:
+  - |
+    import random
+    random.seed(1)
+    lucky = []
+    while len(lucky) != 4:
+        pick = random.randint(1, 20)
+        if not pick in lucky:
+            lucky.append(pick)
+    user = [int(input("Enter a number between 1-20: ")) for _ in range(4)]
+    line = ""
+    hits = 0
+    for u in user:
+        mark = "O" if u in lucky else "X"
+        if mark == "O":
+            hits += 1
+        line += str(u) + " " + mark + " "
+    print("=====Result=====")
+    print(line)
+    print("================")
+    print("Lucky number: " + str(lucky))
+    print("Correct: " + str(hits))
+mutants:
+  - name: 줄 끝 공백을 없앰
+    code: |
+      import random
+      random.seed(1)
+      lucky = []
+      while len(lucky) < 4:
+          n = random.randint(1, 20)
+          if n not in lucky:
+              lucky.append(n)
+      user = []
+      for i in range(4):
+          user.append(int(input("Enter a number between 1-20: ")))
+      correct = 0
+      marks = []
+      for u in user:
+          if u in lucky:
+              marks.append(f"{u} O")
+              correct += 1
+          else:
+              marks.append(f"{u} X")
+      print("=====Result=====")
+      print(" ".join(marks))
+      print("================")
+      print("Lucky number:", lucky)
+      print("Correct:", correct)
+  - name: 행운 번호를 정렬해서 출력
+    code: |
+      import random
+      random.seed(1)
+      lucky = []
+      while len(lucky) < 4:
+          n = random.randint(1, 20)
+          if n not in lucky:
+              lucky.append(n)
+      user = []
+      for i in range(4):
+          user.append(int(input("Enter a number between 1-20: ")))
+      correct = 0
+      print("=====Result=====")
+      for u in user:
+          if u in lucky:
+              print(u, "O", end=" ")
+              correct += 1
+          else:
+              print(u, "X", end=" ")
+      print()
+      print("================")
+      print("Lucky number:", sorted(lucky))
+      print("Correct:", correct)
+tests:
+  - stdin: "3\n7\n9\n12\n"
+    public: true
+  - stdin: "5\n19\n3\n9\n"
+    note: 모두 맞힘
+  - stdin: "1\n2\n4\n6\n"
+  - stdin: "20\n19\n18\n17\n"
+hints:
+  - "`while len(lucky) < 4:` 안에서 `if n not in lucky:`일 때만 추가하면 중복이 생기지 않습니다."
+  - "`print(u, \"O\", end=\" \")`는 줄을 바꾸지 않고 공백으로 끝냅니다. 다 출력한 뒤 `print()`로 줄을 바꾸세요."
+explanation: |
+  원 문제처럼 '맨 뒤 공백'까지 정확히 맞춰야 하는 출력은, 화면에서는 같아 보여도 채점에서 틀릴 수 있습니다. 이 사이트의 결과 비교에서 '줄 끝 공백' 판정을 확인해 보세요.

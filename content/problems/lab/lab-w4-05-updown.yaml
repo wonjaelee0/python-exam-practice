@@ -1,0 +1,133 @@
+id: lab-w4-05-updown
+title: "[4주차 2번] 기회가 정해진 업다운 게임"
+unit: lab
+difficulty: 3
+tags: [lab.w4, loop.while-true, random.seed]
+statement: |
+  > 엘리스 4주차 실습 2번(숫자 맞히기 게임)과 같은 유형입니다.
+
+  1~50 사이의 정답 `answer`가 시작 코드에서 정해진다 (`random.seed(1)` — 지우지 말 것). 기회는 5번이다.
+
+  - 첫 줄에 `Guess a number between 1-50 (5 chances)`를 출력한다.
+  - 입력 프롬프트: `Enter a number: `
+  - 1~50 밖의 수이면 `Out of range!`를 출력하고, **기회를 쓰지 않고** 다시 입력받는다.
+  - 정답이면 `Correct! Total number of tries: 3`을 출력하고 끝낸다 (범위 밖 입력은 시도 횟수에 넣지 않는다).
+  - 틀리면 정답이 더 작을 때 `Down!`, 더 클 때 `Up!`을 출력하고, 이어서
+    - 기회가 남았으면 `Chances left: 4`
+    - 기회를 다 썼으면 `Game over! The answer was 9.`(정답)를 출력하고 끝낸다.
+starter: |
+  import random
+  random.seed(1)
+  answer = random.randint(1, 50)
+  ##############################
+solution: |
+  import random
+  random.seed(1)
+  answer = random.randint(1, 50)
+  ##############################
+  print("Guess a number between 1-50 (5 chances)")
+  chances = 5
+  tries = 0
+  while chances > 0:
+      guess = int(input("Enter a number: "))
+      if guess < 1 or guess > 50:
+          print("Out of range!")
+          continue
+      tries += 1
+      chances -= 1
+      if guess == answer:
+          print(f"Correct! Total number of tries: {tries}")
+          break
+      if guess > answer:
+          print("Down!")
+      else:
+          print("Up!")
+      if chances == 0:
+          print(f"Game over! The answer was {answer}.")
+      else:
+          print(f"Chances left: {chances}")
+alt_solutions:
+  - |
+    import random
+    random.seed(1)
+    answer = random.randint(1, 50)
+    print("Guess a number between 1-50 (5 chances)")
+    used = 0
+    while True:
+        guess = int(input("Enter a number: "))
+        if not 1 <= guess <= 50:
+            print("Out of range!")
+            continue
+        used += 1
+        if guess == answer:
+            print("Correct! Total number of tries:", used)
+            break
+        print("Down!" if guess > answer else "Up!")
+        if used == 5:
+            print("Game over! The answer was " + str(answer) + ".")
+            break
+        print("Chances left:", 5 - used)
+mutants:
+  - name: 범위 밖 입력도 기회를 씀
+    code: |
+      import random
+      random.seed(1)
+      answer = random.randint(1, 50)
+      print("Guess a number between 1-50 (5 chances)")
+      chances = 5
+      tries = 0
+      while chances > 0:
+          guess = int(input("Enter a number: "))
+          tries += 1
+          chances -= 1
+          if guess < 1 or guess > 50:
+              print("Out of range!")
+              continue
+          if guess == answer:
+              print(f"Correct! Total number of tries: {tries}")
+              break
+          if guess > answer:
+              print("Down!")
+          else:
+              print("Up!")
+          if chances == 0:
+              print(f"Game over! The answer was {answer}.")
+          else:
+              print(f"Chances left: {chances}")
+  - name: Up과 Down을 반대로 안내
+    code: |
+      import random
+      random.seed(1)
+      answer = random.randint(1, 50)
+      print("Guess a number between 1-50 (5 chances)")
+      chances = 5
+      tries = 0
+      while chances > 0:
+          guess = int(input("Enter a number: "))
+          if guess < 1 or guess > 50:
+              print("Out of range!")
+              continue
+          tries += 1
+          chances -= 1
+          if guess == answer:
+              print(f"Correct! Total number of tries: {tries}")
+              break
+          if guess > answer:
+              print("Up!")
+          else:
+              print("Down!")
+          if chances == 0:
+              print(f"Game over! The answer was {answer}.")
+          else:
+              print(f"Chances left: {chances}")
+tests:
+  - stdin: "25\n12\n5\n9\n"
+    public: true
+  - stdin: "9\n"
+  - stdin: "60\n1\n2\n3\n4\n5\n"
+    note: 범위 밖 입력 후 기회를 모두 씀
+  - stdin: "0\n50\n9\n"
+hints:
+  - "`continue`는 반복문의 처음으로 돌아갑니다. 범위 밖이면 기회를 줄이기 **전에** `continue`하세요."
+explanation: |
+  무한 반복(`while`) + `break`(정답) + `continue`(무효 입력)를 함께 쓰는 문제입니다. 어떤 경우에 횟수를 세는지 순서를 정확히 지키는 것이 핵심입니다.

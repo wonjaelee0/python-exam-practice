@@ -1,0 +1,116 @@
+id: lab-w6-07-season-vote
+title: "[6주차 3번] 좋아하는 계절 투표"
+unit: lab
+difficulty: 2
+tags: [lab.w6, dict.count, loop.while-sentinel]
+statement: |
+  > 엘리스 6주차 실습 3번(혈액형 빈도수)과 같은 유형입니다.
+
+  좋아하는 계절을 `종료`가 입력될 때까지 입력받아 계절별 표 수를 출력하시오.
+
+  - 입력 프롬프트: `계절(봄, 여름, 가을, 겨울) 또는 종료: `
+  - 봄·여름·가을·겨울이 아니면 `잘못 입력했습니다`를 출력한다 (표로 세지 않음).
+  - `종료`가 입력되면 `종료합니다.`를 출력하고, 빈 줄 다음에 `봄 1`처럼 **봄, 여름, 가을, 겨울 순서로 모든 계절**의 표 수를 출력한다 (0표 포함).
+  - 마지막 줄: `가장 인기 있는 계절: 여름` (표가 같으면 봄·여름·가을·겨울 순서에서 앞의 계절). 표가 하나도 없으면 `투표가 없습니다`
+starter: |
+  votes = {"봄": 0, "여름": 0, "가을": 0, "겨울": 0}
+solution: |
+  votes = {"봄": 0, "여름": 0, "가을": 0, "겨울": 0}
+  while True:
+      s = input("계절(봄, 여름, 가을, 겨울) 또는 종료: ")
+      if s == "종료":
+          print("종료합니다.")
+          break
+      if s in votes:
+          votes[s] += 1
+      else:
+          print("잘못 입력했습니다")
+  print()
+  for season in votes:
+      print(season, votes[season])
+  if sum(votes.values()) == 0:
+      print("투표가 없습니다")
+  else:
+      best = "봄"
+      for season in votes:
+          if votes[season] > votes[best]:
+              best = season
+      print(f"가장 인기 있는 계절: {best}")
+alt_solutions:
+  - |
+    seasons = ["봄", "여름", "가을", "겨울"]
+    counts = [0, 0, 0, 0]
+    s = input("계절(봄, 여름, 가을, 겨울) 또는 종료: ")
+    while s != "종료":
+        if s in seasons:
+            counts[seasons.index(s)] += 1
+        else:
+            print("잘못 입력했습니다")
+        s = input("계절(봄, 여름, 가을, 겨울) 또는 종료: ")
+    print("종료합니다.")
+    print()
+    for i in range(4):
+        print(seasons[i] + " " + str(counts[i]))
+    if max(counts) == 0:
+        print("투표가 없습니다")
+    else:
+        print("가장 인기 있는 계절: " + seasons[counts.index(max(counts))])
+mutants:
+  - name: 나온 계절만 딕셔너리에 넣음
+    code: |
+      votes = {}
+      while True:
+          s = input("계절(봄, 여름, 가을, 겨울) 또는 종료: ")
+          if s == "종료":
+              print("종료합니다.")
+              break
+          if s in ["봄", "여름", "가을", "겨울"]:
+              votes[s] = votes.get(s, 0) + 1
+          else:
+              print("잘못 입력했습니다")
+      print()
+      for season in votes:
+          print(season, votes[season])
+      if sum(votes.values()) == 0:
+          print("투표가 없습니다")
+      else:
+          best = list(votes.keys())[0]
+          for season in votes:
+              if votes[season] > votes[best]:
+                  best = season
+          print(f"가장 인기 있는 계절: {best}")
+  - name: 동점이면 뒤 계절을 고름
+    code: |
+      votes = {"봄": 0, "여름": 0, "가을": 0, "겨울": 0}
+      while True:
+          s = input("계절(봄, 여름, 가을, 겨울) 또는 종료: ")
+          if s == "종료":
+              print("종료합니다.")
+              break
+          if s in votes:
+              votes[s] += 1
+          else:
+              print("잘못 입력했습니다")
+      print()
+      for season in votes:
+          print(season, votes[season])
+      if sum(votes.values()) == 0:
+          print("투표가 없습니다")
+      else:
+          best = "봄"
+          for season in votes:
+              if votes[season] >= votes[best]:
+                  best = season
+          print(f"가장 인기 있는 계절: {best}")
+tests:
+  - stdin: "여름\n봄\n여름\n장마\n겨울\n종료\n"
+    public: true
+  - stdin: "종료\n"
+    note: 투표 없음
+  - stdin: "가을\n가을\n봄\n봄\n종료\n"
+    note: 봄과 가을이 동점
+  - stdin: "겨울\nwinter\n종료\n"
+hints:
+  - "계절 4개를 0으로 미리 넣은 딕셔너리를 만들면 순서도 지켜지고 0표도 출력됩니다."
+explanation: |
+  센티넬 반복 + 딕셔너리 카운트의 기본형입니다. 처음부터 모든 키를 0으로 넣어 두면 '없는 키' 처리와 출력 순서 문제가 한 번에 해결됩니다.

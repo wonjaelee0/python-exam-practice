@@ -1,0 +1,80 @@
+id: lab-w3-02-leap-days
+title: "[3주차 1번] 윤년과 2월의 날짜 수 (빈칸)"
+unit: lab
+difficulty: 2
+tags: [lab.w3, cond.logic-op, cond.leap-year]
+format: fill
+statement: |
+  > 엘리스 3주차 실습 1번(윤년 판별)과 같은 유형의 **코드 빈칸 채우기**입니다.
+
+  연도를 입력받아 윤년인지 판별하고, 그해 2월의 날짜 수와 1년의 날짜 수를 출력하도록 빈칸 `_____`을 채우시오.
+
+  - 윤년: 4로 나누어떨어지고 100으로 나누어떨어지지 않는 해, 또는 400으로 나누어떨어지는 해
+  - 입력 프롬프트: `연도를 입력하시오: `
+  - 출력: `2024년은 윤년입니다.` 또는 `2023년은 윤년이 아닙니다.`, 이어서 `2월은 29일까지 있습니다.`, `1년은 366일입니다.`
+starter: |
+  year = int(input("연도를 입력하시오: "))
+  if (year % 4 == 0 _____ year % 100 != 0) _____ year % 400 == 0:
+      print(f"{year}년은 윤년입니다.")
+      days_feb = 29
+  else:
+      print(f"{year}년은 윤년이 아닙니다.")
+      days_feb = _____
+  print(f"2월은 {days_feb}일까지 있습니다.")
+  print(f"1년은 {337 + days_feb}일입니다.")
+solution: |
+  year = int(input("연도를 입력하시오: "))
+  if (year % 4 == 0 and year % 100 != 0) or year % 400 == 0:
+      print(f"{year}년은 윤년입니다.")
+      days_feb = 29
+  else:
+      print(f"{year}년은 윤년이 아닙니다.")
+      days_feb = 28
+  print(f"2월은 {days_feb}일까지 있습니다.")
+  print(f"1년은 {337 + days_feb}일입니다.")
+alt_solutions:
+  - |
+    year = int(input("연도를 입력하시오: "))
+    leap = year % 400 == 0 or (year % 4 == 0 and not year % 100 == 0)
+    if leap:
+        print(str(year) + "년은 윤년입니다.")
+    else:
+        print(str(year) + "년은 윤년이 아닙니다.")
+    feb = 29 if leap else 28
+    print("2월은 " + str(feb) + "일까지 있습니다.")
+    print("1년은 " + str(337 + feb) + "일입니다.")
+mutants:
+  - name: and와 or를 바꿈
+    code: |
+      year = int(input("연도를 입력하시오: "))
+      if (year % 4 == 0 or year % 100 != 0) and year % 400 == 0:
+          print(f"{year}년은 윤년입니다.")
+          days_feb = 29
+      else:
+          print(f"{year}년은 윤년이 아닙니다.")
+          days_feb = 28
+      print(f"2월은 {days_feb}일까지 있습니다.")
+      print(f"1년은 {337 + days_feb}일입니다.")
+  - name: 100의 배수 조건을 빠뜨림
+    code: |
+      year = int(input("연도를 입력하시오: "))
+      if year % 4 == 0 or year % 400 == 0:
+          print(f"{year}년은 윤년입니다.")
+          days_feb = 29
+      else:
+          print(f"{year}년은 윤년이 아닙니다.")
+          days_feb = 28
+      print(f"2월은 {days_feb}일까지 있습니다.")
+      print(f"1년은 {337 + days_feb}일입니다.")
+tests:
+  - stdin: "2024\n"
+    public: true
+  - stdin: "1900\n"
+  - stdin: "2000\n"
+  - stdin: "2023\n"
+  - stdin: "2100\n"
+  - stdin: "2028\n"
+hints:
+  - "'A이고 B' 또는 'C' → `(A and B) or C`."
+explanation: |
+  윤년 조건은 논리 연산자 문제의 단골입니다. 100의 배수(1900, 2100)와 400의 배수(2000)를 꼭 테스트해 보세요.

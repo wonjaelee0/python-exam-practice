@@ -1,0 +1,67 @@
+id: lab-w4-06-triangle
+title: "[4주차 3번] 오른쪽 정렬 직각삼각형"
+unit: lab
+difficulty: 2
+tags: [lab.w4, loop.nested, str.multiply]
+statement: |
+  > 엘리스 4주차 실습 3번(뒤집어진 직각삼각형)과 같은 유형입니다.
+
+  문자 하나와 양의 정수 n을 입력받아, 아래처럼 **오른쪽으로 정렬된** 직각삼각형을 출력하시오.
+  (1) 문자열 × 정수 연산으로, (2) 이중 for문으로(곱셈 없이) 두 가지 방법 모두 연습해 보자.
+
+  - 입력 프롬프트: `Enter a letter: `, `Enter a number: `
+  - 입력이 끝나면 빈 줄을 하나 출력한 뒤 삼각형을 출력한다. (`*`와 5를 입력한 예)
+
+  ```
+      *
+     **
+    ***
+   ****
+  *****
+  ```
+starter: |
+  ch = input("Enter a letter: ")
+  n = int(input("Enter a number: "))
+solution: |
+  ch = input("Enter a letter: ")
+  n = int(input("Enter a number: "))
+  print()
+  for i in range(1, n + 1):
+      print(" " * (n - i) + ch * i)
+alt_solutions:
+  - |
+    ch = input("Enter a letter: ")
+    n = int(input("Enter a number: "))
+    print()
+    for i in range(1, n + 1):
+        line = ""
+        for j in range(n - i):
+            line += " "
+        for j in range(i):
+            line += ch
+        print(line)
+mutants:
+  - name: 왼쪽 정렬로 출력
+    code: |
+      ch = input("Enter a letter: ")
+      n = int(input("Enter a number: "))
+      print()
+      for i in range(1, n + 1):
+          print(ch * i)
+  - name: 마지막 줄을 빠뜨림
+    code: |
+      ch = input("Enter a letter: ")
+      n = int(input("Enter a number: "))
+      print()
+      for i in range(1, n):
+          print(" " * (n - i) + ch * i)
+tests:
+  - stdin: "*\n5\n"
+    public: true
+  - stdin: "#\n1\n"
+  - stdin: "@\n3\n"
+  - stdin: "가\n4\n"
+hints:
+  - "i번째 줄은 공백 `n - i`개 + 문자 `i`개입니다."
+explanation: |
+  줄마다 '공백 개수'와 '문자 개수'가 i에 따라 어떻게 바뀌는지 표로 적어 보면 식이 바로 보입니다. 이중 for문 방식은 안쪽 반복 두 개로 공백과 문자를 차례로 붙입니다.

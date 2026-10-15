@@ -1,0 +1,122 @@
+id: lab-w3-03-dice-oddeven
+title: "[3주차 2번] 주사위 두 개 홀짝 맞히기"
+unit: lab
+difficulty: 2
+tags: [lab.w3, random.seed, cond.logic-op]
+statement: |
+  > 엘리스 3주차 실습 2번(주사위 대결)과 같은 유형입니다.
+
+  컴퓨터가 주사위 두 개를 던져 나온 눈의 합이 홀수인지 짝수인지 맞히는 게임이다.
+  시작 코드의 `random.seed(1)`은 지우지 말 것 (채점을 위해 결과를 고정한다).
+
+  - 입력 프롬프트: `Input player's name: `, `Input your guess(홀/짝): `
+  - 추측이 `홀`이나 `짝`이 아니면 `Wrong input!`을 출력하고 끝낸다 (주사위를 던지지 않는다).
+  - 올바른 추측이면 `random.randint(1, 6)`을 **두 번** 호출해 주사위 두 개를 던지고 아래처럼 출력한다.
+
+  ```
+  (빈 줄)
+  ...Rolling two dice...
+  Dice: 2, 5
+  Sum: 7
+  (빈 줄)
+  Tom wins!
+  ```
+  - 맞히면 `<이름> wins!`, 틀리면 `Computer wins!`
+starter: |
+  import random
+  random.seed(1)
+  ##############################
+solution: |
+  import random
+  random.seed(1)
+  ##############################
+  name = input("Input player's name: ")
+  guess = input("Input your guess(홀/짝): ")
+  if guess != "홀" and guess != "짝":
+      print("Wrong input!")
+  else:
+      d1 = random.randint(1, 6)
+      d2 = random.randint(1, 6)
+      total = d1 + d2
+      print()
+      print("...Rolling two dice...")
+      print(f"Dice: {d1}, {d2}")
+      print(f"Sum: {total}")
+      print()
+      if (total % 2 == 1 and guess == "홀") or (total % 2 == 0 and guess == "짝"):
+          print(f"{name} wins!")
+      else:
+          print("Computer wins!")
+alt_solutions:
+  - |
+    import random
+    random.seed(1)
+    name = input("Input player's name: ")
+    guess = input("Input your guess(홀/짝): ")
+    if guess in ["홀", "짝"]:
+        a = random.randint(1, 6)
+        b = random.randint(1, 6)
+        result = "짝" if (a + b) % 2 == 0 else "홀"
+        print("\n...Rolling two dice...")
+        print("Dice: " + str(a) + ", " + str(b))
+        print("Sum: " + str(a + b) + "\n")
+        if result == guess:
+            print(name + " wins!")
+        else:
+            print("Computer wins!")
+    else:
+        print("Wrong input!")
+mutants:
+  - name: 홀짝 판정을 반대로
+    code: |
+      import random
+      random.seed(1)
+      name = input("Input player's name: ")
+      guess = input("Input your guess(홀/짝): ")
+      if guess != "홀" and guess != "짝":
+          print("Wrong input!")
+      else:
+          d1 = random.randint(1, 6)
+          d2 = random.randint(1, 6)
+          total = d1 + d2
+          print()
+          print("...Rolling two dice...")
+          print(f"Dice: {d1}, {d2}")
+          print(f"Sum: {total}")
+          print()
+          if (total % 2 == 0 and guess == "홀") or (total % 2 == 1 and guess == "짝"):
+              print(f"{name} wins!")
+          else:
+              print("Computer wins!")
+  - name: 주사위를 하나만 던져 두 배로 계산
+    code: |
+      import random
+      random.seed(1)
+      name = input("Input player's name: ")
+      guess = input("Input your guess(홀/짝): ")
+      if guess != "홀" and guess != "짝":
+          print("Wrong input!")
+      else:
+          d1 = random.randint(1, 6)
+          d2 = d1
+          total = d1 + d2
+          print()
+          print("...Rolling two dice...")
+          print(f"Dice: {d1}, {d2}")
+          print(f"Sum: {total}")
+          print()
+          if (total % 2 == 1 and guess == "홀") or (total % 2 == 0 and guess == "짝"):
+              print(f"{name} wins!")
+          else:
+              print("Computer wins!")
+tests:
+  - stdin: "Tom\n홀\n"
+    public: true
+  - stdin: "Jane\n짝\n"
+  - stdin: "민수\nodd\n"
+    note: 잘못된 추측
+  - stdin: "서연\n홀\n"
+hints:
+  - "`random.seed(1)` 덕분에 매번 같은 주사위가 나옵니다. 합이 홀수인지는 `total % 2 == 1`."
+explanation: |
+  `random`을 쓰는 문제는 seed를 고정해야 채점할 수 있습니다 (제출 규칙 5번). seed가 같아도 `randint`를 **호출하는 횟수와 순서**가 다르면 결과가 달라지니, 지문이 말한 대로 두 번 호출하세요.

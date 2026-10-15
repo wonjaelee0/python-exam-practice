@@ -1,0 +1,89 @@
+id: lab-w4-09-mult3
+title: "[4주차 추가2] 두 수 사이 3의 배수"
+unit: lab
+difficulty: 2
+tags: [lab.w4, loop.range, cond.swap]
+statement: |
+  > 엘리스 4주차 실습 추가 2번(a부터 b까지 홀수)과 같은 유형입니다.
+
+  두 정수 a와 b를 입력받아, 두 수 사이(양 끝 포함)의 모든 3의 배수를 작은 수부터 한 줄에 출력하고 그 합을 출력하시오.
+  **a > b인 경우에도** 올바르게 동작해야 한다.
+
+  - 입력 프롬프트: `첫 번째 숫자 입력: `, `두 번째 숫자 입력: `
+  - 출력: `3의 배수: 3 6 9`, `합계: 18`
+  - 3의 배수가 없으면 `3의 배수: 없음`, `합계: 0`
+starter: |
+  a = int(input("첫 번째 숫자 입력: "))
+  b = int(input("두 번째 숫자 입력: "))
+solution: |
+  a = int(input("첫 번째 숫자 입력: "))
+  b = int(input("두 번째 숫자 입력: "))
+  if a > b:
+      a, b = b, a
+  nums = []
+  for i in range(a, b + 1):
+      if i % 3 == 0:
+          nums.append(i)
+  if len(nums) == 0:
+      print("3의 배수: 없음")
+  else:
+      print("3의 배수:", " ".join([str(x) for x in nums]))
+  print(f"합계: {sum(nums)}")
+alt_solutions:
+  - |
+    a = int(input("첫 번째 숫자 입력: "))
+    b = int(input("두 번째 숫자 입력: "))
+    lo = min(a, b)
+    hi = max(a, b)
+    line = ""
+    total = 0
+    for i in range(lo, hi + 1):
+        if i % 3 == 0:
+            line += " " + str(i)
+            total += i
+    if line == "":
+        line = " 없음"
+    print("3의 배수:" + line)
+    print("합계:", total)
+mutants:
+  - name: a > b일 때 바꾸지 않음
+    code: |
+      a = int(input("첫 번째 숫자 입력: "))
+      b = int(input("두 번째 숫자 입력: "))
+      nums = []
+      for i in range(a, b + 1):
+          if i % 3 == 0:
+              nums.append(i)
+      if len(nums) == 0:
+          print("3의 배수: 없음")
+      else:
+          print("3의 배수:", " ".join([str(x) for x in nums]))
+      print(f"합계: {sum(nums)}")
+  - name: 끝 값을 포함하지 않음
+    code: |
+      a = int(input("첫 번째 숫자 입력: "))
+      b = int(input("두 번째 숫자 입력: "))
+      if a > b:
+          a, b = b, a
+      nums = []
+      for i in range(a, b):
+          if i % 3 == 0:
+              nums.append(i)
+      if len(nums) == 0:
+          print("3의 배수: 없음")
+      else:
+          print("3의 배수:", " ".join([str(x) for x in nums]))
+      print(f"합계: {sum(nums)}")
+tests:
+  - stdin: "10\n3\n"
+    public: true
+  - stdin: "1\n2\n"
+    note: 3의 배수 없음
+  - stdin: "-6\n6\n"
+  - stdin: "9\n9\n"
+  - stdin: "20\n11\n"
+    note: 앞의 수가 더 큼
+hints:
+  - "`if a > b: a, b = b, a`로 두 값을 바꾸면 이후 코드는 항상 a ≤ b라고 생각할 수 있습니다."
+explanation: |
+  `range(a, b + 1)`은 a > b이면 아무것도 만들지 않습니다. 그래서 먼저 크기 순서를 맞추는 처리가 필요합니다.

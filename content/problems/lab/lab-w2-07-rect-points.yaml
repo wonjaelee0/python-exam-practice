@@ -1,0 +1,91 @@
+id: lab-w2-07-rect-points
+title: "[2주차 4번] 두 꼭짓점으로 만든 직사각형"
+unit: lab
+difficulty: 2
+tags: [lab.w2, op.arith, math.distance]
+statement: |
+  > 엘리스 2주차 실습 4번(두 점 사이 거리와 원의 넓이)과 같은 유형입니다.
+
+  두 점 (x1, y1), (x2, y2)를 서로 마주 보는 꼭짓점으로 하는 직사각형(변은 축과 평행)이 있다. 좌표는 실수이다.
+
+  1. 직사각형의 넓이 = |x2 - x1| × |y2 - y1|
+  2. 대각선의 길이 = √(가로² + 세로²) — `** 0.5`로 계산
+  3. 대각선을 **지름**으로 하는 원의 넓이 (원주율 3.14, `3.14 * 반지름 ** 2`)
+
+  - 입력 프롬프트: `Enter value of x1: `, `Enter value of y1: `, `Enter value of x2: `, `Enter value of y2: `
+  - 입력이 끝나면 빈 줄을 하나 출력한 뒤
+    - `Rectangle area: 12.0`
+    - `Diagonal length: 5.0`
+    - `Area of circle with diameter 5.0: 19.625`
+  - 절댓값은 내장 함수 `abs()`를 쓴다. 결과는 반올림하지 않는다.
+starter: |
+  x1 = float(input("Enter value of x1: "))
+solution: |
+  x1 = float(input("Enter value of x1: "))
+  y1 = float(input("Enter value of y1: "))
+  x2 = float(input("Enter value of x2: "))
+  y2 = float(input("Enter value of y2: "))
+  width = abs(x2 - x1)
+  height = abs(y2 - y1)
+  diagonal = (width ** 2 + height ** 2) ** 0.5
+  print()
+  print("Rectangle area:", width * height)
+  print("Diagonal length:", diagonal)
+  print(f"Area of circle with diameter {diagonal}:", 3.14 * (diagonal / 2) ** 2)
+alt_solutions:
+  - |
+    x1 = float(input("Enter value of x1: "))
+    y1 = float(input("Enter value of y1: "))
+    x2 = float(input("Enter value of x2: "))
+    y2 = float(input("Enter value of y2: "))
+    w = x2 - x1
+    h = y2 - y1
+    if w < 0:
+        w = -w
+    if h < 0:
+        h = -h
+    d = (w ** 2 + h ** 2) ** 0.5
+    r = d / 2
+    print()
+    print("Rectangle area: " + str(w * h))
+    print("Diagonal length: " + str(d))
+    print("Area of circle with diameter " + str(d) + ": " + str(3.14 * r ** 2))
+mutants:
+  - name: 절댓값을 쓰지 않음
+    code: |
+      x1 = float(input("Enter value of x1: "))
+      y1 = float(input("Enter value of y1: "))
+      x2 = float(input("Enter value of x2: "))
+      y2 = float(input("Enter value of y2: "))
+      width = x2 - x1
+      height = y2 - y1
+      diagonal = (width ** 2 + height ** 2) ** 0.5
+      print()
+      print("Rectangle area:", width * height)
+      print("Diagonal length:", diagonal)
+      print(f"Area of circle with diameter {diagonal}:", 3.14 * (diagonal / 2) ** 2)
+  - name: 대각선을 반지름으로 씀
+    code: |
+      x1 = float(input("Enter value of x1: "))
+      y1 = float(input("Enter value of y1: "))
+      x2 = float(input("Enter value of x2: "))
+      y2 = float(input("Enter value of y2: "))
+      width = abs(x2 - x1)
+      height = abs(y2 - y1)
+      diagonal = (width ** 2 + height ** 2) ** 0.5
+      print()
+      print("Rectangle area:", width * height)
+      print("Diagonal length:", diagonal)
+      print(f"Area of circle with diameter {diagonal}:", 3.14 * diagonal ** 2)
+tests:
+  - stdin: "1.0\n2.0\n4.0\n6.0\n"
+    public: true
+  - stdin: "5\n1\n2\n5\n"
+    note: x2가 x1보다 작음
+  - stdin: "0\n0\n1\n1\n"
+  - stdin: "-2.5\n-1\n2.5\n3\n"
+hints:
+  - "제곱근은 `** 0.5`로 구할 수 있습니다."
+  - "지름이 d인 원의 반지름은 `d / 2`입니다."
+explanation: |
+  꼭짓점의 순서가 바뀌어도(오른쪽 → 왼쪽) 길이는 양수여야 하므로 `abs()`가 필요합니다. 이 문제처럼 '음수가 될 수 있는 경우'를 테스트로 확인하는 습관이 중요합니다.

@@ -1,0 +1,77 @@
+id: lab-w3-06-points
+title: "[3주차 추가1] 회원 등급별 포인트 적립"
+unit: lab
+difficulty: 2
+tags: [lab.w3, cond.if-elif, str.upper]
+statement: |
+  > 엘리스 3주차 실습 추가 1번(쇼핑몰 등급별 판매가)과 같은 유형입니다.
+
+  회원 등급과 결제 금액을 입력받아 적립 포인트를 출력하시오 (if-elif-else 사용).
+
+  | 등급 | 적립률 |
+  |---|---|
+  | VIP | 결제 금액 × 0.05 |
+  | GOLD | 결제 금액 × 0.03 |
+  | SILVER | 결제 금액 × 0.01 |
+  | 그 외 | 결제 금액 × 0.0 |
+
+  - 등급은 대소문자 구분 없이 입력될 수 있다 (`gold`도 GOLD).
+  - 입력 프롬프트: `Enter member class: `, `Enter the payment: `
+  - 출력: `Points earned: 600.0` (`결제 금액 * 적립률`을 반올림하지 않고 그대로)
+starter: |
+  grade = input("Enter member class: ")
+solution: |
+  grade = input("Enter member class: ").upper()
+  pay = int(input("Enter the payment: "))
+  if grade == "VIP":
+      rate = 0.05
+  elif grade == "GOLD":
+      rate = 0.03
+  elif grade == "SILVER":
+      rate = 0.01
+  else:
+      rate = 0.0
+  print("Points earned:", pay * rate)
+alt_solutions:
+  - |
+    grade = input("Enter member class: ").lower()
+    pay = int(input("Enter the payment: "))
+    rates = {"vip": 0.05, "gold": 0.03, "silver": 0.01}
+    rate = rates.get(grade, 0.0)
+    print(f"Points earned: {pay * rate}")
+mutants:
+  - name: 대문자로 바꾸지 않음
+    code: |
+      grade = input("Enter member class: ")
+      pay = int(input("Enter the payment: "))
+      if grade == "VIP":
+          rate = 0.05
+      elif grade == "GOLD":
+          rate = 0.03
+      elif grade == "SILVER":
+          rate = 0.01
+      else:
+          rate = 0.0
+      print("Points earned:", pay * rate)
+  - name: 그 외 등급을 정수 0으로 출력
+    code: |
+      grade = input("Enter member class: ").upper()
+      pay = int(input("Enter the payment: "))
+      if grade == "VIP":
+          print("Points earned:", pay * 0.05)
+      elif grade == "GOLD":
+          print("Points earned:", pay * 0.03)
+      elif grade == "SILVER":
+          print("Points earned:", pay * 0.01)
+      else:
+          print("Points earned:", 0)
+tests:
+  - stdin: "GOLD\n20000\n"
+    public: true
+  - stdin: "vip\n15000\n"
+  - stdin: "Silver\n12345\n"
+  - stdin: "BRONZE\n5000\n"
+hints:
+  - "입력을 `.upper()`로 대문자로 바꾸면 `gold`, `Gold`, `GOLD`를 한 번에 처리할 수 있습니다."
+explanation: |
+  실수와 곱하면 결과도 실수입니다 (`5000 * 0.0` → `0.0`). 출력 형식(`0.0`과 `0`)이 다르면 오답이 되므로 모든 경우에 같은 식을 쓰는 것이 안전합니다.

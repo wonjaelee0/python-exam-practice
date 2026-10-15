@@ -1,0 +1,57 @@
+id: lab-w6-03-visitors
+title: "[6주차 사전3] 집합으로 실제 방문자 수"
+unit: lab
+difficulty: 1
+tags: [lab.w6, set.dedupe, list.sorted]
+statement: |
+  > 엘리스 6주차 실습 사전문제 3(집합으로 중복 없는 출석 인원)과 같은 유형입니다.
+
+  방문 기록(이름들, 공백으로 구분)을 입력받아 다음을 출력하시오.
+
+  - `전체 방문 기록 수: 8` (중복 포함)
+  - `실제 방문자 수: 5` (`set()`으로 중복 제거)
+  - `방문자 명단: ['김민지', '김철수', ...]` (중복 없이 **정렬한** 리스트)
+  - 입력 프롬프트: `방문 기록: `
+starter: |
+  names = input("방문 기록: ").split()
+solution: |
+  names = input("방문 기록: ").split()
+  unique = sorted(set(names))
+  print(f"전체 방문 기록 수: {len(names)}")
+  print(f"실제 방문자 수: {len(unique)}")
+  print(f"방문자 명단: {unique}")
+alt_solutions:
+  - |
+    names = input("방문 기록: ").split()
+    unique = []
+    for n in names:
+        if n not in unique:
+            unique.append(n)
+    unique.sort()
+    print("전체 방문 기록 수:", len(names))
+    print("실제 방문자 수:", len(unique))
+    print("방문자 명단:", unique)
+mutants:
+  - name: 중복을 지우지 않고 셈
+    code: |
+      names = input("방문 기록: ").split()
+      unique = sorted(set(names))
+      print(f"전체 방문 기록 수: {len(names)}")
+      print(f"실제 방문자 수: {len(names)}")
+      print(f"방문자 명단: {unique}")
+  - name: 명단을 정렬만 하고 중복은 남김
+    code: |
+      names = input("방문 기록: ").split()
+      print(f"전체 방문 기록 수: {len(names)}")
+      print(f"실제 방문자 수: {len(set(names))}")
+      print(f"방문자 명단: {sorted(names)}")
+tests:
+  - stdin: "홍길동 김철수 이영희 홍길동 박민수 김철수 이영희 김민지\n"
+    public: true
+  - stdin: "A A A\n"
+  - stdin: "x\n"
+  - stdin: "b a c a b\n"
+hints:
+  - "`set(리스트)`는 중복을 없앤 집합입니다. 집합은 순서가 없으니 출력할 때는 `sorted()`로 정렬한 리스트로 바꿉니다."
+explanation: |
+  집합(set)은 순서가 보장되지 않아 그대로 출력하면 실행할 때마다 순서가 달라질 수 있습니다. 정확한 출력이 필요하면 `sorted()`를 씁니다.

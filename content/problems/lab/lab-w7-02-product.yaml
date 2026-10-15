@@ -1,0 +1,81 @@
+id: lab-w7-02-product
+title: "[7주차 사전2] 리스트 곱을 반환하는 함수"
+unit: lab
+difficulty: 1
+tags: [lab.w7, func.list-arg, func.return]
+statement: |
+  > 엘리스 7주차 실습 사전문제 2-3(리스트 합계 함수, 입출력 모두 함수 밖)과 같은 유형입니다.
+
+  숫자 4개를 **함수 밖에서** 입력받아 리스트로 만든 뒤 함수의 인자로 전달하면, 리스트의 모든 수를 곱한 값을 **반환**하는 함수 `multiply_numbers(nums)`를 정의하시오.
+  출력도 함수 밖에서 한다.
+
+  - 입력 프롬프트: `숫자 입력: ` (4번)
+  - 출력: `리스트: [1, 2, 3, 4]`, `리스트 곱: 24`
+starter: |
+  def multiply_numbers(nums):
+      pass
+solution: |
+  def multiply_numbers(nums):
+      result = 1
+      for n in nums:
+          result *= n
+      return result
+
+
+  nums = []
+  for i in range(4):
+      nums.append(int(input("숫자 입력: ")))
+  print(f"리스트: {nums}")
+  print(f"리스트 곱: {multiply_numbers(nums)}")
+alt_solutions:
+  - |
+    def multiply_numbers(nums):
+        product = nums[0]
+        for i in range(1, len(nums)):
+            product = product * nums[i]
+        return product
+
+
+    nums = [int(input("숫자 입력: ")) for _ in range(4)]
+    answer = multiply_numbers(nums)
+    print("리스트:", nums)
+    print("리스트 곱:", answer)
+mutants:
+  - name: 곱의 시작값을 0으로 둠
+    code: |
+      def multiply_numbers(nums):
+          result = 0
+          for n in nums:
+              result *= n
+          return result
+
+
+      nums = []
+      for i in range(4):
+          nums.append(int(input("숫자 입력: ")))
+      print(f"리스트: {nums}")
+      print(f"리스트 곱: {multiply_numbers(nums)}")
+  - name: 함수 안에서 출력하고 반환하지 않음
+    code: |
+      def multiply_numbers(nums):
+          result = 1
+          for n in nums:
+              result *= n
+          print(result)
+
+
+      nums = []
+      for i in range(4):
+          nums.append(int(input("숫자 입력: ")))
+      print(f"리스트: {nums}")
+      print(f"리스트 곱: {multiply_numbers(nums)}")
+tests:
+  - stdin: "1\n2\n3\n4\n"
+    public: true
+  - stdin: "10\n0\n5\n5\n"
+  - stdin: "-1\n-2\n3\n4\n"
+  - stdin: "7\n7\n7\n7\n"
+hints:
+  - "합계는 0에서 시작하지만, 곱은 **1**에서 시작해야 합니다."
+explanation: |
+  누적 곱의 시작값을 0으로 두면 결과는 항상 0입니다. 함수가 값을 돌려주지 않으면(`return` 없음) 호출 결과는 `None`이 됩니다.

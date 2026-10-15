@@ -1,0 +1,101 @@
+id: lab-w4-02-until-end
+title: "[4주차 사전2] '끝'이 나올 때까지 입력"
+unit: lab
+difficulty: 2
+tags: [lab.w4, loop.while-sentinel, str.len]
+statement: |
+  > 엘리스 4주차 실습 사전문제 2(특정 문자열 입력 시 종료하기)와 같은 유형입니다.
+
+  `끝`이 입력될 때까지 메시지를 계속 입력받은 뒤, 빈 줄을 하나 출력하고 아래 세 줄을 출력하시오.
+
+  - `입력한 메시지 수: 3` (`끝`은 세지 않는다)
+  - `가장 긴 메시지: 반갑습니다` (길이가 같으면 먼저 입력한 것, 메시지가 없으면 `가장 긴 메시지: 없음`)
+  - `프로그램을 종료합니다.`
+  - 입력 프롬프트: `메시지를 입력하세요 ('끝' 입력 시 종료): `
+starter: |
+  count = 0
+  longest = ""
+solution: |
+  count = 0
+  longest = ""
+  while True:
+      msg = input("메시지를 입력하세요 ('끝' 입력 시 종료): ")
+      if msg == "끝":
+          break
+      count += 1
+      if len(msg) > len(longest):
+          longest = msg
+  print()
+  print(f"입력한 메시지 수: {count}")
+  if count == 0:
+      print("가장 긴 메시지: 없음")
+  else:
+      print(f"가장 긴 메시지: {longest}")
+  print("프로그램을 종료합니다.")
+alt_solutions:
+  - |
+    messages = []
+    msg = input("메시지를 입력하세요 ('끝' 입력 시 종료): ")
+    while msg != "끝":
+        messages.append(msg)
+        msg = input("메시지를 입력하세요 ('끝' 입력 시 종료): ")
+    print()
+    print("입력한 메시지 수:", len(messages))
+    if messages:
+        best = messages[0]
+        for m in messages:
+            if len(m) > len(best):
+                best = m
+        print("가장 긴 메시지:", best)
+    else:
+        print("가장 긴 메시지: 없음")
+    print("프로그램을 종료합니다.")
+mutants:
+  - name: "'끝'까지 개수에 셈"
+    code: |
+      count = 0
+      longest = ""
+      while True:
+          msg = input("메시지를 입력하세요 ('끝' 입력 시 종료): ")
+          count += 1
+          if msg == "끝":
+              break
+          if len(msg) > len(longest):
+              longest = msg
+      print()
+      print(f"입력한 메시지 수: {count}")
+      if count == 0:
+          print("가장 긴 메시지: 없음")
+      else:
+          print(f"가장 긴 메시지: {longest}")
+      print("프로그램을 종료합니다.")
+  - name: 길이가 같으면 나중 메시지를 고름
+    code: |
+      count = 0
+      longest = ""
+      while True:
+          msg = input("메시지를 입력하세요 ('끝' 입력 시 종료): ")
+          if msg == "끝":
+              break
+          count += 1
+          if len(msg) >= len(longest):
+              longest = msg
+      print()
+      print(f"입력한 메시지 수: {count}")
+      if count == 0:
+          print("가장 긴 메시지: 없음")
+      else:
+          print(f"가장 긴 메시지: {longest}")
+      print("프로그램을 종료합니다.")
+tests:
+  - stdin: "안녕\n반갑습니다\n잘가\n끝\n"
+    public: true
+  - stdin: "끝\n"
+    note: 바로 끝남
+  - stdin: "aa\nbb\ncc\n끝\n"
+    note: 길이가 모두 같음
+  - stdin: "하나\n둘셋넷다섯\n끝\n"
+hints:
+  - "`while True:` 안에서 입력을 받고, `끝`이면 `break`합니다. 개수는 `break` **뒤에서** 셉니다."
+explanation: |
+  센티넬(끝내는 값)은 데이터가 아니므로 세거나 처리하면 안 됩니다. 입력 → 끝 검사 → 처리 순서를 지키세요.

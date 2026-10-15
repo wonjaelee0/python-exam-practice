@@ -1,0 +1,69 @@
+id: lab-w6-11-word-cap
+title: "[6주차 추가2] 단어 빈도를 대문자로 출력"
+unit: lab
+difficulty: 2
+tags: [lab.w6, str.clean-pipeline, dict.count]
+statement: |
+  > 엘리스 6주차 실습 추가 2번(문장 정리 및 단어 빈도 분석)과 같은 유형입니다.
+
+  문장을 입력받아 `,` `.` `!` `?`를 지우고 소문자로 바꾼 뒤, 단어별 등장 횟수를 딕셔너리로 센다.
+  처음 나온 순서대로 **단어의 첫 글자를 대문자로** 바꿔 `Python: 3` 형식으로 출력하시오.
+
+  - 입력 프롬프트: `문장: `
+starter: |
+  text = input("문장: ")
+solution: |
+  text = input("문장: ")
+  for mark in ",.!?":
+      text = text.replace(mark, "")
+  counts = {}
+  for w in text.lower().split():
+      counts[w] = counts.get(w, 0) + 1
+  for w in counts:
+      print(f"{w.capitalize()}: {counts[w]}")
+alt_solutions:
+  - |
+    text = input("문장: ").lower()
+    clean = ""
+    for ch in text:
+        if ch not in ",.!?":
+            clean += ch
+    counts = {}
+    for w in clean.split():
+        if w in counts:
+            counts[w] += 1
+        else:
+            counts[w] = 1
+    for w, n in counts.items():
+        print(w[0].upper() + w[1:] + ": " + str(n))
+mutants:
+  - name: 소문자로 바꾸지 않음
+    code: |
+      text = input("문장: ")
+      for mark in ",.!?":
+          text = text.replace(mark, "")
+      counts = {}
+      for w in text.split():
+          counts[w] = counts.get(w, 0) + 1
+      for w in counts:
+          print(f"{w.capitalize()}: {counts[w]}")
+  - name: 느낌표와 물음표를 지우지 않음
+    code: |
+      text = input("문장: ")
+      for mark in ",.":
+          text = text.replace(mark, "")
+      counts = {}
+      for w in text.lower().split():
+          counts[w] = counts.get(w, 0) + 1
+      for w in counts:
+          print(f"{w.capitalize()}: {counts[w]}")
+tests:
+  - stdin: "Python is easy, Python is powerful. Python is popular.\n"
+    public: true
+  - stdin: "Hi! hi? HI.\n"
+  - stdin: "one two three\n"
+  - stdin: "Wow, wow! Really? really.\n"
+hints:
+  - "문장부호 여러 개는 `for mark in \",.!?\": text = text.replace(mark, \"\")`로 지울 수 있습니다."
+explanation: |
+  '정리 → 세기 → 출력 형식 맞추기'의 세 단계입니다. 출력할 때만 `capitalize()`로 첫 글자를 대문자로 바꾸고, 셀 때는 소문자로 통일해야 같은 단어가 합쳐집니다.

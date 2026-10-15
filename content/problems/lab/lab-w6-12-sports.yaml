@@ -1,0 +1,115 @@
+id: lab-w6-12-sports
+title: "[6주차 추가3] 좋아하는 운동 여러 개 집계"
+unit: lab
+difficulty: 3
+tags: [lab.w6, str.split-strip, dict.count, loop.while-sentinel]
+statement: |
+  > 엘리스 6주차 실습 추가 3번(좋아하는 색깔 빈도)과 같은 유형입니다.
+
+  좋아하는 운동을 쉼표로 구분해 한 줄에 여러 개 입력할 수 있다. `종료`가 입력될 때까지 받아 운동별 횟수를 세시오.
+
+  - 입력 프롬프트: `좋아하는 운동(,로 구분) 또는 종료: `
+  - 대문자는 소문자로 바꾸고, `,`와 `, ` 모두 구분자로 허용한다 (각 항목의 양쪽 공백 제거). 빈 항목은 무시한다.
+  - `종료`가 입력되면 `종료합니다`를 출력한 뒤, 처음 나온 순서대로 `soccer: 2` 형식으로 출력한다.
+  - 마지막 줄: `가장 많이 나온 운동: soccer` (같으면 먼저 나온 것)
+  - 응답이 하나도 없으면 `종료합니다` 다음에 `응답이 없습니다`만 출력한다.
+starter: |
+  counts = {}
+solution: |
+  counts = {}
+  while True:
+      line = input("좋아하는 운동(,로 구분) 또는 종료: ")
+      if line == "종료":
+          print("종료합니다")
+          break
+      for item in line.split(","):
+          item = item.strip().lower()
+          if item != "":
+              counts[item] = counts.get(item, 0) + 1
+  if len(counts) == 0:
+      print("응답이 없습니다")
+  else:
+      best = ""
+      for k in counts:
+          print(f"{k}: {counts[k]}")
+          if best == "" or counts[k] > counts[best]:
+              best = k
+      print(f"가장 많이 나온 운동: {best}")
+alt_solutions:
+  - |
+    names = []
+    nums = []
+    line = input("좋아하는 운동(,로 구분) 또는 종료: ")
+    while line != "종료":
+        for item in line.lower().split(","):
+            item = item.strip()
+            if item == "":
+                continue
+            if item in names:
+                nums[names.index(item)] += 1
+            else:
+                names.append(item)
+                nums.append(1)
+        line = input("좋아하는 운동(,로 구분) 또는 종료: ")
+    print("종료합니다")
+    if not names:
+        print("응답이 없습니다")
+    else:
+        for i in range(len(names)):
+            print(names[i] + ": " + str(nums[i]))
+        print("가장 많이 나온 운동: " + names[nums.index(max(nums))])
+mutants:
+  - name: 항목의 양쪽 공백을 지우지 않음
+    code: |
+      counts = {}
+      while True:
+          line = input("좋아하는 운동(,로 구분) 또는 종료: ")
+          if line == "종료":
+              print("종료합니다")
+              break
+          for item in line.split(","):
+              item = item.lower()
+              if item != "":
+                  counts[item] = counts.get(item, 0) + 1
+      if len(counts) == 0:
+          print("응답이 없습니다")
+      else:
+          best = ""
+          for k in counts:
+              print(f"{k}: {counts[k]}")
+              if best == "" or counts[k] > counts[best]:
+                  best = k
+          print(f"가장 많이 나온 운동: {best}")
+  - name: 소문자로 바꾸지 않음
+    code: |
+      counts = {}
+      while True:
+          line = input("좋아하는 운동(,로 구분) 또는 종료: ")
+          if line == "종료":
+              print("종료합니다")
+              break
+          for item in line.split(","):
+              item = item.strip()
+              if item != "":
+                  counts[item] = counts.get(item, 0) + 1
+      if len(counts) == 0:
+          print("응답이 없습니다")
+      else:
+          best = ""
+          for k in counts:
+              print(f"{k}: {counts[k]}")
+              if best == "" or counts[k] > counts[best]:
+                  best = k
+          print(f"가장 많이 나온 운동: {best}")
+tests:
+  - stdin: "soccer\nTennis, baseball, SOCCER\nswimming,tennis\n종료\n"
+    public: true
+  - stdin: "종료\n"
+    note: 응답 없음
+  - stdin: "a, b,\nB\n종료\n"
+    note: 빈 항목 무시
+  - stdin: "yoga\nYoga \n종료\n"
+hints:
+  - "`line.split(\",\")`로 나눈 뒤 각 항목에 `strip().lower()`를 하면 `,`와 `, `를 모두 처리할 수 있습니다."
+explanation: |
+  한 줄에 값이 여러 개인 센티넬 입력입니다. 바깥은 `while`(줄 단위), 안쪽은 `for`(항목 단위) 반복이 됩니다.

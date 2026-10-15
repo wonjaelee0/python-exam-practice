@@ -1,0 +1,78 @@
+id: lab-w5-05-seats
+title: "[5주차 3번] 홀수 좌석 예약석 만들기"
+unit: lab
+difficulty: 2
+tags: [lab.w5, list.range, list.slicing]
+statement: |
+  > 엘리스 5주차 실습 3번(극장 좌석, range·슬라이싱)과 같은 유형입니다.
+
+  좌석 수 N(4의 배수)을 입력받는다. 좌석 번호는 1번부터 N번까지이다.
+
+  1. `range()`로 **홀수** 번호 좌석 리스트를 만든다.
+  2. 슬라이싱으로 앞쪽 절반과 뒤쪽 절반으로 나눈다.
+  3. 앞쪽 절반은 `"R-번호"` 형태의 문자열로 바꾼 새 리스트를 만든다 (예약석).
+  4. 예약석 리스트 + 뒤쪽 절반을 합쳐 출력한다.
+
+  - 입력 프롬프트: `좌석 수: `
+  - 출력 (N이 20일 때)
+    - `전체 좌석: ['R-1', 'R-3', 'R-5', 'R-7', 'R-9', 11, 13, 15, 17, 19]`
+    - `예약석 수: 5`
+starter: |
+  n = int(input("좌석 수: "))
+solution: |
+  n = int(input("좌석 수: "))
+  seats = list(range(1, n + 1, 2))
+  half = len(seats) // 2
+  front = seats[:half]
+  back = seats[half:]
+  reserved = []
+  for s in front:
+      reserved.append(f"R-{s}")
+  all_seats = reserved + back
+  print("전체 좌석:", all_seats)
+  print(f"예약석 수: {len(reserved)}")
+alt_solutions:
+  - |
+    n = int(input("좌석 수: "))
+    seats = [i for i in range(1, n + 1) if i % 2 == 1]
+    k = len(seats) // 2
+    reserved = ["R-" + str(s) for s in seats[:k]]
+    print("전체 좌석:", reserved + seats[k:])
+    print("예약석 수:", len(reserved))
+mutants:
+  - name: 짝수 좌석으로 만듦
+    code: |
+      n = int(input("좌석 수: "))
+      seats = list(range(2, n + 1, 2))
+      half = len(seats) // 2
+      front = seats[:half]
+      back = seats[half:]
+      reserved = []
+      for s in front:
+          reserved.append(f"R-{s}")
+      all_seats = reserved + back
+      print("전체 좌석:", all_seats)
+      print(f"예약석 수: {len(reserved)}")
+  - name: 절반을 좌석 수 기준으로 자름
+    code: |
+      n = int(input("좌석 수: "))
+      seats = list(range(1, n + 1, 2))
+      half = n // 2
+      front = seats[:half]
+      back = seats[half:]
+      reserved = []
+      for s in front:
+          reserved.append(f"R-{s}")
+      all_seats = reserved + back
+      print("전체 좌석:", all_seats)
+      print(f"예약석 수: {len(reserved)}")
+tests:
+  - stdin: "20\n"
+    public: true
+  - stdin: "4\n"
+  - stdin: "12\n"
+  - stdin: "40\n"
+hints:
+  - "`range(1, n + 1, 2)`는 1, 3, 5, … 홀수만 만듭니다. 절반 위치는 `len(seats) // 2`."
+explanation: |
+  리스트에는 문자열과 정수가 섞여 있을 수 있고, 출력하면 문자열에만 따옴표가 붙습니다. 슬라이싱 `[:k]`, `[k:]`는 겹치지 않게 리스트를 둘로 나눕니다.

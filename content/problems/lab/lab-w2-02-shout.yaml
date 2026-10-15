@@ -1,0 +1,63 @@
+id: lab-w2-02-shout
+title: "[2주차 사전2·3] 따옴표와 문자열 반복"
+unit: lab
+difficulty: 1
+tags: [lab.w2, str.quote, str.repeat]
+statement: |
+  > 엘리스 2주차 실습 사전문제 2(특수문자 출력)·3(문자열 반복)과 같은 유형입니다.
+
+  외칠 말과 횟수를 입력받아 다음 세 줄을 출력하시오.
+
+  1. `외칠 말: "파이팅"` — 입력한 말을 **큰따옴표로 감싸서** 출력
+  2. 외칠 말을 횟수만큼 ` ~ `(공백, 물결, 공백)로 이어서 출력 (예: `파이팅 ~ 파이팅 ~ 파이팅`)
+  3. `총 글자 수: 15` — 2번째 줄 문자열의 길이
+
+  - 입력 프롬프트: `단어: `, `횟수: ` (횟수는 1 이상)
+starter: |
+  word = input("단어: ")
+  n = int(input("횟수: "))
+solution: |
+  word = input("단어: ")
+  n = int(input("횟수: "))
+  print(f'외칠 말: "{word}"')
+  line = " ~ ".join([word] * n)
+  print(line)
+  print(f"총 글자 수: {len(line)}")
+alt_solutions:
+  - |
+    word = input("단어: ")
+    n = int(input("횟수: "))
+    print("외칠 말: \"" + word + "\"")
+    line = word
+    for i in range(n - 1):
+        line = line + " ~ " + word
+    print(line)
+    print("총 글자 수:", len(line))
+mutants:
+  - name: 마지막에도 구분자를 붙임
+    code: |
+      word = input("단어: ")
+      n = int(input("횟수: "))
+      print(f'외칠 말: "{word}"')
+      line = (word + " ~ ") * n
+      print(line)
+      print(f"총 글자 수: {len(line)}")
+  - name: 따옴표 없이 출력
+    code: |
+      word = input("단어: ")
+      n = int(input("횟수: "))
+      print("외칠 말:", word)
+      line = " ~ ".join([word] * n)
+      print(line)
+      print(f"총 글자 수: {len(line)}")
+tests:
+  - stdin: "파이팅\n3\n"
+    public: true
+  - stdin: "Go\n1\n"
+  - stdin: "아자\n5\n"
+  - stdin: "hello world\n2\n"
+hints:
+  - "문자열 안에 큰따옴표를 넣으려면 작은따옴표로 감싸거나(`'\"'`) 역슬래시를 씁니다(`\"\\\"\"`)."
+  - "`\" ~ \".join([word] * n)`은 단어 n개를 구분자로 이어 붙입니다."
+explanation: |
+  `(word + " ~ ") * n`처럼 하면 끝에 구분자가 하나 더 붙습니다. 구분자는 '사이'에만 들어가야 하므로 `join`이 편합니다.

@@ -1,0 +1,77 @@
+id: lab-w4-04-payroll
+title: "[4주차 1번] 근속연수별 급여 총액"
+unit: lab
+difficulty: 2
+tags: [lab.w4, loop.for, cond.if]
+statement: |
+  > 엘리스 4주차 실습 1번(직급별 월급 총액)과 같은 유형입니다.
+
+  직원 수를 입력받고, 직원마다 근속연수와 기본급을 입력받아 전체 급여 총액을 출력하시오.
+
+  - 근속 **5년 이상**: 기본급 + 기본급의 15%
+  - 근속 5년 미만: 기본급 + 기본급의 5%
+  - 자동 채점을 위해 `기본급 + 기본급 * 15 / 100` (또는 `* 5 / 100`) 순서로 계산한다.
+  - 입력 프롬프트: `직원 수: ` (1 이상), 직원마다 `근속연수: `, `기본급: `
+  - 출력: `급여 총액: 665.0`
+starter: |
+  n = int(input("직원 수: "))
+  total = 0
+solution: |
+  n = int(input("직원 수: "))
+  total = 0
+  for i in range(n):
+      years = int(input("근속연수: "))
+      base = int(input("기본급: "))
+      if years >= 5:
+          total += base + base * 15 / 100
+      else:
+          total += base + base * 5 / 100
+  print(f"급여 총액: {total}")
+alt_solutions:
+  - |
+    n = int(input("직원 수: "))
+    pays = []
+    for i in range(n):
+        years = int(input("근속연수: "))
+        base = int(input("기본급: "))
+        bonus = 15 if years >= 5 else 5
+        pays.append(base + base * bonus / 100)
+    total = 0
+    for p in pays:
+        total = total + p
+    print("급여 총액:", total)
+mutants:
+  - name: 근속 5년을 미만 쪽으로 계산 (> 사용)
+    code: |
+      n = int(input("직원 수: "))
+      total = 0
+      for i in range(n):
+          years = int(input("근속연수: "))
+          base = int(input("기본급: "))
+          if years > 5:
+              total += base + base * 15 / 100
+          else:
+              total += base + base * 5 / 100
+      print(f"급여 총액: {total}")
+  - name: 총액을 반복 안에서 초기화
+    code: |
+      n = int(input("직원 수: "))
+      for i in range(n):
+          total = 0
+          years = int(input("근속연수: "))
+          base = int(input("기본급: "))
+          if years >= 5:
+              total += base + base * 15 / 100
+          else:
+              total += base + base * 5 / 100
+      print(f"급여 총액: {total}")
+tests:
+  - stdin: "3\n1\n250\n7\n150\n5\n200\n"
+    public: true
+  - stdin: "1\n4\n1000\n"
+  - stdin: "2\n10\n333\n0\n0\n"
+  - stdin: "2\n5\n100\n6\n100\n"
+hints:
+  - "총액 변수는 반복문 **밖에서** 0으로 만들고, 반복문 안에서 더해 나갑니다."
+explanation: |
+  '5년 이상'은 5를 포함하므로 `>=`입니다. 반복문 안에서 누적 변수를 0으로 초기화하면 마지막 직원의 급여만 남습니다.

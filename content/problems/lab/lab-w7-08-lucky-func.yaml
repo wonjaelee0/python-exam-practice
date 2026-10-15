@@ -1,0 +1,236 @@
+id: lab-w7-08-lucky-func
+title: "[7주차 5번] 행운 번호 코드를 함수로 (빈칸)"
+unit: lab
+difficulty: 3
+tags: [lab.w7, func.refactor, random.seed]
+format: fill
+statement: |
+  > 엘리스 7주차 실습 5번(로또 코드 함수화)과 같은 유형의 **코드 빈칸 채우기**입니다.
+
+  5주차 행운 번호 맞히기 코드를 세 함수로 나눴다. 빈칸 `_____`을 채우시오. `random.seed(1)`은 지우지 말 것.
+
+  - `draw_lucky(count, limit)`: 1~limit 사이의 서로 다른 수 count개를 뽑아 리스트로 반환 (`randint`를 반복 호출, 이미 뽑은 수면 건너뜀)
+  - `get_user(count)`: `Enter a number between 1-20: `로 count번 입력받아 리스트로 반환
+  - `print_result(user, lucky)`: 결과 출력 (O/X 줄 끝에 공백 하나 있음)
+
+  ```
+  =====Result=====
+  3 O 7 X 9 O 12 X
+  ================
+  User number: [3, 7, 9, 12]
+  Lucky number: [5, 19, 3, 9]
+  Correct: 2
+  ```
+starter: |
+  import random
+  random.seed(1)
+
+
+  def draw_lucky(count, limit):
+      lucky = []
+      while len(lucky) < _____:
+          n = random.randint(1, limit)
+          if n _____ lucky:
+              lucky.append(n)
+      return lucky
+
+
+  def get_user(count):
+      user = []
+      for i in range(count):
+          user.append(int(input("Enter a number between 1-20: ")))
+      _____ user
+
+
+  def print_result(user, lucky):
+      correct = 0
+      print("=====Result=====")
+      for u in user:
+          if u in lucky:
+              print(u, "O", end=" ")
+              correct += 1
+          else:
+              print(u, "X", end=" ")
+      print()
+      print("================")
+      print("User number:", user)
+      print("Lucky number:", lucky)
+      print("Correct:", correct)
+
+
+  lucky = draw_lucky(4, 20)
+  user = _____(4)
+  print_result(_____, _____)
+solution: |
+  import random
+  random.seed(1)
+
+
+  def draw_lucky(count, limit):
+      lucky = []
+      while len(lucky) < count:
+          n = random.randint(1, limit)
+          if n not in lucky:
+              lucky.append(n)
+      return lucky
+
+
+  def get_user(count):
+      user = []
+      for i in range(count):
+          user.append(int(input("Enter a number between 1-20: ")))
+      return user
+
+
+  def print_result(user, lucky):
+      correct = 0
+      print("=====Result=====")
+      for u in user:
+          if u in lucky:
+              print(u, "O", end=" ")
+              correct += 1
+          else:
+              print(u, "X", end=" ")
+      print()
+      print("================")
+      print("User number:", user)
+      print("Lucky number:", lucky)
+      print("Correct:", correct)
+
+
+  lucky = draw_lucky(4, 20)
+  user = get_user(4)
+  print_result(user, lucky)
+alt_solutions:
+  - |
+    import random
+    random.seed(1)
+
+
+    def draw_lucky(count, limit):
+        lucky = []
+        while len(lucky) != count:
+            n = random.randint(1, limit)
+            if not n in lucky:
+                lucky = lucky + [n]
+        return lucky
+
+
+    def get_user(count):
+        return [int(input("Enter a number between 1-20: ")) for i in range(count)]
+
+
+    def print_result(user, lucky):
+        line = ""
+        correct = 0
+        for u in user:
+            if u in lucky:
+                line += str(u) + " O "
+                correct += 1
+            else:
+                line += str(u) + " X "
+        print("=====Result=====")
+        print(line)
+        print("================")
+        print("User number: " + str(user))
+        print("Lucky number: " + str(lucky))
+        print("Correct: " + str(correct))
+
+
+    lucky = draw_lucky(4, 20)
+    user = get_user(4)
+    print_result(user, lucky)
+mutants:
+  - name: 하나를 더 뽑음 (<= 사용)
+    code: |
+      import random
+      random.seed(1)
+
+
+      def draw_lucky(count, limit):
+          lucky = []
+          while len(lucky) <= count:
+              n = random.randint(1, limit)
+              if n not in lucky:
+                  lucky.append(n)
+          return lucky
+
+
+      def get_user(count):
+          user = []
+          for i in range(count):
+              user.append(int(input("Enter a number between 1-20: ")))
+          return user
+
+
+      def print_result(user, lucky):
+          correct = 0
+          print("=====Result=====")
+          for u in user:
+              if u in lucky:
+                  print(u, "O", end=" ")
+                  correct += 1
+              else:
+                  print(u, "X", end=" ")
+          print()
+          print("================")
+          print("User number:", user)
+          print("Lucky number:", lucky)
+          print("Correct:", correct)
+
+
+      lucky = draw_lucky(4, 20)
+      user = get_user(4)
+      print_result(user, lucky)
+  - name: 인자 순서를 바꿔 전달
+    code: |
+      import random
+      random.seed(1)
+
+
+      def draw_lucky(count, limit):
+          lucky = []
+          while len(lucky) < count:
+              n = random.randint(1, limit)
+              if n not in lucky:
+                  lucky.append(n)
+          return lucky
+
+
+      def get_user(count):
+          user = []
+          for i in range(count):
+              user.append(int(input("Enter a number between 1-20: ")))
+          return user
+
+
+      def print_result(user, lucky):
+          correct = 0
+          print("=====Result=====")
+          for u in user:
+              if u in lucky:
+                  print(u, "O", end=" ")
+                  correct += 1
+              else:
+                  print(u, "X", end=" ")
+          print()
+          print("================")
+          print("User number:", user)
+          print("Lucky number:", lucky)
+          print("Correct:", correct)
+
+
+      lucky = draw_lucky(4, 20)
+      user = get_user(4)
+      print_result(lucky, user)
+tests:
+  - stdin: "3\n7\n9\n12\n"
+    public: true
+  - stdin: "5\n19\n3\n9\n"
+  - stdin: "1\n2\n4\n6\n"
+  - stdin: "20\n19\n18\n17\n"
+hints:
+  - "중복을 피하려면 `if n not in lucky:`일 때만 추가합니다. 함수의 결과는 `return`으로 돌려줘야 바깥에서 받을 수 있습니다."
+  - "`print_result(user, lucky)`처럼 매개변수 순서대로 인자를 넘깁니다."
+explanation: |
+  긴 코드를 '역할별 함수'로 나누면 각 부분을 따로 이해하고 재사용할 수 있습니다. 함수로 바꾼 뒤에도 출력이 원래 코드와 똑같은지 확인하는 것이 핵심입니다.

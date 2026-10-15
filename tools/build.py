@@ -308,7 +308,10 @@ def main() -> int:
 
     manifest_units, manifest_problems, hashes = [], [], []
     for uid in sorted(units, key=lambda u: units[u].get("order", 99)):
-        items = sorted(by_unit.get(uid, []), key=lambda pe: (pe[0]["difficulty"], pe[0]["id"]))
+        if units[uid].get("sort") == "id":  # 예: 실습 변형 단원은 주차 순서(id)대로
+            items = sorted(by_unit.get(uid, []), key=lambda pe: pe[0]["id"])
+        else:
+            items = sorted(by_unit.get(uid, []), key=lambda pe: (pe[0]["difficulty"], pe[0]["id"]))
         out_problems = []
         for no, (p, expected) in enumerate(items, 1):
             tests = []

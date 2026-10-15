@@ -1,0 +1,67 @@
+id: lab-w2-09-four-digits
+title: "[2주차 추가1] 네 자리 수의 합과 뒤집기"
+unit: lab
+difficulty: 2
+tags: [lab.w2, op.floor-mod, digits]
+statement: |
+  > 엘리스 2주차 실습 추가 1번(세 자리 수 각 자리 합)과 같은 유형입니다.
+
+  네 자리 정수(1000~9999)를 입력받아 각 자리 숫자의 합과, 자릿수를 거꾸로 뒤집은 수를 출력하시오.
+
+  - **필수 조건**: 문자열로 바꾸지 말고 `%`, `//` 연산자만 사용한다.
+  - 뒤집은 수는 정수로 출력한다 (예: 1230 → `321`, 앞의 0은 사라진다).
+  - 입력 프롬프트: `Enter a 4-digit number: `
+  - 출력: `The sum is: 10`, `The reverse is: 4321`
+starter: |
+  n = int(input("Enter a 4-digit number: "))
+solution: |
+  n = int(input("Enter a 4-digit number: "))
+  d1 = n // 1000
+  d2 = n // 100 % 10
+  d3 = n // 10 % 10
+  d4 = n % 10
+  print("The sum is:", d1 + d2 + d3 + d4)
+  print("The reverse is:", d4 * 1000 + d3 * 100 + d2 * 10 + d1)
+alt_solutions:
+  - |
+    n = int(input("Enter a 4-digit number: "))
+    total = 0
+    rev = 0
+    m = n
+    for i in range(4):
+        d = m % 10
+        total += d
+        rev = rev * 10 + d
+        m = m // 10
+    print("The sum is: " + str(total))
+    print("The reverse is: " + str(rev))
+mutants:
+  - name: 백의 자리를 두 자리로 잘못 구함
+    code: |
+      n = int(input("Enter a 4-digit number: "))
+      d1 = n // 1000
+      d2 = n % 1000 // 10
+      d3 = n // 10 % 10
+      d4 = n % 10
+      print("The sum is:", d1 + d2 + d3 + d4)
+      print("The reverse is:", d4 * 1000 + d3 * 100 + d2 * 10 + d1)
+  - name: 자리를 뒤집지 않음
+    code: |
+      n = int(input("Enter a 4-digit number: "))
+      d1 = n // 1000
+      d2 = n // 100 % 10
+      d3 = n // 10 % 10
+      d4 = n % 10
+      print("The sum is:", d1 + d2 + d3 + d4)
+      print("The reverse is:", d1 * 1000 + d2 * 100 + d3 * 10 + d4)
+tests:
+  - stdin: "1234\n"
+    public: true
+  - stdin: "1230\n"
+    note: 뒤집으면 앞자리가 0
+  - stdin: "9999\n"
+  - stdin: "5007\n"
+hints:
+  - "백의 자리는 `n // 100 % 10`: 100으로 나눈 몫의 일의 자리입니다."
+explanation: |
+  `n // 10**k % 10`은 k번째 자리 숫자를 꺼내는 공식입니다. 반복문을 쓰면 일의 자리부터 `% 10`으로 꺼내고 `// 10`으로 지워 나갈 수 있습니다 (4주차 while 문제와 연결).

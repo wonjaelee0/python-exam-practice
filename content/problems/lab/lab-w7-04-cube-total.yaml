@@ -1,0 +1,93 @@
+id: lab-w7-04-cube-total
+title: "[7주차 1번] 세제곱 함수와 통계 출력 함수"
+unit: lab
+difficulty: 2
+tags: [lab.w7, func.return, func.param]
+statement: |
+  > 엘리스 7주차 실습 1번(return_square, print_average)과 같은 유형입니다.
+
+  숫자 하나의 세제곱을 **반환**하는 함수 `return_cube(n)`와, 세 숫자의 합과 평균을 **출력**하는 함수 `print_stats(a, b, c)`를 정의하시오.
+  세 정수를 입력받아 각각 세제곱한 뒤, 그 세 값의 합과 평균을 출력한다.
+
+  - 입력 프롬프트: `Enter a number: ` (3번)
+  - 출력: `The total is: 99`, `The average is: 33.0` (평균은 반올림하지 않음)
+starter: |
+  def return_cube(n):
+      pass
+
+
+  def print_stats(a, b, c):
+      pass
+solution: |
+  def return_cube(n):
+      return n ** 3
+
+
+  def print_stats(a, b, c):
+      total = a + b + c
+      print(f"The total is: {total}")
+      print(f"The average is: {total / 3}")
+
+
+  x = return_cube(int(input("Enter a number: ")))
+  y = return_cube(int(input("Enter a number: ")))
+  z = return_cube(int(input("Enter a number: ")))
+  print_stats(x, y, z)
+alt_solutions:
+  - |
+    def return_cube(n):
+        return n * n * n
+
+
+    def print_stats(a, b, c):
+        print("The total is:", a + b + c)
+        print("The average is:", (a + b + c) / 3)
+
+
+    cubes = []
+    for i in range(3):
+        cubes.append(return_cube(int(input("Enter a number: "))))
+    print_stats(cubes[0], cubes[1], cubes[2])
+mutants:
+  - name: 세제곱 대신 제곱
+    code: |
+      def return_cube(n):
+          return n ** 2
+
+
+      def print_stats(a, b, c):
+          total = a + b + c
+          print(f"The total is: {total}")
+          print(f"The average is: {total / 3}")
+
+
+      x = return_cube(int(input("Enter a number: ")))
+      y = return_cube(int(input("Enter a number: ")))
+      z = return_cube(int(input("Enter a number: ")))
+      print_stats(x, y, z)
+  - name: 평균을 몫(//)으로 계산
+    code: |
+      def return_cube(n):
+          return n ** 3
+
+
+      def print_stats(a, b, c):
+          total = a + b + c
+          print(f"The total is: {total}")
+          print(f"The average is: {total // 3}")
+
+
+      x = return_cube(int(input("Enter a number: ")))
+      y = return_cube(int(input("Enter a number: ")))
+      z = return_cube(int(input("Enter a number: ")))
+      print_stats(x, y, z)
+tests:
+  - stdin: "2\n3\n4\n"
+    public: true
+  - stdin: "1\n1\n2\n"
+  - stdin: "-1\n0\n1\n"
+  - stdin: "5\n5\n5\n"
+hints:
+  - "값을 돌려주는 함수(`return_cube`)와 출력만 하는 함수(`print_stats`)의 역할을 구분하세요."
+explanation: |
+  `return_cube(int(input(...)))`처럼 함수 호출 안에 다른 호출을 넣을 수 있습니다. 출력 함수는 반환값이 없으므로 `print_stats(...)`처럼 호출만 합니다.

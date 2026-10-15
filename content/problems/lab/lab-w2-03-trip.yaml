@@ -1,0 +1,72 @@
+id: lab-w2-03-trip
+title: "[2주차 사전4] 여행 기록 입력·출력"
+unit: lab
+difficulty: 1
+tags: [lab.w2, io.input, io.print-sep]
+statement: |
+  > 엘리스 2주차 실습 사전문제 4(선호 항목 입력·출력)와 같은 유형입니다.
+
+  여행한 도시, 먹은 음식, 한 활동을 차례대로 입력받아 아래 형식으로 출력하시오.
+
+  - 첫 줄에 `Tell me about your trip.`을 출력한 뒤 입력을 받는다.
+  - 입력 프롬프트: `City: `, `Food: `, `Activity: `
+  - 출력 (입력 후)
+    - `I visited Busan.`
+    - `I ate milmyeon.`
+    - `I enjoyed surfing.`
+    - 빈 줄
+    - `You entered: Busan milmyeon surfing` (입력한 세 값을 공백으로 구분)
+starter: |
+  print("Tell me about your trip.")
+solution: |
+  print("Tell me about your trip.")
+  city = input("City: ")
+  food = input("Food: ")
+  activity = input("Activity: ")
+  print(f"I visited {city}.")
+  print(f"I ate {food}.")
+  print(f"I enjoyed {activity}.")
+  print()
+  print("You entered:", city, food, activity)
+alt_solutions:
+  - |
+    print("Tell me about your trip.")
+    city = input("City: ")
+    food = input("Food: ")
+    activity = input("Activity: ")
+    print("I visited " + city + ".")
+    print("I ate " + food + ".")
+    print("I enjoyed " + activity + ".")
+    print("\nYou entered: " + city + " " + food + " " + activity)
+mutants:
+  - name: 빈 줄을 빠뜨림
+    code: |
+      print("Tell me about your trip.")
+      city = input("City: ")
+      food = input("Food: ")
+      activity = input("Activity: ")
+      print(f"I visited {city}.")
+      print(f"I ate {food}.")
+      print(f"I enjoyed {activity}.")
+      print("You entered:", city, food, activity)
+  - name: 마지막 줄을 쉼표로 구분
+    code: |
+      print("Tell me about your trip.")
+      city = input("City: ")
+      food = input("Food: ")
+      activity = input("Activity: ")
+      print(f"I visited {city}.")
+      print(f"I ate {food}.")
+      print(f"I enjoyed {activity}.")
+      print()
+      print("You entered:", city, food, activity, sep=", ")
+tests:
+  - stdin: "Busan\nmilmyeon\nsurfing\n"
+    public: true
+  - stdin: "Jeju\ntangerine\nhiking\n"
+  - stdin: "Seoul\nkimchi stew\nwalking\n"
+  - stdin: "Paris\nbread\nmuseum tour\n"
+hints:
+  - "`print(a, b, c)`는 값 사이에 공백을 하나씩 넣어 줍니다. 빈 줄은 `print()`."
+explanation: |
+  콤마(,)로 이어 출력하면 자동으로 공백이 들어가고, `+`로 이으면 공백을 직접 넣어야 합니다. 문장 끝 `.` 앞에는 공백이 없어야 하므로 f-string이나 `+`가 편합니다.

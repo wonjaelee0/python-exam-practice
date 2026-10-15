@@ -1,0 +1,65 @@
+id: lab-w2-05-celsius-avg
+title: "[2주차 2번] 섭씨 3일 평균을 화씨로"
+unit: lab
+difficulty: 2
+tags: [lab.w2, op.arith, io.input-cast]
+statement: |
+  > 엘리스 2주차 실습 2번(화씨 평균 → 섭씨)과 반대 방향의 같은 유형입니다.
+
+  3일치 온도를 섭씨(정수)로 입력받아 (1) 평균 온도(섭씨)를 구하고, (2) 그 평균을 화씨로 바꿔 출력하시오.
+
+  - 변환식: F = C × 9 / 5 + 32 — 자동 채점을 위해 **`평균 * 9 / 5 + 32` 순서 그대로** 계산한다.
+  - 입력 프롬프트: `Enter temperature(C): ` (3번)
+  - 입력이 끝나면 빈 줄을 하나 출력한 뒤
+    - `Average temperature for 3 days (C): 25.0`
+    - `Average temperature for 3 days (F): 77.0`
+  - 계산 결과는 반올림하지 않고 그대로 출력한다.
+starter: |
+  t1 = int(input("Enter temperature(C): "))
+solution: |
+  t1 = int(input("Enter temperature(C): "))
+  t2 = int(input("Enter temperature(C): "))
+  t3 = int(input("Enter temperature(C): "))
+  avg = (t1 + t2 + t3) / 3
+  print()
+  print("Average temperature for 3 days (C):", avg)
+  print("Average temperature for 3 days (F):", avg * 9 / 5 + 32)
+alt_solutions:
+  - |
+    total = 0
+    for i in range(3):
+        total += int(input("Enter temperature(C): "))
+    avg = total / 3
+    f = avg * 9 / 5 + 32
+    print()
+    print(f"Average temperature for 3 days (C): {avg}")
+    print(f"Average temperature for 3 days (F): {f}")
+mutants:
+  - name: 화씨→섭씨 식을 씀
+    code: |
+      t1 = int(input("Enter temperature(C): "))
+      t2 = int(input("Enter temperature(C): "))
+      t3 = int(input("Enter temperature(C): "))
+      avg = (t1 + t2 + t3) / 3
+      print()
+      print("Average temperature for 3 days (C):", avg)
+      print("Average temperature for 3 days (F):", (avg - 32) * 5 / 9)
+  - name: 평균을 몫(//)으로 구함
+    code: |
+      t1 = int(input("Enter temperature(C): "))
+      t2 = int(input("Enter temperature(C): "))
+      t3 = int(input("Enter temperature(C): "))
+      avg = (t1 + t2 + t3) // 3
+      print()
+      print("Average temperature for 3 days (C):", avg)
+      print("Average temperature for 3 days (F):", avg * 9 / 5 + 32)
+tests:
+  - stdin: "20\n25\n30\n"
+    public: true
+  - stdin: "10\n11\n13\n"
+  - stdin: "-5\n0\n4\n"
+  - stdin: "0\n0\n0\n"
+hints:
+  - "평균은 `/ 3`으로 구하면 실수가 됩니다. `//`를 쓰면 소수점이 사라집니다."
+explanation: |
+  실수 계산은 연산 순서에 따라 마지막 자리가 달라질 수 있어서, elice 문제도 '식을 그대로 쓰라'는 조건을 붙입니다. 지문의 순서를 정확히 따르세요.

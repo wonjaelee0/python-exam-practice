@@ -1,0 +1,75 @@
+id: lab-w5-04-shopping
+title: "[5주차 2번] 장보기 목록 관리"
+unit: lab
+difficulty: 2
+tags: [lab.w5, list.remove-insert, list.in]
+statement: |
+  > 엘리스 5주차 실습 2번(오늘 할 일 관리 앱)과 같은 유형입니다.
+
+  장보기 목록 `items`(시작 코드)가 있다.
+
+  1. 처음 목록을 `장보기 목록: [...]`으로 출력한다.
+  2. `산 물건: `으로 입력받아 목록에 있으면 삭제하고 `계란 구매 완료`, 없으면 `목록에 없는 물건입니다`를 출력한다. (**예외 처리**: 없는 물건을 지우다 오류가 나면 안 된다)
+  3. `급한 물건: `으로 입력받아 목록의 **맨 앞**에 추가한다.
+  4. `남은 장보기 목록: [...]`을 출력한다.
+starter: |
+  items = ["우유", "계란", "두부"]
+solution: |
+  items = ["우유", "계란", "두부"]
+  print("장보기 목록:", items)
+  bought = input("산 물건: ")
+  if bought in items:
+      items.remove(bought)
+      print(f"{bought} 구매 완료")
+  else:
+      print("목록에 없는 물건입니다")
+  urgent = input("급한 물건: ")
+  items.insert(0, urgent)
+  print("남은 장보기 목록:", items)
+alt_solutions:
+  - |
+    items = ["우유", "계란", "두부"]
+    print("장보기 목록:", items)
+    bought = input("산 물건: ")
+    try:
+        items.remove(bought)
+        print(bought + " 구매 완료")
+    except ValueError:
+        print("목록에 없는 물건입니다")
+    items = [input("급한 물건: ")] + items
+    print("남은 장보기 목록:", items)
+mutants:
+  - name: 없는 물건을 확인하지 않고 삭제
+    code: |
+      items = ["우유", "계란", "두부"]
+      print("장보기 목록:", items)
+      bought = input("산 물건: ")
+      items.remove(bought)
+      print(f"{bought} 구매 완료")
+      urgent = input("급한 물건: ")
+      items.insert(0, urgent)
+      print("남은 장보기 목록:", items)
+  - name: 급한 물건을 맨 뒤에 추가
+    code: |
+      items = ["우유", "계란", "두부"]
+      print("장보기 목록:", items)
+      bought = input("산 물건: ")
+      if bought in items:
+          items.remove(bought)
+          print(f"{bought} 구매 완료")
+      else:
+          print("목록에 없는 물건입니다")
+      urgent = input("급한 물건: ")
+      items.append(urgent)
+      print("남은 장보기 목록:", items)
+tests:
+  - stdin: "계란\n휴지\n"
+    public: true
+  - stdin: "치즈\n라면\n"
+    note: 목록에 없는 물건
+  - stdin: "우유\n우유\n"
+  - stdin: "두부\n빵\n"
+hints:
+  - "`if 값 in 리스트:`로 먼저 확인하면 `remove`에서 오류가 나지 않습니다. 맨 앞에 넣기는 `insert(0, 값)`."
+explanation: |
+  `remove`는 없는 값이면 `ValueError`를 냅니다. 원 문제의 '예외 처리 필요'는 이 경우를 대비하라는 뜻입니다. `in` 검사나 `try-except` 둘 다 가능합니다.

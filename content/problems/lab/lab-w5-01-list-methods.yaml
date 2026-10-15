@@ -1,0 +1,108 @@
+id: lab-w5-01-list-methods
+title: "[5주차 사전1~5] 리스트 메서드 빈칸 채우기"
+unit: lab
+difficulty: 1
+tags: [lab.w5, list.methods, list.in]
+format: fill
+statement: |
+  > 엘리스 5주차 실습 사전문제 1~5(도서관리: 추가·삽입·검색·삭제·정렬)와 같은 유형의 **코드 빈칸 채우기**입니다.
+
+  분식 메뉴 리스트에 메뉴를 추가·삽입·삭제하고 정렬하는 코드이다. 빈칸 `_____`을 채우시오.
+
+  - 입력 프롬프트: `추가할 메뉴: ` (맨 뒤에 추가), `맨 앞에 넣을 메뉴: ` (0번 위치에 삽입), `뺄 메뉴: ` (있으면 삭제, 없으면 `없는 메뉴입니다`)
+  - 출력: 처음과 삭제 후에 `현재 메뉴: [...]`, 정렬 후 `정렬된 메뉴: [...]`, 마지막에 `메뉴 수: 5`
+starter: |
+  foods = ["김밥", "라면", "떡볶이"]
+  print("현재 메뉴:", foods)
+  new = input("추가할 메뉴: ")
+  foods._____(new)
+  first = input("맨 앞에 넣을 메뉴: ")
+  foods._____(0, first)
+  gone = input("뺄 메뉴: ")
+  if gone _____ foods:
+      foods.remove(gone)
+  else:
+      print("없는 메뉴입니다")
+  print("현재 메뉴:", foods)
+  foods._____()
+  print("정렬된 메뉴:", foods)
+  print("메뉴 수:", _____(foods))
+solution: |
+  foods = ["김밥", "라면", "떡볶이"]
+  print("현재 메뉴:", foods)
+  new = input("추가할 메뉴: ")
+  foods.append(new)
+  first = input("맨 앞에 넣을 메뉴: ")
+  foods.insert(0, first)
+  gone = input("뺄 메뉴: ")
+  if gone in foods:
+      foods.remove(gone)
+  else:
+      print("없는 메뉴입니다")
+  print("현재 메뉴:", foods)
+  foods.sort()
+  print("정렬된 메뉴:", foods)
+  print("메뉴 수:", len(foods))
+alt_solutions:
+  - |
+    foods = ["김밥", "라면", "떡볶이"]
+    print("현재 메뉴:", foods)
+    foods = foods + [input("추가할 메뉴: ")]
+    foods = [input("맨 앞에 넣을 메뉴: ")] + foods
+    gone = input("뺄 메뉴: ")
+    if foods.count(gone) > 0:
+        del foods[foods.index(gone)]
+    else:
+        print("없는 메뉴입니다")
+    print("현재 메뉴:", foods)
+    foods = sorted(foods)
+    print("정렬된 메뉴:", foods)
+    print("메뉴 수:", len(foods))
+mutants:
+  - name: 맨 앞이 아니라 맨 뒤에 넣음
+    code: |
+      foods = ["김밥", "라면", "떡볶이"]
+      print("현재 메뉴:", foods)
+      new = input("추가할 메뉴: ")
+      foods.append(new)
+      first = input("맨 앞에 넣을 메뉴: ")
+      foods.append(first)
+      gone = input("뺄 메뉴: ")
+      if gone in foods:
+          foods.remove(gone)
+      else:
+          print("없는 메뉴입니다")
+      print("현재 메뉴:", foods)
+      foods.sort()
+      print("정렬된 메뉴:", foods)
+      print("메뉴 수:", len(foods))
+  - name: 내림차순으로 정렬
+    code: |
+      foods = ["김밥", "라면", "떡볶이"]
+      print("현재 메뉴:", foods)
+      new = input("추가할 메뉴: ")
+      foods.append(new)
+      first = input("맨 앞에 넣을 메뉴: ")
+      foods.insert(0, first)
+      gone = input("뺄 메뉴: ")
+      if gone in foods:
+          foods.remove(gone)
+      else:
+          print("없는 메뉴입니다")
+      print("현재 메뉴:", foods)
+      foods.sort(reverse=True)
+      print("정렬된 메뉴:", foods)
+      print("메뉴 수:", len(foods))
+tests:
+  - stdin: "순대\n튀김\n라면\n"
+    public: true
+  - stdin: "쫄면\n만두\n피자\n"
+    note: 없는 메뉴
+  - stdin: "김밥\n김밥\n김밥\n"
+    note: 같은 메뉴가 여러 개면 앞의 것만 삭제
+  - stdin: "A\nB\nC\n"
+hints:
+  - "맨 뒤에 추가는 `append`, 위치를 정해 넣기는 `insert(위치, 값)`, 정렬은 `sort()`, 개수는 `len()`."
+  - "`remove`는 없는 값을 지우려 하면 오류가 나므로 먼저 `in`으로 확인합니다."
+explanation: |
+  `remove(값)`은 같은 값이 여러 개면 **가장 앞의 하나만** 지웁니다. 리스트 메서드 대부분(`append`, `insert`, `sort`)은 리스트 자체를 바꾸고 `None`을 돌려준다는 점도 기억하세요.

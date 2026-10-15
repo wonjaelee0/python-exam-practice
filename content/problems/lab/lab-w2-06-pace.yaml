@@ -1,0 +1,54 @@
+id: lab-w2-06-pace
+title: "[2주차 3번] 달리기 페이스와 속력"
+unit: lab
+difficulty: 2
+tags: [lab.w2, op.arith, unit.convert]
+statement: |
+  > 엘리스 2주차 실습 3번(BMI 계산기, 단위 변환)과 같은 유형입니다.
+
+  달린 거리(km)와 걸린 시간(분)을 입력받아 페이스와 속력을 출력하시오.
+
+  - 페이스(분/km) = 시간(분) ÷ 거리
+  - 속력(km/h) = 거리 ÷ 시간(시) — **단위 변환 필요**: 자동 채점을 위해 먼저 `시간(시) = 시간(분) / 60`을 구한 뒤 속력을 계산한다.
+  - 입력 프롬프트: `Enter distance(km): `, `Enter time(min): ` (실수)
+  - 출력: `Your pace is: 6.0 min/km`, `Your speed is: 10.0 km/h` (반올림하지 않음)
+starter: |
+  distance = float(input("Enter distance(km): "))
+solution: |
+  distance = float(input("Enter distance(km): "))
+  minutes = float(input("Enter time(min): "))
+  hours = minutes / 60
+  print("Your pace is:", minutes / distance, "min/km")
+  print("Your speed is:", distance / hours, "km/h")
+alt_solutions:
+  - |
+    distance = float(input("Enter distance(km): "))
+    minutes = float(input("Enter time(min): "))
+    pace = minutes / distance
+    speed = distance / (minutes / 60)
+    print(f"Your pace is: {pace} min/km")
+    print(f"Your speed is: {speed} km/h")
+mutants:
+  - name: 시간을 시 단위로 바꾸지 않음
+    code: |
+      distance = float(input("Enter distance(km): "))
+      minutes = float(input("Enter time(min): "))
+      print("Your pace is:", minutes / distance, "min/km")
+      print("Your speed is:", distance / minutes, "km/h")
+  - name: 페이스를 거리 ÷ 시간으로 계산
+    code: |
+      distance = float(input("Enter distance(km): "))
+      minutes = float(input("Enter time(min): "))
+      hours = minutes / 60
+      print("Your pace is:", distance / minutes, "min/km")
+      print("Your speed is:", distance / hours, "km/h")
+tests:
+  - stdin: "10\n60\n"
+    public: true
+  - stdin: "5\n27.5\n"
+  - stdin: "21.0975\n120\n"
+  - stdin: "3\n20\n"
+hints:
+  - "분을 시로 바꾸려면 60으로 나눕니다. 속력은 '시간당 거리'입니다."
+explanation: |
+  단위가 섞인 계산은 먼저 단위를 맞춘 뒤 공식에 넣습니다. 지문이 정해 준 계산 순서를 따라야 실수 결과의 마지막 자리까지 같아집니다.

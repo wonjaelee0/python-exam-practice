@@ -1,0 +1,193 @@
+id: lab-w5-02-playlist
+title: "[5주차 사전1~5] 플레이리스트 명령 처리기"
+unit: lab
+difficulty: 3
+tags: [lab.w5, list.methods, loop.while-sentinel]
+statement: |
+  > 엘리스 5주차 실습 사전문제 1~5(도서관리)를 명령 하나로 묶은 유형입니다.
+
+  플레이리스트 `songs`(시작 코드)를 명령으로 관리하시오. 시작할 때 `플레이리스트 관리`와 `현재 목록: [...]`을 출력한다.
+  `명령: ` 프롬프트로 명령을 `종료`가 입력될 때까지 처리한다. 곡 이름에는 공백이 있을 수 있다.
+
+  | 명령 | 동작과 출력 |
+  |---|---|
+  | `추가 곡명` | 맨 뒤에 추가 → `곡명 추가 완료`, `현재 목록: [...]` |
+  | `삽입 위치 곡명` | `위치`(0부터)에 삽입 → `곡명 삽입 완료`, `현재 목록: [...]` |
+  | `검색 곡명` | 있으면 `곡명 검색 됨 (위치: 1)`, 없으면 `곡명 없음` |
+  | `삭제 곡명` | 있으면 삭제 → `곡명 삭제 완료`, `현재 목록: [...]` / 없으면 `곡명 없음` |
+  | `정렬 오름` / `정렬 내림` | 정렬 → `현재 목록: [...]` |
+  | 그 밖의 입력 | `알 수 없는 명령` |
+
+  - `종료`가 입력되면 `최종 목록: [...]`을 출력하고 끝낸다.
+starter: |
+  songs = ["Hype Boy", "Ditto", "Spicy", "Love Dive"]
+solution: |
+  songs = ["Hype Boy", "Ditto", "Spicy", "Love Dive"]
+  print("플레이리스트 관리")
+  print("현재 목록:", songs)
+  while True:
+      line = input("명령: ")
+      if line == "종료":
+          break
+      parts = line.split(" ", 1)
+      cmd = parts[0]
+      if cmd == "추가" and len(parts) == 2:
+          songs.append(parts[1])
+          print(f"{parts[1]} 추가 완료")
+          print("현재 목록:", songs)
+      elif cmd == "삽입" and len(parts) == 2:
+          pos, title = parts[1].split(" ", 1)
+          songs.insert(int(pos), title)
+          print(f"{title} 삽입 완료")
+          print("현재 목록:", songs)
+      elif cmd == "검색" and len(parts) == 2:
+          if parts[1] in songs:
+              print(f"{parts[1]} 검색 됨 (위치: {songs.index(parts[1])})")
+          else:
+              print(f"{parts[1]} 없음")
+      elif cmd == "삭제" and len(parts) == 2:
+          if parts[1] in songs:
+              songs.remove(parts[1])
+              print(f"{parts[1]} 삭제 완료")
+              print("현재 목록:", songs)
+          else:
+              print(f"{parts[1]} 없음")
+      elif line == "정렬 오름":
+          songs.sort()
+          print("현재 목록:", songs)
+      elif line == "정렬 내림":
+          songs.sort(reverse=True)
+          print("현재 목록:", songs)
+      else:
+          print("알 수 없는 명령")
+  print("최종 목록:", songs)
+alt_solutions:
+  - |
+    songs = ["Hype Boy", "Ditto", "Spicy", "Love Dive"]
+    print("플레이리스트 관리")
+    print("현재 목록:", songs)
+    line = input("명령: ")
+    while line != "종료":
+        words = line.split()
+        cmd = words[0] if words else ""
+        rest = " ".join(words[1:])
+        if cmd == "추가" and rest:
+            songs.append(rest)
+            print(rest + " 추가 완료")
+            print("현재 목록:", songs)
+        elif cmd == "삽입" and len(words) >= 3:
+            title = " ".join(words[2:])
+            songs.insert(int(words[1]), title)
+            print(title + " 삽입 완료")
+            print("현재 목록:", songs)
+        elif cmd == "검색" and rest:
+            if rest in songs:
+                print(rest + " 검색 됨 (위치: " + str(songs.index(rest)) + ")")
+            else:
+                print(rest + " 없음")
+        elif cmd == "삭제" and rest:
+            if rest in songs:
+                songs.remove(rest)
+                print(rest + " 삭제 완료")
+                print("현재 목록:", songs)
+            else:
+                print(rest + " 없음")
+        elif cmd == "정렬" and rest in ["오름", "내림"]:
+            songs.sort(reverse=(rest == "내림"))
+            print("현재 목록:", songs)
+        else:
+            print("알 수 없는 명령")
+        line = input("명령: ")
+    print("최종 목록:", songs)
+mutants:
+  - name: 삽입 위치를 1부터로 계산
+    code: |
+      songs = ["Hype Boy", "Ditto", "Spicy", "Love Dive"]
+      print("플레이리스트 관리")
+      print("현재 목록:", songs)
+      while True:
+          line = input("명령: ")
+          if line == "종료":
+              break
+          parts = line.split(" ", 1)
+          cmd = parts[0]
+          if cmd == "추가" and len(parts) == 2:
+              songs.append(parts[1])
+              print(f"{parts[1]} 추가 완료")
+              print("현재 목록:", songs)
+          elif cmd == "삽입" and len(parts) == 2:
+              pos, title = parts[1].split(" ", 1)
+              songs.insert(int(pos) - 1, title)
+              print(f"{title} 삽입 완료")
+              print("현재 목록:", songs)
+          elif cmd == "검색" and len(parts) == 2:
+              if parts[1] in songs:
+                  print(f"{parts[1]} 검색 됨 (위치: {songs.index(parts[1])})")
+              else:
+                  print(f"{parts[1]} 없음")
+          elif cmd == "삭제" and len(parts) == 2:
+              if parts[1] in songs:
+                  songs.remove(parts[1])
+                  print(f"{parts[1]} 삭제 완료")
+                  print("현재 목록:", songs)
+              else:
+                  print(f"{parts[1]} 없음")
+          elif line == "정렬 오름":
+              songs.sort()
+              print("현재 목록:", songs)
+          elif line == "정렬 내림":
+              songs.sort(reverse=True)
+              print("현재 목록:", songs)
+          else:
+              print("알 수 없는 명령")
+      print("최종 목록:", songs)
+  - name: 없는 곡을 확인하지 않고 삭제
+    code: |
+      songs = ["Hype Boy", "Ditto", "Spicy", "Love Dive"]
+      print("플레이리스트 관리")
+      print("현재 목록:", songs)
+      while True:
+          line = input("명령: ")
+          if line == "종료":
+              break
+          parts = line.split(" ", 1)
+          cmd = parts[0]
+          if cmd == "추가" and len(parts) == 2:
+              songs.append(parts[1])
+              print(f"{parts[1]} 추가 완료")
+              print("현재 목록:", songs)
+          elif cmd == "삽입" and len(parts) == 2:
+              pos, title = parts[1].split(" ", 1)
+              songs.insert(int(pos), title)
+              print(f"{title} 삽입 완료")
+              print("현재 목록:", songs)
+          elif cmd == "검색" and len(parts) == 2:
+              if parts[1] in songs:
+                  print(f"{parts[1]} 검색 됨 (위치: {songs.index(parts[1])})")
+              else:
+                  print(f"{parts[1]} 없음")
+          elif cmd == "삭제" and len(parts) == 2:
+              songs.remove(parts[1])
+              print(f"{parts[1]} 삭제 완료")
+              print("현재 목록:", songs)
+          elif line == "정렬 오름":
+              songs.sort()
+              print("현재 목록:", songs)
+          elif line == "정렬 내림":
+              songs.sort(reverse=True)
+              print("현재 목록:", songs)
+          else:
+              print("알 수 없는 명령")
+      print("최종 목록:", songs)
+tests:
+  - stdin: "추가 Super Shy\n삽입 1 OMG\n검색 Ditto\n삭제 Spicy\n정렬 오름\n종료\n"
+    public: true
+  - stdin: "검색 Butter\n삭제 Butter\n정렬 내림\n종료\n"
+    note: 없는 곡
+  - stdin: "종료\n"
+  - stdin: "춤추기\n추가 ETA\n삽입 0 Attention\n종료\n"
+hints:
+  - "`line.split(\" \", 1)`은 첫 공백에서 한 번만 나눠 `['추가', 'Super Shy']`를 만듭니다. 곡 이름의 공백이 보존됩니다."
+  - "`remove`와 `index`는 없는 값에 쓰면 오류가 나므로 먼저 `in`으로 확인하세요."
+explanation: |
+  5주차 사전문제의 리스트 연산(append, insert, index, remove, sort)을 명령 처리 반복문 하나에 모았습니다. 명령을 잘라 해석하는 부분과 리스트를 바꾸는 부분을 나눠 생각하면 쉽습니다.

@@ -1,0 +1,105 @@
+id: lab-w4-03-team-avg
+title: "[4주차 사전3] 팀별 평균 (중첩 반복)"
+unit: lab
+difficulty: 2
+tags: [lab.w4, loop.nested, loop.accumulate]
+statement: |
+  > 엘리스 4주차 실습 사전문제 3(학생별 시험 점수 평균)과 같은 유형입니다.
+
+  팀 수를 입력받고, 각 팀의 팀원 3명의 점수를 입력받아 팀별 평균을 출력하시오. **중첩 반복문**을 사용한다.
+  마지막에 평균이 가장 높은 팀을 출력한다 (같으면 앞 팀).
+
+  - 입력 프롬프트: `팀 수: `, 팀원 점수는 `1번 팀원: `, `2번 팀원: `, `3번 팀원: `
+  - 출력 형식 (팀마다)
+
+  ```
+  (빈 줄)
+  1팀 점수를 입력하세요.
+  1번 팀원:
+  2번 팀원:
+  3번 팀원:
+  1팀 평균: 66.66666666666667점
+  --------------------
+  ```
+  - 마지막 줄: `최고 팀: 2팀` (평균은 반올림하지 않음, 구분선은 `-` 20개)
+starter: |
+  n = int(input("팀 수: "))
+solution: |
+  n = int(input("팀 수: "))
+  best_team = 0
+  best_avg = -1
+  for t in range(1, n + 1):
+      print()
+      print(f"{t}팀 점수를 입력하세요.")
+      total = 0
+      for m in range(1, 4):
+          total += int(input(f"{m}번 팀원: "))
+      avg = total / 3
+      print(f"{t}팀 평균: {avg}점")
+      print("-" * 20)
+      if avg > best_avg:
+          best_avg = avg
+          best_team = t
+  print(f"최고 팀: {best_team}팀")
+alt_solutions:
+  - |
+    n = int(input("팀 수: "))
+    avgs = []
+    for t in range(n):
+        print("\n" + str(t + 1) + "팀 점수를 입력하세요.")
+        scores = []
+        for m in range(3):
+            scores.append(int(input(str(m + 1) + "번 팀원: ")))
+        avg = sum(scores) / 3
+        avgs.append(avg)
+        print(str(t + 1) + "팀 평균: " + str(avg) + "점")
+        print("--------------------")
+    print("최고 팀: " + str(avgs.index(max(avgs)) + 1) + "팀")
+mutants:
+  - name: 합계를 팀마다 초기화하지 않음
+    code: |
+      n = int(input("팀 수: "))
+      best_team = 0
+      best_avg = -1
+      total = 0
+      for t in range(1, n + 1):
+          print()
+          print(f"{t}팀 점수를 입력하세요.")
+          for m in range(1, 4):
+              total += int(input(f"{m}번 팀원: "))
+          avg = total / 3
+          print(f"{t}팀 평균: {avg}점")
+          print("-" * 20)
+          if avg > best_avg:
+              best_avg = avg
+              best_team = t
+      print(f"최고 팀: {best_team}팀")
+  - name: 평균이 같으면 뒤 팀을 고름
+    code: |
+      n = int(input("팀 수: "))
+      best_team = 0
+      best_avg = -1
+      for t in range(1, n + 1):
+          print()
+          print(f"{t}팀 점수를 입력하세요.")
+          total = 0
+          for m in range(1, 4):
+              total += int(input(f"{m}번 팀원: "))
+          avg = total / 3
+          print(f"{t}팀 평균: {avg}점")
+          print("-" * 20)
+          if avg >= best_avg:
+              best_avg = avg
+              best_team = t
+      print(f"최고 팀: {best_team}팀")
+tests:
+  - stdin: "2\n100\n60\n40\n90\n75\n50\n"
+    public: true
+  - stdin: "1\n80\n80\n80\n"
+  - stdin: "3\n70\n80\n90\n90\n80\n70\n60\n60\n60\n"
+    note: 1팀과 2팀이 동점
+  - stdin: "2\n0\n0\n1\n0\n0\n0\n"
+hints:
+  - "바깥 반복은 팀, 안쪽 반복은 팀원입니다. 팀의 합계(`total = 0`)는 바깥 반복 안에서 매번 새로 시작해야 합니다."
+explanation: |
+  중첩 반복에서 '누적 변수를 어디서 초기화하느냐'가 가장 흔한 실수입니다. 바깥 반복 밖에서 한 번만 0으로 두면 앞 팀 점수가 다음 팀에 더해집니다.

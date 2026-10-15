@@ -1,0 +1,115 @@
+id: lab-w7-09-palindrome-num
+title: "[7주차 추가1] 뒤집은 수와 회문수 판별"
+unit: lab
+difficulty: 2
+tags: [lab.w7, func.compose, loop.while, digits]
+statement: |
+  > 엘리스 7주차 실습 추가 1번(reverse_number 함수)과 같은 유형입니다.
+
+  두 함수를 정의하시오.
+
+  - `reverse_number(n)`: 양의 정수 n의 자릿수를 거꾸로 뒤집은 수를 **반복문으로** 만들어 반환 (예: 1234 → 4 → 43 → 432 → 4321). 문자열로 바꾸지 않는다.
+  - `is_palindrome(n)`: `reverse_number`를 이용해, 뒤집어도 같은 수(회문수)이면 `True`를 반환
+
+  - 입력 프롬프트: `Input: `
+  - 출력: `Reverse: 4321`, 그다음 `회문수입니다.` 또는 `회문수가 아닙니다.`
+  - 뒤집은 수는 정수로 출력한다 (1200 → `21`).
+starter: |
+  def reverse_number(n):
+      pass
+
+
+  def is_palindrome(n):
+      pass
+solution: |
+  def reverse_number(n):
+      result = 0
+      while n > 0:
+          result = result * 10 + n % 10
+          n = n // 10
+      return result
+
+
+  def is_palindrome(n):
+      return n == reverse_number(n)
+
+
+  n = int(input("Input: "))
+  print("Reverse:", reverse_number(n))
+  if is_palindrome(n):
+      print("회문수입니다.")
+  else:
+      print("회문수가 아닙니다.")
+alt_solutions:
+  - |
+    def reverse_number(n):
+        rev = 0
+        m = n
+        while m != 0:
+            digit = m % 10
+            rev = rev * 10 + digit
+            m //= 10
+        return rev
+
+
+    def is_palindrome(n):
+        if reverse_number(n) == n:
+            return True
+        return False
+
+
+    num = int(input("Input: "))
+    print("Reverse: " + str(reverse_number(num)))
+    print("회문수입니다." if is_palindrome(num) else "회문수가 아닙니다.")
+mutants:
+  - name: 자리를 올리지 않고 더하기만 함
+    code: |
+      def reverse_number(n):
+          result = 0
+          while n > 0:
+              result = result + n % 10
+              n = n // 10
+          return result
+
+
+      def is_palindrome(n):
+          return n == reverse_number(n)
+
+
+      n = int(input("Input: "))
+      print("Reverse:", reverse_number(n))
+      if is_palindrome(n):
+          print("회문수입니다.")
+      else:
+          print("회문수가 아닙니다.")
+  - name: 반복을 한 번 덜 함 (n > 9)
+    code: |
+      def reverse_number(n):
+          result = 0
+          while n > 9:
+              result = result * 10 + n % 10
+              n = n // 10
+          return result
+
+
+      def is_palindrome(n):
+          return n == reverse_number(n)
+
+
+      n = int(input("Input: "))
+      print("Reverse:", reverse_number(n))
+      if is_palindrome(n):
+          print("회문수입니다.")
+      else:
+          print("회문수가 아닙니다.")
+tests:
+  - stdin: "1234\n"
+    public: true
+  - stdin: "12321\n"
+  - stdin: "7\n"
+  - stdin: "1200\n"
+  - stdin: "4554\n"
+hints:
+  - "새 결과 = 기존 결과 × 10 + 일의 자리(`n % 10`). 그다음 `n = n // 10`으로 일의 자리를 지웁니다."
+explanation: |
+  4주차 '각 자리 숫자의 합'과 같은 반복 구조에서, 더하는 대신 `× 10`으로 자리를 올리며 붙이는 것만 다릅니다. 이렇게 만든 함수를 다른 함수(`is_palindrome`)에서 재사용합니다.

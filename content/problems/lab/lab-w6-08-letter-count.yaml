@@ -1,0 +1,99 @@
+id: lab-w6-08-letter-count
+title: "[6주차 4번] 영문자 빈도와 최다·최소 글자"
+unit: lab
+difficulty: 3
+tags: [lab.w6, dict.count, loop.min-max]
+statement: |
+  > 엘리스 6주차 실습 4번(문자별 등장 횟수와 최다 문자)과 같은 유형입니다.
+
+  문장을 입력받아 **영문자만** 대소문자 구분 없이(소문자로 바꿔) 등장 횟수를 딕셔너리로 세고 출력하시오. 영문자가 아닌 글자(공백, 문장부호, 숫자 등)는 세지 않는다.
+
+  - 입력 프롬프트: `입력: ` (영문자가 하나 이상 있다)
+  - 출력
+    - 딕셔너리 (처음 나온 순서): `{'h': 1, 'e': 1, 'l': 3, 'o': 2, 'w': 1, 'r': 1, 'd': 1}`
+    - `가장 많은 글자: 'l' (3회)`
+    - `가장 적은 글자: 'h' (1회)`
+  - 횟수가 같으면 먼저 나온 글자를 고른다.
+starter: |
+  text = input("입력: ")
+  counts = {}
+solution: |
+  text = input("입력: ")
+  counts = {}
+  for ch in text.lower():
+      if "a" <= ch <= "z":
+          counts[ch] = counts.get(ch, 0) + 1
+  print(counts)
+  most = ""
+  least = ""
+  for ch in counts:
+      if most == "" or counts[ch] > counts[most]:
+          most = ch
+      if least == "" or counts[ch] < counts[least]:
+          least = ch
+  print(f"가장 많은 글자: '{most}' ({counts[most]}회)")
+  print(f"가장 적은 글자: '{least}' ({counts[least]}회)")
+alt_solutions:
+  - |
+    text = input("입력: ")
+    counts = {}
+    for ch in text:
+        c = ch.lower()
+        if c in "abcdefghijklmnopqrstuvwxyz":
+            if c in counts:
+                counts[c] += 1
+            else:
+                counts[c] = 1
+    print(counts)
+    hi = max(counts.values())
+    lo = min(counts.values())
+    most = [k for k in counts if counts[k] == hi][0]
+    least = [k for k in counts if counts[k] == lo][0]
+    print("가장 많은 글자: '" + most + "' (" + str(hi) + "회)")
+    print("가장 적은 글자: '" + least + "' (" + str(lo) + "회)")
+mutants:
+  - name: 소문자로 바꾸지 않고 셈
+    code: |
+      text = input("입력: ")
+      counts = {}
+      for ch in text:
+          if ch.isalpha():
+              counts[ch] = counts.get(ch, 0) + 1
+      print(counts)
+      most = ""
+      least = ""
+      for ch in counts:
+          if most == "" or counts[ch] > counts[most]:
+              most = ch
+          if least == "" or counts[ch] < counts[least]:
+              least = ch
+      print(f"가장 많은 글자: '{most}' ({counts[most]}회)")
+      print(f"가장 적은 글자: '{least}' ({counts[least]}회)")
+  - name: 동점이면 나중 글자를 고름
+    code: |
+      text = input("입력: ")
+      counts = {}
+      for ch in text.lower():
+          if "a" <= ch <= "z":
+              counts[ch] = counts.get(ch, 0) + 1
+      print(counts)
+      most = ""
+      least = ""
+      for ch in counts:
+          if most == "" or counts[ch] >= counts[most]:
+              most = ch
+          if least == "" or counts[ch] <= counts[least]:
+              least = ch
+      print(f"가장 많은 글자: '{most}' ({counts[most]}회)")
+      print(f"가장 적은 글자: '{least}' ({counts[least]}회)")
+tests:
+  - stdin: "Hello, World!\n"
+    public: true
+  - stdin: "Students are getting better at coding!\n"
+  - stdin: "AAA bbb\n"
+    note: 동점
+  - stdin: "Zz 123\n"
+hints:
+  - "`counts[ch] = counts.get(ch, 0) + 1`로 세고, 최댓값은 반복하며 `>`로 비교해 갱신합니다."
+explanation: |
+  '영문자만' 조건을 `"a" <= ch <= "z"`(소문자로 바꾼 뒤)처럼 검사합니다. `isalpha()`는 한글도 참이므로 지문 조건과 다를 수 있습니다.

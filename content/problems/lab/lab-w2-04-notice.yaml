@@ -1,0 +1,75 @@
+id: lab-w2-04-notice
+title: "[2주차 1번] 수강 신청 확인 문자"
+unit: lab
+difficulty: 2
+tags: [lab.w2, io.input-cast, str.fstring]
+statement: |
+  > 엘리스 2주차 실습 1번(성적 공지 문자)과 같은 유형입니다.
+
+  학생 이름, 과목 이름, 학점 수, 학점당 수강료를 입력받아 수강 신청 확인 문자를 완성하시오. 총 수강료 = 학점 수 × 학점당 수강료.
+
+  - 입력 프롬프트: `Enter student name: `, `Enter course name: `, `Enter credits: `, `Enter fee per credit: `
+  - 입력이 끝나면 빈 줄을 하나 출력한 뒤, 아래 네 줄을 출력한다.
+
+  ```
+  =====Registration Notice=====
+  김민지 has registered for 자료구조.
+  The course is 3 credits and the fee per credit is 50000 won.
+  The total fee for 김민지 is 150000 won.
+  ```
+starter: |
+  name = input("Enter student name: ")
+solution: |
+  name = input("Enter student name: ")
+  course = input("Enter course name: ")
+  credit = int(input("Enter credits: "))
+  fee = int(input("Enter fee per credit: "))
+  print()
+  print("=====Registration Notice=====")
+  print(f"{name} has registered for {course}.")
+  print(f"The course is {credit} credits and the fee per credit is {fee} won.")
+  print(f"The total fee for {name} is {credit * fee} won.")
+alt_solutions:
+  - |
+    name = input("Enter student name: ")
+    course = input("Enter course name: ")
+    credit = input("Enter credits: ")
+    fee = input("Enter fee per credit: ")
+    total = int(credit) * int(fee)
+    print("\n=====Registration Notice=====")
+    print(name + " has registered for " + course + ".")
+    print("The course is " + credit + " credits and the fee per credit is " + fee + " won.")
+    print("The total fee for " + name + " is " + str(total) + " won.")
+mutants:
+  - name: 총액을 더하기로 계산
+    code: |
+      name = input("Enter student name: ")
+      course = input("Enter course name: ")
+      credit = int(input("Enter credits: "))
+      fee = int(input("Enter fee per credit: "))
+      print()
+      print("=====Registration Notice=====")
+      print(f"{name} has registered for {course}.")
+      print(f"The course is {credit} credits and the fee per credit is {fee} won.")
+      print(f"The total fee for {name} is {credit + fee} won.")
+  - name: 빈 줄을 빠뜨림
+    code: |
+      name = input("Enter student name: ")
+      course = input("Enter course name: ")
+      credit = int(input("Enter credits: "))
+      fee = int(input("Enter fee per credit: "))
+      print("=====Registration Notice=====")
+      print(f"{name} has registered for {course}.")
+      print(f"The course is {credit} credits and the fee per credit is {fee} won.")
+      print(f"The total fee for {name} is {credit * fee} won.")
+tests:
+  - stdin: "김민지\n자료구조\n3\n50000\n"
+    public: true
+  - stdin: "윤하준\n운영체제\n2\n75000\n"
+  - stdin: "Alex\nComputer Vision\n4\n62500\n"
+  - stdin: "박서연\n선형대수\n1\n0\n"
+hints:
+  - "숫자로 계산할 값은 `int(input(...))`로 받습니다. 이름처럼 그대로 쓸 값은 문자열로 둡니다."
+  - "입력 프롬프트 다음의 빈 줄은 `print()`로 만듭니다."
+explanation: |
+  '틀(문장) + 변수'로 문자를 만드는 문제입니다. f-string을 쓰면 문장 사이의 공백과 마침표를 그대로 지킬 수 있습니다.

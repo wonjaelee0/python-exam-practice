@@ -1,0 +1,68 @@
+id: lab-w7-06-calorie
+title: "[7주차 3번] 운동 소모 칼로리 함수"
+unit: lab
+difficulty: 1
+tags: [lab.w7, func.return, str.format-float]
+statement: |
+  > 엘리스 7주차 실습 3번(bmi_calc 함수)과 같은 유형입니다.
+
+  체중(kg), 운동 시간(분), MET(운동 강도)를 **함수 밖에서** 입력받아 인자로 전달하면, 소모 칼로리를 계산해 **반환**하는 함수 `calorie_calc(weight, minutes, met)`를 작성하시오.
+
+  - 계산식: 소모 칼로리 = MET × 3.5 × 체중 ÷ 200 × 운동 시간(분) — 자동 채점을 위해 `met * 3.5 * weight / 200 * minutes` 순서로 계산한다.
+  - 입력 프롬프트: `체중(kg): ` (실수), `운동 시간(분): ` (정수), `MET: ` (실수)
+  - 출력: `소모 칼로리는 294.00kcal입니다.` (소수 둘째 자리까지)
+starter: |
+  def calorie_calc(weight, minutes, met):
+      pass
+solution: |
+  def calorie_calc(weight, minutes, met):
+      return met * 3.5 * weight / 200 * minutes
+
+
+  weight = float(input("체중(kg): "))
+  minutes = int(input("운동 시간(분): "))
+  met = float(input("MET: "))
+  print(f"소모 칼로리는 {calorie_calc(weight, minutes, met):.2f}kcal입니다.")
+alt_solutions:
+  - |
+    def calorie_calc(weight, minutes, met):
+        kcal = met * 3.5 * weight / 200 * minutes
+        return kcal
+
+
+    w = float(input("체중(kg): "))
+    m = int(input("운동 시간(분): "))
+    e = float(input("MET: "))
+    result = calorie_calc(w, m, e)
+    print("소모 칼로리는 {:.2f}kcal입니다.".format(result))
+mutants:
+  - name: 분을 시간으로 바꿔 계산
+    code: |
+      def calorie_calc(weight, minutes, met):
+          return met * 3.5 * weight / 200 * (minutes / 60)
+
+
+      weight = float(input("체중(kg): "))
+      minutes = int(input("운동 시간(분): "))
+      met = float(input("MET: "))
+      print(f"소모 칼로리는 {calorie_calc(weight, minutes, met):.2f}kcal입니다.")
+  - name: 반환하지 않고 함수 안에서 출력
+    code: |
+      def calorie_calc(weight, minutes, met):
+          print(met * 3.5 * weight / 200 * minutes)
+
+
+      weight = float(input("체중(kg): "))
+      minutes = int(input("운동 시간(분): "))
+      met = float(input("MET: "))
+      print(f"소모 칼로리는 {calorie_calc(weight, minutes, met):.2f}kcal입니다.")
+tests:
+  - stdin: "70\n30\n8\n"
+    public: true
+  - stdin: "55.5\n45\n3.5\n"
+  - stdin: "80\n0\n10\n"
+  - stdin: "62\n60\n6\n"
+hints:
+  - "함수는 계산 결과를 `return`하고, 출력과 소수점 형식(`:.2f`)은 함수 밖에서 처리합니다."
+explanation: |
+  계산 함수는 값을 `return`하고, 출력 형식은 호출한 쪽에서 정합니다. 함수가 `print`만 하고 반환하지 않으면 결과가 `None`이 되어 `:.2f` 형식을 적용할 때 오류가 납니다.

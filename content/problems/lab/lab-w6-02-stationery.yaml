@@ -1,0 +1,67 @@
+id: lab-w6-02-stationery
+title: "[6주차 사전2] 문구점 가격 계산기"
+unit: lab
+difficulty: 1
+tags: [lab.w6, dict.lookup, dict.keys]
+statement: |
+  > 엘리스 6주차 실습 사전문제 2(딕셔너리 활용 가격 계산기)와 같은 유형입니다.
+
+  문구점 가격표 `items`(시작 코드)를 이용해, 상품명과 구매 개수를 입력받아 총 가격을 출력하시오.
+
+  - 먼저 상품 목록 `['연필', '지우개', '공책', '자']`를 출력한다 (키 리스트).
+  - 입력 프롬프트: `상품명: `, `구매개수: `
+  - 출력: `연필 4개의 가격은 2000원입니다.` — 없는 상품이면 `판매하지 않는 상품입니다.`
+starter: |
+  items = {"연필": 500, "지우개": 700, "공책": 1500, "자": 1000}
+solution: |
+  items = {"연필": 500, "지우개": 700, "공책": 1500, "자": 1000}
+  print(list(items.keys()))
+  name = input("상품명: ")
+  qty = int(input("구매개수: "))
+  if name in items:
+      print(f"{name} {qty}개의 가격은 {items[name] * qty}원입니다.")
+  else:
+      print("판매하지 않는 상품입니다.")
+alt_solutions:
+  - |
+    items = {"연필": 500, "지우개": 700, "공책": 1500, "자": 1000}
+    names = []
+    for k in items:
+        names.append(k)
+    print(names)
+    name = input("상품명: ")
+    qty = int(input("구매개수: "))
+    price = items.get(name)
+    if price is None:
+        print("판매하지 않는 상품입니다.")
+    else:
+        print(name + " " + str(qty) + "개의 가격은 " + str(price * qty) + "원입니다.")
+mutants:
+  - name: 없는 상품을 0원으로 계산
+    code: |
+      items = {"연필": 500, "지우개": 700, "공책": 1500, "자": 1000}
+      print(list(items.keys()))
+      name = input("상품명: ")
+      qty = int(input("구매개수: "))
+      print(f"{name} {qty}개의 가격은 {items.get(name, 0) * qty}원입니다.")
+  - name: 개수를 곱하지 않음
+    code: |
+      items = {"연필": 500, "지우개": 700, "공책": 1500, "자": 1000}
+      print(list(items.keys()))
+      name = input("상품명: ")
+      qty = int(input("구매개수: "))
+      if name in items:
+          print(f"{name} {qty}개의 가격은 {items[name]}원입니다.")
+      else:
+          print("판매하지 않는 상품입니다.")
+tests:
+  - stdin: "연필\n4\n"
+    public: true
+  - stdin: "볼펜\n2\n"
+    note: 없는 상품
+  - stdin: "공책\n0\n"
+  - stdin: "자\n13\n"
+hints:
+  - "`if name in items:`는 딕셔너리의 **키**에 있는지 확인합니다."
+explanation: |
+  없는 키로 `items[name]`을 읽으면 `KeyError`가 나므로 `in`으로 먼저 확인합니다. `items.keys()`를 `list()`로 감싸면 키 목록을 리스트로 출력할 수 있습니다.

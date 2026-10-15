@@ -1,0 +1,104 @@
+id: lab-w6-10-rainfall
+title: "[6주차 추가1] 계절별 강수량 합계와 필터"
+unit: lab
+difficulty: 2
+tags: [lab.w6, dict.list-values, loop.nested]
+statement: |
+  > 엘리스 6주차 실습 추가 1번(분기별 매출 합계·필터링)과 같은 유형입니다.
+
+  계절별 월 강수량 딕셔너리 `rain`(시작 코드)이 있다. 기준 강수량을 입력받아 다음을 출력하시오.
+
+  1. 계절마다 합계: `봄: 285` (딕셔너리 순서대로)
+  2. `기준 100 이상:` 다음 줄부터, 기준 이상인 강수량만 모은 리스트를 계절별로 `여름: [250, 300, 180]` 형식으로 출력한다. 해당 값이 없는 계절은 출력하지 않는다.
+  3. 기준 이상인 값이 하나도 없으면 `없음`을 출력한다.
+
+  - 입력 프롬프트: `기준 강수량: `
+starter: |
+  rain = {"봄": [80, 95, 110], "여름": [250, 300, 180], "가을": [140, 60, 45], "겨울": [20, 30, 25]}
+solution: |
+  rain = {"봄": [80, 95, 110], "여름": [250, 300, 180], "가을": [140, 60, 45], "겨울": [20, 30, 25]}
+  limit = int(input("기준 강수량: "))
+  for season in rain:
+      total = 0
+      for v in rain[season]:
+          total += v
+      print(f"{season}: {total}")
+  print(f"기준 {limit} 이상:")
+  found = False
+  for season in rain:
+      big = []
+      for v in rain[season]:
+          if v >= limit:
+              big.append(v)
+      if len(big) > 0:
+          print(f"{season}: {big}")
+          found = True
+  if not found:
+      print("없음")
+alt_solutions:
+  - |
+    rain = {"봄": [80, 95, 110], "여름": [250, 300, 180], "가을": [140, 60, 45], "겨울": [20, 30, 25]}
+    limit = int(input("기준 강수량: "))
+    for season, values in rain.items():
+        print(season + ":", sum(values))
+    print("기준 " + str(limit) + " 이상:")
+    lines = []
+    for season, values in rain.items():
+        big = [v for v in values if v >= limit]
+        if big:
+            lines.append(season + ": " + str(big))
+    if lines:
+        for line in lines:
+            print(line)
+    else:
+        print("없음")
+mutants:
+  - name: 기준값과 같은 값을 뺌 (> 사용)
+    code: |
+      rain = {"봄": [80, 95, 110], "여름": [250, 300, 180], "가을": [140, 60, 45], "겨울": [20, 30, 25]}
+      limit = int(input("기준 강수량: "))
+      for season in rain:
+          total = 0
+          for v in rain[season]:
+              total += v
+          print(f"{season}: {total}")
+      print(f"기준 {limit} 이상:")
+      found = False
+      for season in rain:
+          big = []
+          for v in rain[season]:
+              if v > limit:
+                  big.append(v)
+          if len(big) > 0:
+              print(f"{season}: {big}")
+              found = True
+      if not found:
+          print("없음")
+  - name: 빈 리스트도 출력
+    code: |
+      rain = {"봄": [80, 95, 110], "여름": [250, 300, 180], "가을": [140, 60, 45], "겨울": [20, 30, 25]}
+      limit = int(input("기준 강수량: "))
+      for season in rain:
+          total = 0
+          for v in rain[season]:
+              total += v
+          print(f"{season}: {total}")
+      print(f"기준 {limit} 이상:")
+      for season in rain:
+          big = []
+          for v in rain[season]:
+              if v >= limit:
+                  big.append(v)
+          print(f"{season}: {big}")
+tests:
+  - stdin: "100\n"
+    public: true
+  - stdin: "300\n"
+    note: 기준과 같은 값
+  - stdin: "1000\n"
+    note: 해당 없음
+  - stdin: "20\n"
+hints:
+  - "딕셔너리의 값이 리스트이므로, 계절 반복 안에 값 반복이 들어가는 중첩 반복입니다."
+explanation: |
+  `{키: 리스트}` 구조에서는 `for season in rain:` → `for v in rain[season]:`처럼 두 단계로 꺼냅니다. 조건에 맞는 값만 새 리스트에 모으는 '필터' 패턴도 함께 연습합니다.

@@ -1,0 +1,77 @@
+id: lab-w4-08-perfect
+title: "[4주차 추가1] 약수와 완전수 판별"
+unit: lab
+difficulty: 2
+tags: [lab.w4, loop.for, math.divisor]
+statement: |
+  > 엘리스 4주차 실습 추가 1번(소수 판별)과 같은 유형입니다.
+
+  양의 정수 n을 입력받아 n의 약수를 모두 출력하고, 완전수인지 판별하시오.
+  완전수는 **자기 자신을 뺀 약수의 합**이 자기 자신과 같은 수이다 (예: 6 = 1 + 2 + 3).
+
+  - 입력 프롬프트: `숫자 입력: `
+  - 출력: `6의 약수: 1 2 3 6` (작은 것부터, 공백 하나로 구분), 그다음 `완전수입니다.` 또는 `완전수가 아닙니다.`
+starter: |
+  n = int(input("숫자 입력: "))
+solution: |
+  n = int(input("숫자 입력: "))
+  divisors = []
+  for d in range(1, n + 1):
+      if n % d == 0:
+          divisors.append(d)
+  print(f"{n}의 약수:", " ".join([str(d) for d in divisors]))
+  if sum(divisors) - n == n:
+      print("완전수입니다.")
+  else:
+      print("완전수가 아닙니다.")
+alt_solutions:
+  - |
+    n = int(input("숫자 입력: "))
+    text = ""
+    total = 0
+    for d in range(1, n + 1):
+        if n % d == 0:
+            text = text + " " + str(d)
+            if d != n:
+                total += d
+    print(str(n) + "의 약수:" + text)
+    if total == n:
+        print("완전수입니다.")
+    else:
+        print("완전수가 아닙니다.")
+mutants:
+  - name: 자기 자신까지 더해서 비교
+    code: |
+      n = int(input("숫자 입력: "))
+      divisors = []
+      for d in range(1, n + 1):
+          if n % d == 0:
+              divisors.append(d)
+      print(f"{n}의 약수:", " ".join([str(d) for d in divisors]))
+      if sum(divisors) == n:
+          print("완전수입니다.")
+      else:
+          print("완전수가 아닙니다.")
+  - name: 약수 목록에서 자기 자신을 빠뜨림
+    code: |
+      n = int(input("숫자 입력: "))
+      divisors = []
+      for d in range(1, n):
+          if n % d == 0:
+              divisors.append(d)
+      print(f"{n}의 약수:", " ".join([str(d) for d in divisors]))
+      if sum(divisors) == n:
+          print("완전수입니다.")
+      else:
+          print("완전수가 아닙니다.")
+tests:
+  - stdin: "6\n"
+    public: true
+  - stdin: "28\n"
+  - stdin: "12\n"
+  - stdin: "1\n"
+  - stdin: "496\n"
+hints:
+  - "`n % d == 0`이면 d는 n의 약수입니다. `range(1, n + 1)`로 n까지 확인하세요."
+explanation: |
+  소수 판별과 같은 '약수 찾기' 반복입니다. 1은 자기 자신을 뺀 약수의 합이 0이므로 완전수가 아닙니다.

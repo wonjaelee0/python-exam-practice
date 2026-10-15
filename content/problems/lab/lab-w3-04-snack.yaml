@@ -1,0 +1,94 @@
+id: lab-w3-04-snack
+title: "[3주차 3번] 영화관 매점 자판기"
+unit: lab
+difficulty: 3
+tags: [lab.w3, cond.nested, cond.boundary]
+statement: |
+  > 엘리스 3주차 실습 3번(water/energy drink 자판기)과 같은 유형입니다.
+
+  popcorn(4000원)과 combo(7000원)를 파는 매점 자판기를 만드시오. 물건은 한 가지만 살 수 있다.
+
+  - 첫 줄에 `popcorn 4000 / combo 7000`을 출력하고, `Enter money: `로 금액을 입력받는다.
+  - 4000원 미만: `Not enough money!`
+  - 4000원 이상 7000원 미만: `Only popcorn available. The change is 1500`
+  - 7000원 이상: `Choose between popcorn / combo: `로 입력받아
+    - `You chose popcorn. The change is 6000` 또는 `You chose combo. The change is 3000`
+    - popcorn, combo가 아닌 입력이면 `Error`
+starter: |
+  print("popcorn 4000 / combo 7000")
+solution: |
+  print("popcorn 4000 / combo 7000")
+  money = int(input("Enter money: "))
+  if money < 4000:
+      print("Not enough money!")
+  elif money < 7000:
+      print(f"Only popcorn available. The change is {money - 4000}")
+  else:
+      choice = input("Choose between popcorn / combo: ")
+      if choice == "popcorn":
+          print(f"You chose popcorn. The change is {money - 4000}")
+      elif choice == "combo":
+          print(f"You chose combo. The change is {money - 7000}")
+      else:
+          print("Error")
+alt_solutions:
+  - |
+    prices = {"popcorn": 4000, "combo": 7000}
+    print("popcorn 4000 / combo 7000")
+    money = int(input("Enter money: "))
+    if money >= 7000:
+        choice = input("Choose between popcorn / combo: ")
+        if choice in prices:
+            print("You chose " + choice + ". The change is " + str(money - prices[choice]))
+        else:
+            print("Error")
+    elif money >= 4000:
+        print("Only popcorn available. The change is " + str(money - 4000))
+    else:
+        print("Not enough money!")
+mutants:
+  - name: 7000원일 때 선택지를 주지 않음 (> 사용)
+    code: |
+      print("popcorn 4000 / combo 7000")
+      money = int(input("Enter money: "))
+      if money < 4000:
+          print("Not enough money!")
+      elif money <= 7000:
+          print(f"Only popcorn available. The change is {money - 4000}")
+      else:
+          choice = input("Choose between popcorn / combo: ")
+          if choice == "popcorn":
+              print(f"You chose popcorn. The change is {money - 4000}")
+          elif choice == "combo":
+              print(f"You chose combo. The change is {money - 7000}")
+          else:
+              print("Error")
+  - name: combo의 거스름돈을 4000원 기준으로 계산
+    code: |
+      print("popcorn 4000 / combo 7000")
+      money = int(input("Enter money: "))
+      if money < 4000:
+          print("Not enough money!")
+      elif money < 7000:
+          print(f"Only popcorn available. The change is {money - 4000}")
+      else:
+          choice = input("Choose between popcorn / combo: ")
+          if choice == "popcorn" or choice == "combo":
+              print(f"You chose {choice}. The change is {money - 4000}")
+          else:
+              print("Error")
+tests:
+  - stdin: "10000\ncombo\n"
+    public: true
+  - stdin: "5500\n"
+    public: true
+  - stdin: "3999\n"
+  - stdin: "7000\npopcorn\n"
+    note: 경계값 7000
+  - stdin: "8000\ncola\n"
+  - stdin: "4000\n"
+  - stdin: "7500\ncombo\n"
+hints:
+  - "범위를 작은 쪽부터 `if money < 4000` → `elif money < 7000` → `else` 순서로 나누면 경계가 겹치지 않습니다."
+explanation: |
+  '이상/미만'의 경계값(4000, 7000)이 어느 쪽에 속하는지가 핵심입니다. 7000원 이상이면 두 번째 입력을 받는 '중첩 if' 구조입니다.

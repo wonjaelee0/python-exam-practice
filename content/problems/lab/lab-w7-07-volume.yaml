@@ -1,0 +1,149 @@
+id: lab-w7-07-volume
+title: "[7주차 4번] 상자 부피 비교 (math.pi)"
+unit: lab
+difficulty: 3
+tags: [lab.w7, func.return, cond.if-elif, math.pi]
+statement: |
+  > 엘리스 7주차 실습 4번(도형 넓이 비교)과 같은 유형입니다.
+
+  직육면체, 정육면체, 원기둥 모양의 상자 2개의 부피를 비교하는 프로그램을 만드시오.
+  상자의 모양과 치수를 입력받아 부피를 **반환**하는 함수 `get_volume()`을 정의해 두 번 호출한다.
+
+  - 입력 프롬프트: `상자의 모양(직육면체, 정육면체, 원기둥): ` → 모양에 따라
+    - 직육면체: `직육면체의 가로: `, `직육면체의 세로: `, `직육면체의 높이: `
+    - 정육면체: `정육면체의 한 변: `
+    - 원기둥: `원기둥의 반지름: `, `원기둥의 높이: ` (부피 = `math.pi * 반지름 ** 2 * 높이`)
+  - 치수는 정수이고, 모양은 세 가지만 입력된다.
+  - 두 값이 같은 경우를 따로 처리하지 않고 한쪽에 포함하기 위해 `>=`를 쓴다.
+    - 상자1 부피 ≥ 상자2 부피: `상자1(부피: 27)이 상자2(부피: 27)보다 0만큼 큽니다.`
+    - 아니면: `상자2(부피: 8)이 상자1(부피: 6.283185307179586)보다 1.7168146928204138만큼 큽니다.`
+starter: |
+  import math
+
+
+  def get_volume():
+      pass
+solution: |
+  import math
+
+
+  def get_volume():
+      shape = input("상자의 모양(직육면체, 정육면체, 원기둥): ")
+      if shape == "직육면체":
+          w = int(input("직육면체의 가로: "))
+          d = int(input("직육면체의 세로: "))
+          h = int(input("직육면체의 높이: "))
+          return w * d * h
+      elif shape == "정육면체":
+          a = int(input("정육면체의 한 변: "))
+          return a ** 3
+      else:
+          r = int(input("원기둥의 반지름: "))
+          h = int(input("원기둥의 높이: "))
+          return math.pi * r ** 2 * h
+
+
+  v1 = get_volume()
+  v2 = get_volume()
+  if v1 >= v2:
+      print(f"상자1(부피: {v1})이 상자2(부피: {v2})보다 {v1 - v2}만큼 큽니다.")
+  else:
+      print(f"상자2(부피: {v2})이 상자1(부피: {v1})보다 {v2 - v1}만큼 큽니다.")
+alt_solutions:
+  - |
+    import math
+
+
+    def cuboid():
+        w = int(input("직육면체의 가로: "))
+        d = int(input("직육면체의 세로: "))
+        h = int(input("직육면체의 높이: "))
+        return w * d * h
+
+
+    def cube():
+        a = int(input("정육면체의 한 변: "))
+        return a * a * a
+
+
+    def cylinder():
+        r = int(input("원기둥의 반지름: "))
+        h = int(input("원기둥의 높이: "))
+        return math.pi * r ** 2 * h
+
+
+    def get_volume():
+        shape = input("상자의 모양(직육면체, 정육면체, 원기둥): ")
+        if shape == "직육면체":
+            return cuboid()
+        if shape == "정육면체":
+            return cube()
+        return cylinder()
+
+
+    v = [get_volume(), get_volume()]
+    big, small = (0, 1) if v[0] >= v[1] else (1, 0)
+    print("상자" + str(big + 1) + "(부피: " + str(v[big]) + ")이 상자" + str(small + 1) + "(부피: " + str(v[small]) + ")보다 " + str(v[big] - v[small]) + "만큼 큽니다.")
+mutants:
+  - name: 같을 때 상자2 쪽으로 출력 (> 사용)
+    code: |
+      import math
+
+
+      def get_volume():
+          shape = input("상자의 모양(직육면체, 정육면체, 원기둥): ")
+          if shape == "직육면체":
+              w = int(input("직육면체의 가로: "))
+              d = int(input("직육면체의 세로: "))
+              h = int(input("직육면체의 높이: "))
+              return w * d * h
+          elif shape == "정육면체":
+              a = int(input("정육면체의 한 변: "))
+              return a ** 3
+          else:
+              r = int(input("원기둥의 반지름: "))
+              h = int(input("원기둥의 높이: "))
+              return math.pi * r ** 2 * h
+
+
+      v1 = get_volume()
+      v2 = get_volume()
+      if v1 > v2:
+          print(f"상자1(부피: {v1})이 상자2(부피: {v2})보다 {v1 - v2}만큼 큽니다.")
+      else:
+          print(f"상자2(부피: {v2})이 상자1(부피: {v1})보다 {v2 - v1}만큼 큽니다.")
+  - name: 원주율을 3.14로 계산
+    code: |
+      def get_volume():
+          shape = input("상자의 모양(직육면체, 정육면체, 원기둥): ")
+          if shape == "직육면체":
+              w = int(input("직육면체의 가로: "))
+              d = int(input("직육면체의 세로: "))
+              h = int(input("직육면체의 높이: "))
+              return w * d * h
+          elif shape == "정육면체":
+              a = int(input("정육면체의 한 변: "))
+              return a ** 3
+          else:
+              r = int(input("원기둥의 반지름: "))
+              h = int(input("원기둥의 높이: "))
+              return 3.14 * r ** 2 * h
+
+
+      v1 = get_volume()
+      v2 = get_volume()
+      if v1 >= v2:
+          print(f"상자1(부피: {v1})이 상자2(부피: {v2})보다 {v1 - v2}만큼 큽니다.")
+      else:
+          print(f"상자2(부피: {v2})이 상자1(부피: {v1})보다 {v2 - v1}만큼 큽니다.")
+tests:
+  - stdin: "원기둥\n1\n2\n정육면체\n2\n"
+    public: true
+  - stdin: "정육면체\n3\n직육면체\n3\n3\n3\n"
+    note: 부피가 같음
+  - stdin: "직육면체\n2\n3\n4\n원기둥\n1\n1\n"
+  - stdin: "원기둥\n2\n3\n원기둥\n3\n1\n"
+hints:
+  - "함수 안에서 모양에 따라 필요한 치수만 입력받고, 계산한 부피를 `return`합니다."
+explanation: |
+  부피 계산을 함수로 만들면 같은 코드를 두 번 쓰지 않고 `get_volume()`을 두 번 호출하면 됩니다. 정수와 실수(원기둥)가 섞이면 출력 형식(`8`과 `6.28…`)이 달라지는 점도 확인하세요.

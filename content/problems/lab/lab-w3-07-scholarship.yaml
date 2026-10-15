@@ -1,0 +1,78 @@
+id: lab-w3-07-scholarship
+title: "[3주차 추가2] 장학금 대상 판정"
+unit: lab
+difficulty: 3
+tags: [lab.w3, cond.logic-op, bool.sum]
+statement: |
+  > 엘리스 3주차 실습 추가 2번(합격/불합격 조건 3개)과 같은 유형입니다.
+
+  국어, 영어, 수학 점수를 입력받아 아래 조건을 **모두** 만족하면 `장학금 대상입니다`, 아니면 `장학금 대상이 아닙니다`를 출력하시오.
+
+  - 평균이 80점 이상
+  - 90점 이상인 과목이 2개 이상
+  - 60점 미만인 과목이 없음
+
+  판정 전에 `90점 이상 과목 수: 2`를 먼저 출력한다.
+
+  - 입력 프롬프트: `국어 점수 입력: `, `영어 점수 입력: `, `수학 점수 입력: `
+  - hint) `True`는 1, `False`는 0으로 계산되므로 `(국어 >= 90) + (영어 >= 90) + …`로 개수를 셀 수 있다.
+starter: |
+  kor = int(input("국어 점수 입력: "))
+solution: |
+  kor = int(input("국어 점수 입력: "))
+  eng = int(input("영어 점수 입력: "))
+  mat = int(input("수학 점수 입력: "))
+  high = (kor >= 90) + (eng >= 90) + (mat >= 90)
+  print(f"90점 이상 과목 수: {high}")
+  if (kor + eng + mat) / 3 >= 80 and high >= 2 and kor >= 60 and eng >= 60 and mat >= 60:
+      print("장학금 대상입니다")
+  else:
+      print("장학금 대상이 아닙니다")
+alt_solutions:
+  - |
+    scores = []
+    for subject in ["국어", "영어", "수학"]:
+        scores.append(int(input(subject + " 점수 입력: ")))
+    high = 0
+    for s in scores:
+        if s >= 90:
+            high += 1
+    print("90점 이상 과목 수:", high)
+    ok = sum(scores) / 3 >= 80 and high >= 2 and min(scores) >= 60
+    print("장학금 대상입니다" if ok else "장학금 대상이 아닙니다")
+mutants:
+  - name: 90점 이상 과목이 1개여도 통과
+    code: |
+      kor = int(input("국어 점수 입력: "))
+      eng = int(input("영어 점수 입력: "))
+      mat = int(input("수학 점수 입력: "))
+      high = (kor >= 90) + (eng >= 90) + (mat >= 90)
+      print(f"90점 이상 과목 수: {high}")
+      if (kor + eng + mat) / 3 >= 80 and high >= 1 and kor >= 60 and eng >= 60 and mat >= 60:
+          print("장학금 대상입니다")
+      else:
+          print("장학금 대상이 아닙니다")
+  - name: 60점 미만 과목 조건을 빠뜨림
+    code: |
+      kor = int(input("국어 점수 입력: "))
+      eng = int(input("영어 점수 입력: "))
+      mat = int(input("수학 점수 입력: "))
+      high = (kor >= 90) + (eng >= 90) + (mat >= 90)
+      print(f"90점 이상 과목 수: {high}")
+      if (kor + eng + mat) / 3 >= 80 and high >= 2:
+          print("장학금 대상입니다")
+      else:
+          print("장학금 대상이 아닙니다")
+tests:
+  - stdin: "95\n92\n70\n"
+    public: true
+  - stdin: "95\n85\n70\n"
+    note: 90점 이상이 1과목
+  - stdin: "100\n100\n55\n"
+    note: 60점 미만 과목 있음
+  - stdin: "90\n90\n59\n"
+  - stdin: "80\n80\n80\n"
+hints:
+  - "조건 세 개를 `and`로 묶습니다. '60점 미만 과목이 없음'은 '세 과목 모두 60점 이상'과 같습니다."
+explanation: |
+  비교식의 결과는 `True`/`False`이고, 더하면 1/0으로 계산됩니다. 그래서 `(a >= 90) + (b >= 90) + (c >= 90)`이 '90점 이상인 과목 수'가 됩니다.

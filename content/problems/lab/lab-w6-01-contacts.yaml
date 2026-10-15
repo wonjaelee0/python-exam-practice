@@ -1,0 +1,70 @@
+id: lab-w6-01-contacts
+title: "[6주차 사전1] 연락처 딕셔너리 (빈칸)"
+unit: lab
+difficulty: 1
+tags: [lab.w6, dict.build, dict.len]
+format: fill
+statement: |
+  > 엘리스 6주차 실습 사전문제 1(입력받아 딕셔너리 만들기)과 같은 유형의 **코드 빈칸 채우기**입니다.
+
+  3명의 이름과 전화번호를 입력받아 이름을 키, 전화번호를 값으로 하는 딕셔너리 `contacts`를 만들고 출력하시오. 빈칸 `_____`을 채운다.
+
+  - 입력 프롬프트: `이름: `, `전화번호: ` (3번 반복)
+  - 출력: 딕셔너리 `{'민수': '010-1111-2222', ...}`, 그다음 `저장된 연락처 수: 3`
+  - 같은 이름이 다시 입력되면 나중 번호로 바뀐다.
+starter: |
+  contacts = _____
+  for i in range(3):
+      name = input("이름: ")
+      phone = input("전화번호: ")
+      contacts[_____] = _____
+  print(contacts)
+  print("저장된 연락처 수:", _____(contacts))
+solution: |
+  contacts = {}
+  for i in range(3):
+      name = input("이름: ")
+      phone = input("전화번호: ")
+      contacts[name] = phone
+  print(contacts)
+  print("저장된 연락처 수:", len(contacts))
+alt_solutions:
+  - |
+    contacts = dict()
+    for i in range(3):
+        name = input("이름: ")
+        contacts.update({name: input("전화번호: ")})
+    print(contacts)
+    print("저장된 연락처 수: " + str(len(contacts)))
+mutants:
+  - name: 키와 값을 바꿈
+    code: |
+      contacts = {}
+      for i in range(3):
+          name = input("이름: ")
+          phone = input("전화번호: ")
+          contacts[phone] = name
+      print(contacts)
+      print("저장된 연락처 수:", len(contacts))
+  - name: 입력 횟수를 셈 (덮어쓰기 무시)
+    code: |
+      contacts = {}
+      count = 0
+      for i in range(3):
+          name = input("이름: ")
+          phone = input("전화번호: ")
+          contacts[name] = phone
+          count += 1
+      print(contacts)
+      print("저장된 연락처 수:", count)
+tests:
+  - stdin: "민수\n010-1111-2222\n지은\n010-3333-4444\n하늘\n010-5555-6666\n"
+    public: true
+  - stdin: "A\n1\nB\n2\nA\n3\n"
+    note: 같은 이름이 다시 나옴
+  - stdin: "가\n0\n나\n0\n다\n0\n"
+  - stdin: "Kim\n111\nLee\n222\nPark\n333\n"
+hints:
+  - "빈 딕셔너리는 `{}`. `딕셔너리[키] = 값`으로 넣고, 개수는 `len()`."
+explanation: |
+  딕셔너리의 키는 하나뿐이므로 같은 키에 다시 넣으면 값이 바뀌고 개수는 늘지 않습니다.

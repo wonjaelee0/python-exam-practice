@@ -1,0 +1,71 @@
+id: lab-w2-01-arith
+title: "[2주차 사전1] 두 정수의 7가지 연산"
+unit: lab
+difficulty: 1
+tags: [lab.w2, op.arith, op.floor-mod]
+statement: |
+  > 엘리스 2주차 실습 사전문제 1(기본 연산)과 같은 유형입니다.
+
+  두 정수 a, b를 입력받아 아래 7가지 계산 결과를 **각 줄에 하나씩** 출력하시오.
+
+  1. a + b
+  2. a - b
+  3. a × b
+  4. a ÷ b (실수 나눗셈)
+  5. a를 b로 나눈 몫
+  6. a를 b로 나눈 나머지
+  7. a의 b제곱
+
+  - 입력 프롬프트: `a: `, `b: ` (b는 0이 아니다)
+starter: |
+  a = int(input("a: "))
+  b = int(input("b: "))
+solution: |
+  a = int(input("a: "))
+  b = int(input("b: "))
+  print(a + b)
+  print(a - b)
+  print(a * b)
+  print(a / b)
+  print(a // b)
+  print(a % b)
+  print(a ** b)
+alt_solutions:
+  - |
+    a = int(input("a: "))
+    b = int(input("b: "))
+    print(a + b, a - b, a * b, a / b, a // b, a % b, a ** b, sep="\n")
+mutants:
+  - name: 몫과 실수 나눗셈을 바꿈
+    code: |
+      a = int(input("a: "))
+      b = int(input("b: "))
+      print(a + b)
+      print(a - b)
+      print(a * b)
+      print(a // b)
+      print(a / b)
+      print(a % b)
+      print(a ** b)
+  - name: 거듭제곱에 ^를 씀
+    code: |
+      a = int(input("a: "))
+      b = int(input("b: "))
+      print(a + b)
+      print(a - b)
+      print(a * b)
+      print(a / b)
+      print(a // b)
+      print(a % b)
+      print(a ^ b)
+tests:
+  - stdin: "47\n6\n"
+    public: true
+  - stdin: "10\n4\n"
+  - stdin: "-7\n2\n"
+    note: 음수의 몫과 나머지
+  - stdin: "9\n9\n"
+hints:
+  - "몫은 `//`, 나머지는 `%`, 거듭제곱은 `**`입니다. `^`는 거듭제곱이 아닙니다."
+explanation: |
+  `/`는 항상 실수(float)를 돌려줍니다 (`10 / 5` → `2.0`). 파이썬의 `//`와 `%`는 음수에서 '아래쪽으로 내림' 기준이라 `-7 // 2`는 `-4`, `-7 % 2`는 `1`입니다.

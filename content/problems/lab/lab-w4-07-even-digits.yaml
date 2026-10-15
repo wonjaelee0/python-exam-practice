@@ -1,0 +1,88 @@
+id: lab-w4-07-even-digits
+title: "[4주차 4번] while로 짝수 자릿수 세기 (빈칸)"
+unit: lab
+difficulty: 2
+tags: [lab.w4, loop.while, digits]
+format: fill
+statement: |
+  > 엘리스 4주차 실습 4번(while로 각 자리 숫자의 합)과 같은 유형의 **코드 빈칸 채우기**입니다.
+
+  양의 정수를 입력받아, 각 자리 숫자 중 **짝수인 숫자**의 개수와 합을 출력하도록 빈칸 `_____`을 채우시오.
+  일의 자리부터 하나씩 꺼내고 지워 나간다 (예: 2846135 → 짝수 2, 8, 4, 6).
+
+  - 입력 프롬프트: `Enter a number: `
+  - 출력: `Even digits: 4`, `Sum of even digits: 20`
+starter: |
+  n = int(input("Enter a number: "))
+  count = 0
+  total = 0
+  while n _____ 0:
+      d = n _____ 10
+      if d % 2 == 0:
+          count += 1
+          total += d
+      n = n _____ 10
+  print("Even digits:", count)
+  print("Sum of even digits:", total)
+solution: |
+  n = int(input("Enter a number: "))
+  count = 0
+  total = 0
+  while n > 0:
+      d = n % 10
+      if d % 2 == 0:
+          count += 1
+          total += d
+      n = n // 10
+  print("Even digits:", count)
+  print("Sum of even digits:", total)
+alt_solutions:
+  - |
+    n = int(input("Enter a number: "))
+    count = 0
+    total = 0
+    while n != 0:
+        d = n % 10
+        n //= 10
+        if d % 2 == 0:
+            count = count + 1
+            total = total + d
+    print("Even digits: " + str(count))
+    print("Sum of even digits: " + str(total))
+mutants:
+  - name: 마지막 자리(맨 앞 숫자)를 빠뜨림
+    code: |
+      n = int(input("Enter a number: "))
+      count = 0
+      total = 0
+      while n > 9:
+          d = n % 10
+          if d % 2 == 0:
+              count += 1
+              total += d
+          n = n // 10
+      print("Even digits:", count)
+      print("Sum of even digits:", total)
+  - name: 몫 대신 나머지로 줄임
+    code: |
+      n = int(input("Enter a number: "))
+      count = 0
+      total = 0
+      while n > 0:
+          d = n % 10
+          if d % 2 == 0:
+              count += 1
+              total += d
+          n = n % 10 // 10
+      print("Even digits:", count)
+      print("Sum of even digits:", total)
+tests:
+  - stdin: "2846135\n"
+    public: true
+  - stdin: "13579\n"
+  - stdin: "8\n"
+  - stdin: "1000\n"
+hints:
+  - "일의 자리는 `n % 10`, 일의 자리를 지운 수는 `n // 10`입니다."
+explanation: |
+  `while n > 0`으로 반복하며 `% 10`(꺼내기)과 `// 10`(지우기)을 짝으로 쓰는 패턴은 자릿수 문제의 기본입니다. 몇 자리 수든 똑같이 동작합니다.

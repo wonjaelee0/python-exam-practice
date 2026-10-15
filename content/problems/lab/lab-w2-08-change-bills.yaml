@@ -1,0 +1,72 @@
+id: lab-w2-08-change-bills
+title: "[2주차 5번] 지폐와 동전으로 거스름돈"
+unit: lab
+difficulty: 2
+tags: [lab.w2, op.floor-mod]
+statement: |
+  > 엘리스 2주차 실습 5번(자동 판매기 거스름돈)과 같은 유형입니다.
+
+  투입한 금액과 물건 값(100원 단위)을 입력받아 거스름돈을 1000원 지폐, 500원 동전, 100원 동전으로 내어 주려 한다.
+  **큰 단위를 최대한 많이** 사용할 때 각각 몇 개가 필요한지 출력하시오.
+
+  - 입력 프롬프트: `Input money: `, `Price: ` (투입 금액 ≥ 물건 값)
+  - 출력
+    - `Change: 3700`
+    - `Number of 1000 bill: 3`
+    - `Number of 500 coin: 1`
+    - `Number of 100 coin: 2`
+starter: |
+  money = int(input("Input money: "))
+solution: |
+  money = int(input("Input money: "))
+  price = int(input("Price: "))
+  change = money - price
+  print("Change:", change)
+  print("Number of 1000 bill:", change // 1000)
+  print("Number of 500 coin:", change % 1000 // 500)
+  print("Number of 100 coin:", change % 500 // 100)
+alt_solutions:
+  - |
+    money = int(input("Input money: "))
+    price = int(input("Price: "))
+    change = money - price
+    left = change
+    bills = left // 1000
+    left = left - bills * 1000
+    c500 = left // 500
+    left = left - c500 * 500
+    c100 = left // 100
+    print("Change: " + str(change))
+    print("Number of 1000 bill: " + str(bills))
+    print("Number of 500 coin: " + str(c500))
+    print("Number of 100 coin: " + str(c100))
+mutants:
+  - name: 500원 개수를 남은 돈이 아닌 전체로 계산
+    code: |
+      money = int(input("Input money: "))
+      price = int(input("Price: "))
+      change = money - price
+      print("Change:", change)
+      print("Number of 1000 bill:", change // 1000)
+      print("Number of 500 coin:", change // 500)
+      print("Number of 100 coin:", change % 500 // 100)
+  - name: 100원 개수를 1000원 나머지로 계산
+    code: |
+      money = int(input("Input money: "))
+      price = int(input("Price: "))
+      change = money - price
+      print("Change:", change)
+      print("Number of 1000 bill:", change // 1000)
+      print("Number of 500 coin:", change % 1000 // 500)
+      print("Number of 100 coin:", change % 1000 // 100)
+tests:
+  - stdin: "10000\n6300\n"
+    public: true
+  - stdin: "5000\n5000\n"
+    note: 거스름돈 없음
+  - stdin: "3000\n1100\n"
+  - stdin: "20000\n200\n"
+hints:
+  - "1000원 지폐로 내고 남은 돈은 `change % 1000`, 그중 500원 동전은 `// 500`."
+explanation: |
+  '큰 단위부터 몫을 구하고, 나머지로 다음 단위를 계산'하는 패턴입니다. 몫(`//`)과 나머지(`%`)를 짝으로 쓰는 연습이 됩니다.
