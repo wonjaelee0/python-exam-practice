@@ -30,6 +30,9 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTENT = ROOT / "content"
+# 공개하지 않는 원본 문제(예: elice 원문). git에 올라가지 않는 폴더라 CI(공개 사이트) 빌드에는 들어가지 않고,
+# 로컬 빌드(tools/serve.py로 보는 사이트)에만 포함된다. 구조는 content/와 같다 (units/, problems/, quizzes/).
+PRIVATE = ROOT / "materials" / "private"
 SITE = ROOT / "site"
 PY_DIR = SITE / "py"
 sys.path.insert(0, str(PY_DIR))
@@ -185,14 +188,25 @@ def main() -> int:
     config = load_yaml(CONTENT / "config.yaml")
     default_ms = int(config["limits"]["time_ms"])
     build_timeout = float(config["limits"]["build_timeout_s"])
+    default_course = config.get("default_course", "basic")
+    course_ids = {c["id"] for c in config.get("courses") or []} or {default_course}
+    roots = [(CONTENT, False)] + ([(PRIVATE, True)] if PRIVATE.is_dir() else [])
+    if len(roots) > 1:
+        print(f"🔒 비공개 원본 폴더 포함: {PRIVATE.relative_to(ROOT)} (로컬 빌드 전용 — CI 공개 사이트에는 없음)\n")
     units = {}
-    for path in sorted((CONTENT / "units").glob("*.yaml")):
-        u = load_yaml(path)
-        units[u["id"]] = u
+    for root, private in roots:
+        for path in sorted((root / "units").glob("*.yaml")):
+            u = load_yaml(path)
+            u.setdefault("course", default_course)
+            u["private"] = private
+            if u["course"] not in course_ids:
+                raise SystemExit(f"{path}: 없는 과목 course={u['course']!r} (config.yaml courses 확인)")
+            units[u["id"]] = u
 
     problems, reports = [], {}
     seen = set()
-    for path in sorted((CONTENT / "problems").rglob("*.yaml")):
+    problem_paths = [p for root, _ in roots for p in sorted((root / "problems").rglob("*.yaml"))]
+    for path in problem_paths:
         errors, warnings = [], []
         try:
             p = load_yaml(path) or {}
@@ -221,7 +235,11 @@ def main() -> int:
         if not errors:
             problems.append(p)
 
-    quiz_sets, quiz_reports = quizbuild.load_sets(CONTENT, args.only)
+    quiz_sets, quiz_reports = [], {}
+    for root, private in roots:
+        qs, qr = quizbuild.load_sets(root, args.only, default_course=default_course, private=private)
+        quiz_sets += qs
+        quiz_reports.update(qr)
 
     # ---- 실행 (정답·대체 정답·오답 코드 × 테스트)
     jobs, jobs2 = [], []
@@ -349,7 +367,8 @@ def main() -> int:
         fname = f"units/{uid}.{h}.json"
         (out_dir / fname).write_text(body, encoding="utf-8")
         manifest_units.append({"id": uid, "title": u["title"], "short": u.get("short", uid), "order": u.get("order", 99),
-                               "summary": u.get("summary", ""), "file": fname, "count": len(out_problems)})
+                               "summary": u.get("summary", ""), "file": fname, "count": len(out_problems),
+                               "course": u["course"], "private": u["private"]})
 
     quiz_dir = out_dir / "quiz"
     if quiz_dir.exists():
@@ -367,7 +386,11 @@ def main() -> int:
         "runtime": {"pyodide": f"pyodide/{assets['pyodide']['version']}/", "assetVersion": runtime_hash,
                     "validatedWith": f"{mode} Python {py_version}"},
         "config": {"runLimitSec": config["run"]["limit_sec"], "examDate": str(config["site"]["exam_date"]),
-                   "title": config["site"]["title"]},
+                   "title": config["site"]["title"], "defaultCourse": default_course},
+        "courses": [{"id": c["id"], "title": c["title"], "subtitle": c.get("subtitle", ""),
+                     "examLabel": c.get("exam_label", "시험"),
+                     "examDate": str(c["exam_date"]) if c.get("exam_date") else None}
+                    for c in config.get("courses") or [{"id": default_course, "title": config["site"]["title"]}]],
         "units": manifest_units,
         "problems": manifest_problems,
         "quizzes": quiz_entries,

@@ -2,6 +2,7 @@ import { html, render, useEffect, useState } from './lib/ui.js';
 import { loadManifest } from './lib/data.js';
 import { asset } from './lib/paths.js';
 import { runner } from './runtime/client.js';
+import { initCourses, currentCourse } from './lib/course.js';
 import { Home } from './views/Home.js';
 import { Problems } from './views/Problems.js';
 import { Solve } from './views/Solve.js';
@@ -22,6 +23,13 @@ function App() {
   const [route, setRoute] = useState(parseRoute());
   const [manifest, setManifest] = useState(null);
   const [error, setError] = useState(null);
+  const [, setCourseTick] = useState(0);
+
+  useEffect(() => {
+    const onCourse = () => setCourseTick((n) => n + 1);
+    window.addEventListener('pyexam:course', onCourse);
+    return () => window.removeEventListener('pyexam:course', onCourse);
+  }, []);
 
   useEffect(() => {
     const onHash = () => {
@@ -35,6 +43,7 @@ function App() {
   useEffect(() => {
     loadManifest().then(
       (m) => {
+        initCourses(m);
         runner.configure({ pyodideURL: asset(m.runtime.pyodide), pyBase: asset('py/'), assetVersion: m.runtime.assetVersion });
         setManifest(m);
         // 첫 화면을 그린 뒤 Python을 미리 준비해 둔다 (첫 Run이 빨라짐)
@@ -59,12 +68,12 @@ function App() {
 
   const [a, b] = route.parts;
   if (a === 'p' && b) return html`<${Solve} key=${b} id=${decodeURIComponent(b)} manifest=${manifest} />`;
-  if (a === 'problems') return html`<${Problems} key=${route.query.toString()} manifest=${manifest} route=${route.path} query=${route.query} />`;
+  if (a === 'problems') return html`<${Problems} key=${currentCourse() + route.query.toString()} manifest=${manifest} route=${route.path} query=${route.query} />`;
   if (a === 'quiz' && b === 'play') return html`<${QuizPlay} key=${route.query.toString()} manifest=${manifest} route=${route.path} query=${route.query} />`;
-  if (a === 'quiz') return html`<${QuizHome} manifest=${manifest} route=${route.path} />`;
+  if (a === 'quiz') return html`<${QuizHome} key=${currentCourse()} manifest=${manifest} route=${route.path} />`;
   if (a === 'settings') return html`<${Settings} manifest=${manifest} route=${route.path} />`;
   if (a === 'about') return html`<${About} manifest=${manifest} route=${route.path} />`;
-  return html`<${Home} manifest=${manifest} route="/" />`;
+  return html`<${Home} key=${currentCourse()} manifest=${manifest} route="/" />`;
 }
 
 render(html`<${App} />`, document.getElementById('app'));

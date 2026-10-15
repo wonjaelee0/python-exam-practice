@@ -94,6 +94,8 @@ export const meta = {
   setLastProblem: (id) => write('last', id),
   disclaimerSeen: () => read('disclaimerSeen', false),
   setDisclaimerSeen: () => write('disclaimerSeen', true),
+  course: () => read('course', null),
+  setCourse: (id) => write('course', id),
 };
 
 export function exportAll() {

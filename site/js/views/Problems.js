@@ -1,6 +1,7 @@
 import { html, useMemo, useState } from '../lib/ui.js';
 import { progress, statusOf } from '../lib/storage.js';
 import { Layout, Stars } from '../components/Layout.js';
+import { inCourse } from '../lib/course.js';
 
 const STATUS_LABEL = { untried: '안 풂', tried: '시도', solved: '정답' };
 const FORMAT_LABEL = { write: '작성', fill: '빈칸', debug: '디버깅' };
@@ -11,11 +12,14 @@ export function Problems({ manifest, route, query }) {
   const [status, setStatus] = useState('');
   const [q, setQ] = useState('');
   const prog = progress.all();
+  const courseUnits = manifest.units.filter((u) => u.count && inCourse(u));
+  const courseUnitIds = new Set(courseUnits.map((u) => u.id));
 
   const rows = useMemo(() => {
     const needle = q.trim().toLowerCase();
     return manifest.problems.filter((p) => {
       if (unit && p.unit !== unit) return false;
+      if (!unit && !courseUnitIds.has(p.unit)) return false;
       if (diff && String(p.difficulty) !== diff) return false;
       if (status && statusOf(prog[p.id]) !== status) return false;
       if (needle && !(p.title.toLowerCase().includes(needle) || p.tags.some((t) => t.includes(needle)))) return false;
@@ -29,11 +33,11 @@ export function Problems({ manifest, route, query }) {
   };
 
   return html`<${Layout} route=${route} title=${manifest.config.title}>
-    <h1>문제 목록 <small class="muted">${rows.length} / ${manifest.problems.length}</small></h1>
+    <h1>문제 목록 <small class="muted">${rows.length} / ${manifest.problems.filter((p) => courseUnitIds.has(p.unit)).length}</small></h1>
     <div class="filters">
       <select value=${unit} onChange=${(e) => setUnitAndUrl(e.target.value)} aria-label="단원">
         <option value="">전체 단원</option>
-        ${manifest.units.filter((u) => u.count).map((u) => html`<option value=${u.id}>${u.short} ${u.title} (${u.count})</option>`)}
+        ${courseUnits.map((u) => html`<option value=${u.id}>${u.private ? '🔒 ' : ''}${u.short} ${u.title} (${u.count})</option>`)}
       </select>
       <select value=${diff} onChange=${(e) => setDiff(e.target.value)} aria-label="난이도">
         <option value="">전체 난이도</option>

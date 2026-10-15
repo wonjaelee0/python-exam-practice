@@ -129,9 +129,12 @@ def check_item(item: dict, set_id: str, seen: set) -> tuple:
     return errors, warnings
 
 
-def load_sets(content: Path, only):
+_SEEN = set()  # 공개·비공개 폴더 전체에서 문항 id가 겹치지 않게
+
+
+def load_sets(content: Path, only, default_course="basic", private=False):
     sets, reports = [], {}
-    seen = set()
+    seen = _SEEN
     for path in sorted((content / "quizzes").glob("*.yaml")):
         try:
             qs = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
@@ -155,7 +158,10 @@ def load_sets(content: Path, only):
             reports[qid] = {"errors": errors, "warnings": warnings}
             if not errors:
                 items.append(item)
-        sets.append({"meta": {k: qs.get(k) for k in ("id", "short", "title", "order", "summary")}, "items": items})
+        meta = {k: qs.get(k) for k in ("id", "short", "title", "order", "summary")}
+        meta["course"] = qs.get("course") or default_course
+        meta["private"] = private
+        sets.append({"meta": meta, "items": items})
     return sets, reports
 
 

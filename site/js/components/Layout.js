@@ -1,5 +1,6 @@
 import { html, useState } from '../lib/ui.js';
 import { meta } from '../lib/storage.js';
+import { courses, currentCourse, setCourse } from '../lib/course.js';
 
 export const DISCLAIMER =
   '이 사이트는 elice 및 서울대학교와 무관한 비공식 개인 학습용 연습장입니다. 개인 정보를 수집하지 않으며, 모든 기록은 이 브라우저에만 저장됩니다.';
@@ -32,11 +33,24 @@ export function Layout({ route, title, children }) {
     <${Disclaimer} />
     <header class="site-header">
       <a class="brand" href="#/">🐍 ${title}</a>
+      <${CourseSwitch} />
       <nav>${nav.map(([href, label, active]) => html`<a href=${href} class=${active ? 'active' : ''}>${label}</a>`)}</nav>
     </header>
     <main class="page-main">${children}</main>
     <${Footer} />
   </div>`;
+}
+
+export function CourseSwitch() {
+  const list = courses();
+  if (list.length < 2) return null;
+  const cur = currentCourse();
+  return html`<label class="course-switch" title="과목 선택">
+    <span class="sr-only">과목</span>
+    <select value=${cur} onChange=${(e) => setCourse(e.target.value)}>
+      ${list.map((c) => html`<option value=${c.id}>${c.title}</option>`)}
+    </select>
+  </label>`;
 }
 
 export function Stars({ n }) {

@@ -14,3 +14,17 @@ run:
 site:
   title: Python 시험 연습장
   exam_date: "2026-10-20"
+
+# 과목 — 단원(units/*.yaml)과 퀴즈(quizzes/*.yaml)의 course 값으로 나눈다 (없으면 default_course)
+default_course: basic
+courses:
+  - id: basic
+    title: 컴퓨팅 기초
+    subtitle: 처음 만나는 컴퓨팅
+    exam_label: 중간고사
+    exam_date: "2026-10-20"
+  - id: core
+    title: 컴퓨팅 핵심
+    subtitle: 상위 과목 대비
+    exam_label: 시험
+    exam_date: null

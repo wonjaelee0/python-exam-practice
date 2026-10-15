@@ -2,6 +2,7 @@ import { html, useEffect, useMemo, useState } from '../lib/ui.js';
 import { quizStats, quizPrefs } from '../lib/storage.js';
 import { loadAllQuizzes, TYPE_LABEL, TYPE_ORDER } from '../lib/quiz.js';
 import { Layout } from '../components/Layout.js';
+import { inCourse } from '../lib/course.js';
 
 const COUNTS = ['10', '20', '30', 'all'];
 
@@ -10,7 +11,7 @@ function defaultPrefs(sets) {
 }
 
 export function QuizHome({ manifest, route }) {
-  const sets = manifest.quizzes || [];
+  const sets = (manifest.quizzes || []).filter(inCourse);
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [prefs, setPrefs] = useState(() => {
@@ -38,7 +39,7 @@ export function QuizHome({ manifest, route }) {
       return { ...p, [key]: [...cur] };
     });
 
-  const allItems = useMemo(() => (data ? data.flatMap((d) => d.items) : []), [data]);
+  const allItems = useMemo(() => (data ? data.filter((d) => sets.some((s) => s.id === d.set.id)).flatMap((d) => d.items) : []), [data]);
   const pool = useMemo(
     () =>
       allItems.filter((it) => {
@@ -70,7 +71,7 @@ export function QuizHome({ manifest, route }) {
 
   if (!sets.length) {
     return html`<${Layout} route=${route} title=${manifest.config.title}>
-      <h1>이론 퀴즈</h1><p class="muted">아직 퀴즈 데이터가 없습니다.</p>
+      <h1>이론 퀴즈</h1><p class="muted">이 과목에는 아직 퀴즈가 없습니다. 위의 과목 선택을 바꿔 보세요.</p>
     <//>`;
   }
 
