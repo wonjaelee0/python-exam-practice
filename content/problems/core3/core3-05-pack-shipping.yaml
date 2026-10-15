@@ -1,0 +1,190 @@
+id: core3-05-pack-shipping
+title: "[3주차 추가1] 창고에서 묶음 단위로 출고하기"
+unit: core3
+difficulty: 4
+tags: [core.w3, class.inherit, class.encapsulation, class.state]
+statement: |
+  > 컴퓨팅 핵심 3주차 추가문제 1(간식 꾸러미 나누기)과 같은 유형입니다.
+
+  물품의 재고를 관리하는 `Warehouse`와, 이를 상속받아 **묶음(팩) 단위로 출고**하는 `PackWarehouse`를 만드시오.
+  여러 요청을 차례로 처리하며 남은 재고와 총 출고 개수를 확인한다.
+
+  | 클래스와 항목 | 역할 |
+  |---|---|
+  | `Warehouse(item, stock)` | 물품 이름을 `item`, 처음 재고를 `__stock`에 저장 |
+  | `Warehouse.get_stock()` | 현재 재고를 반환 |
+  | `Warehouse.take(count)` | 개수가 1 이상이고 재고 이하일 때만 차감하고 `True`, 아니면 그대로 두고 `False` |
+  | `PackWarehouse(Warehouse)` | 초기화와 메서드를 상속받음 |
+  | `PackWarehouse.ship_packs(per_pack, packs)` | 필요한 개수(`팩당 개수 × 팩 수`)를 물려받은 `take()`에 전달하고 그 반환값을 그대로 반환 |
+
+  - 팩 수가 0 이하이면 실패이며, 재고가 모자라도 일부만 출고하지 않고 요청 전체가 실패한다. 실패한 요청 뒤에도 다음 요청을 계속 처리한다.
+  - 입력 프롬프트: `물품 이름: `, `처음 재고: `, `팩당 개수: `, `요청별 팩 수(공백 구분): `
+  - 출력: 요청마다 `3팩 출고 성공 | 남은 마스크: 15개` 또는 `5팩 출고 실패 | 남은 마스크: 15개`, 마지막 줄에 `총 출고: 9개` (성공한 출고 개수의 합)
+  - 메서드 안에서는 출력하지 않으며, 자식 클래스는 `__stock`을 직접 다루지 않는다.
+starter: |
+  class Warehouse:
+      def __init__(self, item, stock):
+          pass
+
+      def get_stock(self):
+          pass
+
+      def take(self, count):
+          pass
+
+
+  class PackWarehouse(Warehouse):
+      def ship_packs(self, per_pack, packs):
+          pass
+solution: |
+  class Warehouse:
+      def __init__(self, item, stock):
+          self.item = item
+          self.__stock = stock
+
+      def get_stock(self):
+          return self.__stock
+
+      def take(self, count):
+          if 1 <= count <= self.__stock:
+              self.__stock -= count
+              return True
+          return False
+
+
+  class PackWarehouse(Warehouse):
+      def ship_packs(self, per_pack, packs):
+          if packs <= 0:
+              return False
+          return self.take(per_pack * packs)
+
+
+  item = input("물품 이름: ")
+  stock = int(input("처음 재고: "))
+  per_pack = int(input("팩당 개수: "))
+  requests = list(map(int, input("요청별 팩 수(공백 구분): ").split()))
+  box = PackWarehouse(item, stock)
+  shipped = 0
+  for packs in requests:
+      if box.ship_packs(per_pack, packs):
+          shipped += per_pack * packs
+          result = "성공"
+      else:
+          result = "실패"
+      print(f"{packs}팩 출고 {result} | 남은 {box.item}: {box.get_stock()}개")
+  print(f"총 출고: {shipped}개")
+alt_solutions:
+  - |
+    class Warehouse:
+        def __init__(self, item, stock):
+            self.item = item
+            self.__stock = stock
+
+        def get_stock(self):
+            return self.__stock
+
+        def take(self, count):
+            if count < 1 or count > self.__stock:
+                return False
+            self.__stock = self.__stock - count
+            return True
+
+
+    class PackWarehouse(Warehouse):
+        def ship_packs(self, per_pack, packs):
+            return packs > 0 and self.take(per_pack * packs)
+
+
+    box = PackWarehouse(input("물품 이름: "), int(input("처음 재고: ")))
+    per_pack = int(input("팩당 개수: "))
+    start = box.get_stock()
+    for packs in [int(x) for x in input("요청별 팩 수(공백 구분): ").split()]:
+        word = "성공" if box.ship_packs(per_pack, packs) else "실패"
+        print(str(packs) + "팩 출고 " + word + " | 남은 " + box.item + ": " + str(box.get_stock()) + "개")
+    print("총 출고: " + str(start - box.get_stock()) + "개")
+mutants:
+  - name: 재고가 모자라면 가능한 만큼만 출고
+    code: |
+      class Warehouse:
+          def __init__(self, item, stock):
+              self.item = item
+              self.__stock = stock
+
+          def get_stock(self):
+              return self.__stock
+
+          def take(self, count):
+              if 1 <= count <= self.__stock:
+                  self.__stock -= count
+                  return True
+              return False
+
+
+      class PackWarehouse(Warehouse):
+          def ship_packs(self, per_pack, packs):
+              if packs <= 0:
+                  return False
+              can = min(packs, self.get_stock() // per_pack)
+              if can == 0:
+                  return False
+              return self.take(per_pack * can)
+
+
+      item = input("물품 이름: ")
+      stock = int(input("처음 재고: "))
+      per_pack = int(input("팩당 개수: "))
+      requests = list(map(int, input("요청별 팩 수(공백 구분): ").split()))
+      box = PackWarehouse(item, stock)
+      start = stock
+      for packs in requests:
+          result = "성공" if box.ship_packs(per_pack, packs) else "실패"
+          print(f"{packs}팩 출고 {result} | 남은 {box.item}: {box.get_stock()}개")
+      print(f"총 출고: {start - box.get_stock()}개")
+  - name: 실패한 요청도 총 출고에 더함
+    code: |
+      class Warehouse:
+          def __init__(self, item, stock):
+              self.item = item
+              self.__stock = stock
+
+          def get_stock(self):
+              return self.__stock
+
+          def take(self, count):
+              if 1 <= count <= self.__stock:
+                  self.__stock -= count
+                  return True
+              return False
+
+
+      class PackWarehouse(Warehouse):
+          def ship_packs(self, per_pack, packs):
+              if packs <= 0:
+                  return False
+              return self.take(per_pack * packs)
+
+
+      item = input("물품 이름: ")
+      stock = int(input("처음 재고: "))
+      per_pack = int(input("팩당 개수: "))
+      requests = list(map(int, input("요청별 팩 수(공백 구분): ").split()))
+      box = PackWarehouse(item, stock)
+      shipped = 0
+      for packs in requests:
+          result = "성공" if box.ship_packs(per_pack, packs) else "실패"
+          shipped += per_pack * packs
+          print(f"{packs}팩 출고 {result} | 남은 {box.item}: {box.get_stock()}개")
+      print(f"총 출고: {shipped}개")
+tests:
+  - stdin: "마스크\n24\n3\n3 5 2\n"
+    public: true
+  - stdin: "물티슈\n10\n4\n3 0 -1 2\n"
+    note: 0 이하 팩 수는 실패
+  - stdin: "건전지\n12\n6\n2\n"
+    note: 재고를 정확히 모두 출고
+  - stdin: "컵\n0\n1\n1 1\n"
+hints:
+  - "부모 클래스에 재고 확인·차감 규칙을 두고, 자식 메서드는 필요한 개수만 계산해 `self.take()`를 한 번 호출합니다."
+  - "상자 객체는 반복문 앞에서 한 번만 만들어야 재고가 요청 사이에 이어집니다."
+explanation: |
+  상태 관리(캡슐화)와 상속을 함께 쓰는 문제입니다. '전부 아니면 실패'라는 규칙은 필요한 총량을 계산해 한 번에 요청하면 자연스럽게 지켜집니다.

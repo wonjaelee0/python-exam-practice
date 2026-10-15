@@ -1,0 +1,116 @@
+id: core4-01-even-digits
+title: "[4주차 도전1] 재귀로 짝수 자릿수 세기"
+unit: core4
+difficulty: 2
+tags: [core.w4, recursion.digits]
+statement: |
+  > 컴퓨팅 핵심 4주차 도전문제 1(물품 코드의 확인 숫자)과 같은 유형입니다.
+
+  물품 코드(0 이상의 정수)의 각 자리 중 **짝수인 자리의 개수**와 **홀수인 자리의 개수**를 출력하시오.
+  예를 들어 5724는 짝수 자리(2, 4)가 2개, 홀수 자리(5, 7)가 2개이다. 0은 짝수 한 자리이다.
+
+  | 함수 | 역할 |
+  |---|---|
+  | `count_even(n)` | n의 자릿수 중 짝수의 개수를 반환 |
+  | `count_digits(n)` | n의 자릿수 개수를 반환 (0은 1자리) |
+
+  - 두 함수 모두 **자기 자신을 호출하는 재귀 함수**로 작성한다. 반복문, 문자열 변환, `len()`은 쓰지 않는다.
+  - 입력 프롬프트: `물품 코드: `
+  - 출력: `짝수 자리: 2개`, `홀수 자리: 2개` (홀수 자리 = 전체 자릿수 - 짝수 자리)
+starter: |
+  def count_even(n):
+      pass
+
+
+  def count_digits(n):
+      pass
+
+
+  code = int(input("물품 코드: "))
+solution: |
+  def count_even(n):
+      last = 1 if n % 2 == 0 else 0
+      if n < 10:
+          return last
+      return last + count_even(n // 10)
+
+
+  def count_digits(n):
+      if n < 10:
+          return 1
+      return 1 + count_digits(n // 10)
+
+
+  code = int(input("물품 코드: "))
+  even = count_even(code)
+  print(f"짝수 자리: {even}개")
+  print(f"홀수 자리: {count_digits(code) - even}개")
+alt_solutions:
+  - |
+    def count_even(n):
+        if n // 10 == 0:
+            return int(n % 2 == 0)
+        return count_even(n // 10) + int(n % 10 % 2 == 0)
+
+
+    def count_digits(n):
+        return 1 if n // 10 == 0 else count_digits(n // 10) + 1
+
+
+    code = int(input("물품 코드: "))
+    e = count_even(code)
+    total = count_digits(code)
+    print("짝수 자리: " + str(e) + "개")
+    print("홀수 자리: " + str(total - e) + "개")
+mutants:
+  - name: 종료 조건을 n == 0으로 둠 (0을 자리로 세지 못함)
+    code: |
+      def count_even(n):
+          if n == 0:
+              return 0
+          last = 1 if n % 2 == 0 else 0
+          return last + count_even(n // 10)
+
+
+      def count_digits(n):
+          if n == 0:
+              return 0
+          return 1 + count_digits(n // 10)
+
+
+      code = int(input("물품 코드: "))
+      even = count_even(code)
+      print(f"짝수 자리: {even}개")
+      print(f"홀수 자리: {count_digits(code) - even}개")
+  - name: 맨 앞자리를 빠뜨림
+    code: |
+      def count_even(n):
+          if n < 10:
+              return 0
+          last = 1 if n % 2 == 0 else 0
+          return last + count_even(n // 10)
+
+
+      def count_digits(n):
+          if n < 10:
+              return 1
+          return 1 + count_digits(n // 10)
+
+
+      code = int(input("물품 코드: "))
+      even = count_even(code)
+      print(f"짝수 자리: {even}개")
+      print(f"홀수 자리: {count_digits(code) - even}개")
+tests:
+  - stdin: "5724\n"
+    public: true
+  - stdin: "0\n"
+    note: 0은 짝수 한 자리
+  - stdin: "2468\n"
+  - stdin: "13579\n"
+  - stdin: "1000000000\n"
+hints:
+  - "종료 조건: 한 자리 수(`n < 10`)면 바로 답을 반환합니다. 아니면 마지막 자리(`n % 10`)를 처리하고 나머지(`n // 10`)는 재귀 호출에 맡깁니다."
+explanation: |
+  재귀 함수는 '바로 답할 수 있는 경우(종료 조건)'와 '문제를 한 단계 줄여 자기 자신에게 맡기는 경우'로 나눕니다.
+  종료 조건을 `n == 0`으로 두면 입력이 0일 때 자리가 하나도 없는 것으로 세는 실수가 생깁니다.

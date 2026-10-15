@@ -12,7 +12,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-FORBIDDEN_PARTS = {"materials", "midterms"}
+FORBIDDEN_PARTS = {"materials", "midterms", "computing_core_extracted"}
 FORBIDDEN_SUFFIXES = {".ipynb"}
 
 

@@ -1,0 +1,77 @@
+id: core1-04-odd-lockers
+title: "[1주차 추가1] 모든 자리가 홀수인 사물함"
+unit: core1
+difficulty: 2
+tags: [core.w1, loop.range, digits]
+statement: |
+  > 컴퓨팅 핵심 1주차 추가문제 1(짝수 숫자 보관함 찾기)과 같은 유형입니다.
+
+  사물함에는 100번부터 999번까지 세 자리 번호가 붙어 있다. 시작 번호부터 끝 번호까지 차례로 확인해
+  백의 자리, 십의 자리, 일의 자리가 **모두 홀수**인 번호만 쉼표로 이어 출력하시오.
+
+  - 입력 프롬프트: `시작 번호를 입력하세요: `, `끝 번호를 입력하세요: `
+  - 출력: `111,113,115` (쉼표 뒤 공백 없음). 해당하는 번호가 없으면 빈 줄을 출력한다.
+  - 조건: 두 번호는 100 이상 999 이하이고, 시작 번호 ≤ 끝 번호이다.
+starter: |
+  start = int(input("시작 번호를 입력하세요: "))
+  end = int(input("끝 번호를 입력하세요: "))
+solution: |
+  start = int(input("시작 번호를 입력하세요: "))
+  end = int(input("끝 번호를 입력하세요: "))
+  found = []
+  for n in range(start, end + 1):
+      a = n // 100
+      b = n // 10 % 10
+      c = n % 10
+      if a % 2 == 1 and b % 2 == 1 and c % 2 == 1:
+          found.append(str(n))
+  print(",".join(found))
+alt_solutions:
+  - |
+    start = int(input("시작 번호를 입력하세요: "))
+    end = int(input("끝 번호를 입력하세요: "))
+    line = ""
+    for n in range(start, end + 1):
+        ok = True
+        for ch in str(n):
+            if ch in "02468":
+                ok = False
+        if ok:
+            if line:
+                line += ","
+            line += str(n)
+    print(line)
+mutants:
+  - name: 끝 번호를 포함하지 않음
+    code: |
+      start = int(input("시작 번호를 입력하세요: "))
+      end = int(input("끝 번호를 입력하세요: "))
+      found = []
+      for n in range(start, end):
+          a = n // 100
+          b = n // 10 % 10
+          c = n % 10
+          if a % 2 == 1 and b % 2 == 1 and c % 2 == 1:
+              found.append(str(n))
+      print(",".join(found))
+  - name: 십의 자리를 확인하지 않음
+    code: |
+      start = int(input("시작 번호를 입력하세요: "))
+      end = int(input("끝 번호를 입력하세요: "))
+      found = []
+      for n in range(start, end + 1):
+          if (n // 100) % 2 == 1 and n % 2 == 1:
+              found.append(str(n))
+      print(",".join(found))
+tests:
+  - stdin: "100\n120\n"
+    public: true
+  - stdin: "200\n299\n"
+    note: 해당 없음 — 빈 줄
+  - stdin: "355\n399\n"
+  - stdin: "999\n999\n"
+hints:
+  - "백의 자리 `n // 100`, 십의 자리 `n // 10 % 10`, 일의 자리 `n % 10`."
+  - "번호들을 리스트에 모은 뒤 `\",\".join(...)`으로 이으면 쉼표 처리가 쉽습니다. 단, join에는 문자열이 필요합니다."
+explanation: |
+  자릿수 분해와 범위 반복의 조합입니다. 결과가 없을 때 빈 리스트를 join하면 빈 문자열이 되어 자연스럽게 빈 줄이 출력됩니다.

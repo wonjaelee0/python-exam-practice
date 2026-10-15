@@ -1,0 +1,7 @@
+id: core2
+short: 2주차
+title: 리스트 처리 · 정렬 키 · 예외 처리
+course: core
+order: 102
+sort: id
+summary: 범위 필터, zip·enumerate, sorted와 lambda 정렬 기준, try-except-else, ValueError 처리

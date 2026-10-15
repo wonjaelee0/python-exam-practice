@@ -1,0 +1,92 @@
+id: core4-02-stack-papers
+title: "[4주차 도전2] 재귀로 서류 역순 처리 안내"
+unit: core4
+difficulty: 2
+tags: [core.w4, recursion.list]
+statement: |
+  > 컴퓨팅 핵심 4주차 도전문제 2(대여 물품 반납 안내)와 같은 유형입니다.
+
+  서류를 받은 순서대로 쌓아 두었다. 처리할 때는 **맨 위(가장 나중에 받은 서류)부터** 처리하므로, 처리 순서를 번호와 함께 안내하시오.
+
+  | 함수 | 역할 |
+  |---|---|
+  | `print_order(items, no)` | 리스트 `items`의 서류를 입력의 역순으로 `1번째 처리: 서류명` 형식으로 한 줄씩 출력. `no`는 이번에 출력할 번호. 서류가 없으면 아무것도 하지 않고 끝낸다 |
+
+  - 반복문, `reversed()`, `reverse()`, `[::-1]`을 쓰지 않고 **재귀 호출**로 처리한다. 함수는 직접 출력하므로 호출을 `print()`로 감싸지 않는다.
+  - 입력 프롬프트: `받은 서류(공백 구분): ` (서류가 없으면 빈 줄)
+  - 출력: `1번째 처리: 휴학원` 형식, 빈 입력이면 `처리할 서류가 없습니다.` (이 문장은 함수 밖에서 출력)
+  - 같은 이름이 여러 번 나오면 각각 다른 서류로 본다.
+starter: |
+  def print_order(items, no):
+      pass
+
+
+  papers = input("받은 서류(공백 구분): ").split()
+solution: |
+  def print_order(items, no):
+      if not items:
+          return
+      print(f"{no}번째 처리: {items[-1]}")
+      print_order(items[:-1], no + 1)
+
+
+  papers = input("받은 서류(공백 구분): ").split()
+  if not papers:
+      print("처리할 서류가 없습니다.")
+  else:
+      print_order(papers, 1)
+alt_solutions:
+  - |
+    def print_order(items, no):
+        if len(items) == 0:
+            return
+        print_order(items[1:], no + 1)
+        print(str(len(items)) + "번째 처리: " + items[0])
+
+
+    papers = input("받은 서류(공백 구분): ").split()
+    if len(papers) == 0:
+        print("처리할 서류가 없습니다.")
+    else:
+        print_order(papers, 1)
+mutants:
+  - name: 받은 순서대로 출력
+    code: |
+      def print_order(items, no):
+          if not items:
+              return
+          print(f"{no}번째 처리: {items[0]}")
+          print_order(items[1:], no + 1)
+
+
+      papers = input("받은 서류(공백 구분): ").split()
+      if not papers:
+          print("처리할 서류가 없습니다.")
+      else:
+          print_order(papers, 1)
+  - name: 번호가 늘지 않음
+    code: |
+      def print_order(items, no):
+          if not items:
+              return
+          print(f"{no}번째 처리: {items[-1]}")
+          print_order(items[:-1], no)
+
+
+      papers = input("받은 서류(공백 구분): ").split()
+      if not papers:
+          print("처리할 서류가 없습니다.")
+      else:
+          print_order(papers, 1)
+tests:
+  - stdin: "재학증명서 성적표 휴학원\n"
+    public: true
+  - stdin: "\n"
+    note: 서류 없음
+  - stdin: "A\n"
+  - stdin: "신청서 신청서 동의서 신청서\n"
+hints:
+  - "맨 위 서류는 `items[-1]`, 그것을 뺀 나머지는 `items[:-1]`입니다. 다음 호출에는 번호를 1 늘려 넘깁니다."
+  - "또는 원 문제처럼 `items[1:]`를 먼저 재귀 호출한 뒤 `items[0]`을 출력해도 역순이 됩니다 (번호 계산만 주의)."
+explanation: |
+  출력과 재귀 호출의 **순서**가 결과 순서를 결정합니다. '출력 → 나머지 호출'은 앞에서부터, '나머지 호출 → 출력'은 뒤에서부터 처리됩니다.

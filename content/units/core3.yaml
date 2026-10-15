@@ -1,0 +1,7 @@
+id: core3
+short: 3주차
+title: 클래스 · 캡슐화 · 상속
+course: core
+order: 103
+sort: id
+summary: __init__과 속성, 메서드와 return, __속성으로 상태 보호, 부모 메서드를 재사용하는 상속

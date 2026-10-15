@@ -1,0 +1,111 @@
+id: core3-01-books
+title: "[3주차 도전1] 두 권의 책 객체"
+unit: core3
+difficulty: 1
+tags: [core.w3, class.init, class.attr]
+statement: |
+  > 컴퓨팅 핵심 3주차 도전문제 1(두 사람의 동아리 회원증)과 같은 유형입니다.
+
+  책 한 권을 `Book` 객체 하나로 표현하려고 한다. 같은 클래스로 서로 다른 객체 두 개를 만들고, 객체에 저장된 속성을 읽어 출력하시오.
+
+  | 항목 | 역할 |
+  |---|---|
+  | `Book(title, author)` | 제목과 저자를 받아 책 객체를 만든다 |
+  | `title` 속성 | 책 제목 |
+  | `author` 속성 | 저자 |
+
+  - 입력 프롬프트: `첫 번째 책 제목: `, `첫 번째 책 저자: `, `두 번째 책 제목: `, `두 번째 책 저자: `
+  - 출력: `《데미안》 - 헤르만 헤세` 형식으로 두 줄, 마지막 줄에 두 책의 저자가 같으면 `같은 저자의 책입니다.`, 다르면 `다른 저자의 책입니다.`
+  - 제목과 저자에는 공백이 들어갈 수 있다.
+starter: |
+  class Book:
+      def __init__(self, title, author):
+          pass
+solution: |
+  class Book:
+      def __init__(self, title, author):
+          self.title = title
+          self.author = author
+
+
+  t1 = input("첫 번째 책 제목: ")
+  a1 = input("첫 번째 책 저자: ")
+  t2 = input("두 번째 책 제목: ")
+  a2 = input("두 번째 책 저자: ")
+  book1 = Book(t1, a1)
+  book2 = Book(t2, a2)
+  print(f"《{book1.title}》 - {book1.author}")
+  print(f"《{book2.title}》 - {book2.author}")
+  if book1.author == book2.author:
+      print("같은 저자의 책입니다.")
+  else:
+      print("다른 저자의 책입니다.")
+alt_solutions:
+  - |
+    class Book:
+        def __init__(self, title, author):
+            self.title = title
+            self.author = author
+
+
+    books = []
+    for order in ["첫 번째", "두 번째"]:
+        title = input(order + " 책 제목: ")
+        author = input(order + " 책 저자: ")
+        books.append(Book(title, author))
+    for b in books:
+        print("《" + b.title + "》 - " + b.author)
+    print("같은 저자의 책입니다." if books[0].author == books[1].author else "다른 저자의 책입니다.")
+mutants:
+  - name: 제목과 저자를 바꿔 저장
+    code: |
+      class Book:
+          def __init__(self, title, author):
+              self.title = author
+              self.author = title
+
+
+      t1 = input("첫 번째 책 제목: ")
+      a1 = input("첫 번째 책 저자: ")
+      t2 = input("두 번째 책 제목: ")
+      a2 = input("두 번째 책 저자: ")
+      book1 = Book(t1, a1)
+      book2 = Book(t2, a2)
+      print(f"《{book1.title}》 - {book1.author}")
+      print(f"《{book2.title}》 - {book2.author}")
+      if book1.author == book2.author:
+          print("같은 저자의 책입니다.")
+      else:
+          print("다른 저자의 책입니다.")
+  - name: 제목으로 같은 저자인지 판단
+    code: |
+      class Book:
+          def __init__(self, title, author):
+              self.title = title
+              self.author = author
+
+
+      t1 = input("첫 번째 책 제목: ")
+      a1 = input("첫 번째 책 저자: ")
+      t2 = input("두 번째 책 제목: ")
+      a2 = input("두 번째 책 저자: ")
+      book1 = Book(t1, a1)
+      book2 = Book(t2, a2)
+      print(f"《{book1.title}》 - {book1.author}")
+      print(f"《{book2.title}》 - {book2.author}")
+      if book1.title == book2.title:
+          print("같은 저자의 책입니다.")
+      else:
+          print("다른 저자의 책입니다.")
+tests:
+  - stdin: "데미안\n헤르만 헤세\n수레바퀴 아래서\n헤르만 헤세\n"
+    public: true
+  - stdin: "코스모스\n칼 세이건\n이기적 유전자\n리처드 도킨스\n"
+  - stdin: "같은 책\n저자A\n같은 책\n저자B\n"
+    note: 제목이 같아도 저자가 다름
+  - stdin: "A\nX\nB\nY\n"
+hints:
+  - "`__init__`에서 `self.title = title`처럼 전달받은 값을 객체의 속성에 저장합니다."
+  - "객체를 만들 때는 `Book(t1, a1)`처럼 self를 빼고 나머지 값만 넘깁니다."
+explanation: |
+  클래스는 '틀', 객체는 그 틀로 만든 각각의 데이터입니다. 같은 클래스로 만든 두 객체는 속성을 따로 가집니다.

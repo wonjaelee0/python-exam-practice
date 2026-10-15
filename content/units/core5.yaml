@@ -1,0 +1,7 @@
+id: core5
+short: 5주차
+title: 스택 · 큐 · 덱 · 연결 리스트
+course: core
+order: 105
+sort: id
+summary: Stack/Queue 클래스 구현, collections.deque, Node와 next로 연결 리스트 조작

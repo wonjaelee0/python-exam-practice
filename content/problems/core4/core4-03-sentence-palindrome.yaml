@@ -1,0 +1,111 @@
+id: core4-03-sentence-palindrome
+title: "[4주차 도전3] 재귀로 문장 회문 검사"
+unit: core4
+difficulty: 3
+tags: [core.w4, recursion.string, str.isalnum]
+statement: |
+  > 컴퓨팅 핵심 4주차 도전문제 3(축제 입장 코드 대칭 검사)과 같은 유형입니다.
+
+  문장이 앞뒤로 읽어도 같은지 재귀 함수로 검사하시오. 이번에는 **글자와 숫자만 비교**하고, 공백·문장부호는 건너뛰며, 대소문자는 구분하지 않는다.
+  예: `Was it a car or a cat I saw?`는 회문이다.
+
+  | 함수 | 역할 |
+  |---|---|
+  | `is_palindrome(text)` | 위 규칙으로 회문이면 `True`, 아니면 `False`를 반환 (출력하지 않음) |
+
+  - 남은 글자가 1개 이하이면 회문으로 본다. 양 끝 글자가 글자·숫자가 아니면(`isalnum()`이 거짓) 그 글자를 빼고 다시 검사한다.
+  - 반복문, `reversed()`, `[::-1]`, `replace()`를 쓰지 않고 재귀 호출로 검사한다. (`text[0]`, `text[-1]`, `text[1:]`, `text[:-1]`, `text[1:-1]` 사용)
+  - 입력 프롬프트: `문장: `
+  - 출력: `회문입니다.` 또는 `회문이 아닙니다.`
+starter: |
+  def is_palindrome(text):
+      pass
+
+
+  sentence = input("문장: ")
+solution: |
+  def is_palindrome(text):
+      if len(text) <= 1:
+          return True
+      if not text[0].isalnum():
+          return is_palindrome(text[1:])
+      if not text[-1].isalnum():
+          return is_palindrome(text[:-1])
+      if text[0].lower() != text[-1].lower():
+          return False
+      return is_palindrome(text[1:-1])
+
+
+  sentence = input("문장: ")
+  if is_palindrome(sentence):
+      print("회문입니다.")
+  else:
+      print("회문이 아닙니다.")
+alt_solutions:
+  - |
+    def clean(text):
+        if text == "":
+            return ""
+        head = text[0].lower() if text[0].isalnum() else ""
+        return head + clean(text[1:])
+
+
+    def same(text):
+        if len(text) < 2:
+            return True
+        return text[0] == text[-1] and same(text[1:-1])
+
+
+    def is_palindrome(text):
+        return same(clean(text))
+
+
+    print("회문입니다." if is_palindrome(input("문장: ")) else "회문이 아닙니다.")
+mutants:
+  - name: 대소문자를 구분함
+    code: |
+      def is_palindrome(text):
+          if len(text) <= 1:
+              return True
+          if not text[0].isalnum():
+              return is_palindrome(text[1:])
+          if not text[-1].isalnum():
+              return is_palindrome(text[:-1])
+          if text[0] != text[-1]:
+              return False
+          return is_palindrome(text[1:-1])
+
+
+      sentence = input("문장: ")
+      if is_palindrome(sentence):
+          print("회문입니다.")
+      else:
+          print("회문이 아닙니다.")
+  - name: 공백과 문장부호도 비교함
+    code: |
+      def is_palindrome(text):
+          if len(text) <= 1:
+              return True
+          if text[0].lower() != text[-1].lower():
+              return False
+          return is_palindrome(text[1:-1])
+
+
+      sentence = input("문장: ")
+      if is_palindrome(sentence):
+          print("회문입니다.")
+      else:
+          print("회문이 아닙니다.")
+tests:
+  - stdin: "Was it a car or a cat I saw?\n"
+    public: true
+  - stdin: "hello\n"
+  - stdin: "Never odd or even\n"
+  - stdin: "a\n"
+  - stdin: "다시 합창합시다!\n"
+  - stdin: "Ab, cBA?\n"
+hints:
+  - "한 번의 호출에서는 양 끝 글자만 처리하고, 나머지 가운데 부분은 다음 호출에 맡깁니다."
+  - "양 끝이 문장부호면 비교하지 말고 그 글자를 뺀 문자열로 다시 호출합니다."
+explanation: |
+  재귀의 각 단계에서 '건너뛰기', '다르면 즉시 False', '같으면 가운데로 진행' 중 하나를 고릅니다. 다른 글자를 만나면 더 볼 필요가 없으므로 바로 `False`를 반환합니다.

@@ -1,0 +1,140 @@
+id: core4-05-locker-code
+title: "[4주차 추가1] 사물함 비밀번호 규칙 검사"
+unit: core4
+difficulty: 3
+tags: [core.w4, recursion.digits, recursion.string]
+statement: |
+  > 컴퓨팅 핵심 4주차 추가문제 1(특별 체험 부스 입장권 확인)과 같은 유형입니다.
+
+  사물함 비밀번호(숫자로만 된 문자열)가 다음 두 조건을 **모두** 만족해야 사용할 수 있다.
+
+  1. 앞에서 읽어도 뒤에서 읽어도 같은 대칭 코드이다 (맨 앞의 0도 포함해 검사).
+  2. 각 자릿수의 합이 3의 배수이다.
+
+  | 함수 | 역할 |
+  |---|---|
+  | `digit_sum(n)` | 0 이상의 정수 n의 자릿수 합을 재귀로 구해 반환 |
+  | `is_palindrome(text)` | 문자열 text의 대칭 여부를 재귀로 검사해 반환 |
+
+  - 비밀번호는 문자열로 보관하고, 자릿수 합을 구할 때만 정수로 바꾼다. 두 함수 모두 출력하지 않는다.
+  - 반복문, `sum()`, `reversed()`, `[::-1]`은 쓰지 않는다.
+  - 입력 프롬프트: `비밀번호: `
+  - 출력 (네 줄): `대칭 여부: 예`(또는 `아니요`), `자릿수 합: 9`, `3의 배수 여부: 예`(또는 `아니요`), `사용: 가능`(또는 `불가`)
+  - 조건: 비밀번호는 숫자 0~9로만 된 길이 1 이상 12 이하의 문자열이다.
+starter: |
+  def digit_sum(n):
+      pass
+
+
+  def is_palindrome(text):
+      pass
+
+
+  code = input("비밀번호: ")
+solution: |
+  def digit_sum(n):
+      if n == 0:
+          return 0
+      return n % 10 + digit_sum(n // 10)
+
+
+  def is_palindrome(text):
+      if len(text) <= 1:
+          return True
+      if text[0] != text[-1]:
+          return False
+      return is_palindrome(text[1:-1])
+
+
+  code = input("비밀번호: ")
+  symmetric = is_palindrome(code)
+  total = digit_sum(int(code))
+  multiple = total % 3 == 0
+  print("대칭 여부: " + ("예" if symmetric else "아니요"))
+  print(f"자릿수 합: {total}")
+  print("3의 배수 여부: " + ("예" if multiple else "아니요"))
+  print("사용: " + ("가능" if symmetric and multiple else "불가"))
+alt_solutions:
+  - |
+    def digit_sum(n):
+        return n if n < 10 else n % 10 + digit_sum(n // 10)
+
+
+    def is_palindrome(text):
+        return len(text) < 2 or (text[0] == text[-1] and is_palindrome(text[1:-1]))
+
+
+    code = input("비밀번호: ")
+    sym = is_palindrome(code)
+    s = digit_sum(int(code))
+    yes = {True: "예", False: "아니요"}
+    print("대칭 여부:", yes[sym])
+    print("자릿수 합:", s)
+    print("3의 배수 여부:", yes[s % 3 == 0])
+    print("사용:", "가능" if sym and s % 3 == 0 else "불가")
+mutants:
+  - name: 숫자로 바꾼 뒤 대칭 검사 (앞의 0이 사라짐)
+    code: |
+      def digit_sum(n):
+          if n == 0:
+              return 0
+          return n % 10 + digit_sum(n // 10)
+
+
+      def is_palindrome(text):
+          if len(text) <= 1:
+              return True
+          if text[0] != text[-1]:
+              return False
+          return is_palindrome(text[1:-1])
+
+
+      code = input("비밀번호: ")
+      symmetric = is_palindrome(str(int(code)))
+      total = digit_sum(int(code))
+      multiple = total % 3 == 0
+      print("대칭 여부: " + ("예" if symmetric else "아니요"))
+      print(f"자릿수 합: {total}")
+      print("3의 배수 여부: " + ("예" if multiple else "아니요"))
+      print("사용: " + ("가능" if symmetric and multiple else "불가"))
+  - name: 두 조건 중 하나만 맞아도 가능
+    code: |
+      def digit_sum(n):
+          if n == 0:
+              return 0
+          return n % 10 + digit_sum(n // 10)
+
+
+      def is_palindrome(text):
+          if len(text) <= 1:
+              return True
+          if text[0] != text[-1]:
+              return False
+          return is_palindrome(text[1:-1])
+
+
+      code = input("비밀번호: ")
+      symmetric = is_palindrome(code)
+      total = digit_sum(int(code))
+      multiple = total % 3 == 0
+      print("대칭 여부: " + ("예" if symmetric else "아니요"))
+      print(f"자릿수 합: {total}")
+      print("3의 배수 여부: " + ("예" if multiple else "아니요"))
+      print("사용: " + ("가능" if symmetric or multiple else "불가"))
+tests:
+  - stdin: "12321\n"
+    public: true
+  - stdin: "01210\n"
+    note: 맨 앞의 0도 대칭 검사에 포함
+  - stdin: "0\n"
+  - stdin: "123\n"
+    note: 3의 배수지만 대칭이 아님
+  - stdin: "990099\n"
+  - stdin: "1221\n"
+  - stdin: "121\n"
+    note: 대칭이지만 3의 배수가 아님
+hints:
+  - "자릿수 합: `n % 10 + digit_sum(n // 10)`, 종료 조건은 `n == 0`이면 0."
+  - "대칭 검사는 문자열 그대로 해야 `01210`의 앞자리 0이 사라지지 않습니다."
+explanation: |
+  두 재귀 함수를 만들어 조합하는 문제입니다. 계산 결과를 변수(`symmetric`, `total`)에 저장해 두면 출력과 판정에 다시 쓸 수 있습니다.

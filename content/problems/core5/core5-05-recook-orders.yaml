@@ -1,0 +1,161 @@
+id: core5-05-recook-orders
+title: "[5주차 추가1] 분식집 주문 재조리"
+unit: core5
+difficulty: 4
+tags: [core.w5, deque, stack.list, queue.deque]
+statement: |
+  > 컴퓨팅 핵심 5주차 추가문제 1(인쇄 처리 되돌리기)과 같은 유형입니다.
+
+  분식집 주문을 대기열(`deque`)과 완료 기록(리스트 스택)으로 관리하시오.
+
+  - 주문은 대기열 맨 뒤에 들어오고, 조리는 대기열 맨 앞 주문부터 한다. 조리를 마친 주문은 완료 기록 끝에 추가한다.
+  - `재조리` 요청이 오면 **가장 최근에 완료한** 주문을 완료 기록에서 빼서 **대기열 맨 뒤**에 다시 넣는다. (원 문제는 맨 앞으로 복구 — 이번에는 맨 뒤!)
+
+  명령 (첫 줄에 명령 수, 다음 줄부터 한 줄씩):
+
+  - `주문 메뉴`: 출력 없음
+  - `완료`: `완료: 메뉴`, 대기열이 비어 있으면 `대기 주문이 없습니다.`
+  - `재조리`: `재조리: 메뉴`, 완료 기록이 비어 있으면 `재조리할 주문이 없습니다.`
+  - `현황`: 두 줄 `대기 주문: 김밥, 라면`과 `완료 주문: 떡볶이` (앞에서부터, 완료 주문은 완료한 순서). 비어 있으면 `없음`
+
+  - 입력 프롬프트: `명령 수: `, 명령마다 `명령: `
+  - 대기열은 `orders = deque()`, 완료 기록은 `done = []`로 만든다. 실패한 명령은 두 자료구조를 바꾸지 않는다.
+starter: |
+  from collections import deque
+
+  n = int(input("명령 수: "))
+  for _ in range(n):
+      parts = input("명령: ").split()
+solution: |
+  from collections import deque
+
+  orders = deque()
+  done = []
+  n = int(input("명령 수: "))
+  for _ in range(n):
+      parts = input("명령: ").split()
+      cmd = parts[0]
+      if cmd == "주문":
+          orders.append(parts[1])
+      elif cmd == "완료":
+          if orders:
+              order = orders.popleft()
+              done.append(order)
+              print(f"완료: {order}")
+          else:
+              print("대기 주문이 없습니다.")
+      elif cmd == "재조리":
+          if done:
+              order = done.pop()
+              orders.append(order)
+              print(f"재조리: {order}")
+          else:
+              print("재조리할 주문이 없습니다.")
+      else:
+          print("대기 주문: " + (", ".join(orders) if orders else "없음"))
+          print("완료 주문: " + (", ".join(done) if done else "없음"))
+alt_solutions:
+  - |
+    from collections import deque
+
+
+    def show(label, items):
+        if len(items) == 0:
+            print(label + ": 없음")
+        else:
+            print(label + ": " + ", ".join(items))
+
+
+    orders = deque()
+    done = []
+    for _ in range(int(input("명령 수: "))):
+        parts = input("명령: ").split()
+        if parts[0] == "주문":
+            orders.append(parts[1])
+        elif parts[0] == "완료":
+            if len(orders) == 0:
+                print("대기 주문이 없습니다.")
+                continue
+            done.append(orders.popleft())
+            print("완료:", done[-1])
+        elif parts[0] == "재조리":
+            if len(done) == 0:
+                print("재조리할 주문이 없습니다.")
+                continue
+            orders.append(done.pop())
+            print("재조리:", orders[-1])
+        else:
+            show("대기 주문", orders)
+            show("완료 주문", done)
+mutants:
+  - name: 재조리 주문을 대기열 맨 앞에 넣음 (원 문제 규칙)
+    code: |
+      from collections import deque
+
+      orders = deque()
+      done = []
+      n = int(input("명령 수: "))
+      for _ in range(n):
+          parts = input("명령: ").split()
+          cmd = parts[0]
+          if cmd == "주문":
+              orders.append(parts[1])
+          elif cmd == "완료":
+              if orders:
+                  order = orders.popleft()
+                  done.append(order)
+                  print(f"완료: {order}")
+              else:
+                  print("대기 주문이 없습니다.")
+          elif cmd == "재조리":
+              if done:
+                  order = done.pop()
+                  orders.appendleft(order)
+                  print(f"재조리: {order}")
+              else:
+                  print("재조리할 주문이 없습니다.")
+          else:
+              print("대기 주문: " + (", ".join(orders) if orders else "없음"))
+              print("완료 주문: " + (", ".join(done) if done else "없음"))
+  - name: 가장 오래전에 완료한 주문을 재조리
+    code: |
+      from collections import deque
+
+      orders = deque()
+      done = []
+      n = int(input("명령 수: "))
+      for _ in range(n):
+          parts = input("명령: ").split()
+          cmd = parts[0]
+          if cmd == "주문":
+              orders.append(parts[1])
+          elif cmd == "완료":
+              if orders:
+                  order = orders.popleft()
+                  done.append(order)
+                  print(f"완료: {order}")
+              else:
+                  print("대기 주문이 없습니다.")
+          elif cmd == "재조리":
+              if done:
+                  order = done.pop(0)
+                  orders.append(order)
+                  print(f"재조리: {order}")
+              else:
+                  print("재조리할 주문이 없습니다.")
+          else:
+              print("대기 주문: " + (", ".join(orders) if orders else "없음"))
+              print("완료 주문: " + (", ".join(done) if done else "없음"))
+tests:
+  - stdin: "7\n주문 김밥\n주문 라면\n주문 떡볶이\n완료\n재조리\n현황\n완료\n"
+    public: true
+  - stdin: "4\n완료\n재조리\n현황\n주문 순대\n"
+    note: 모두 비어 있음
+  - stdin: "9\n주문 a\n주문 b\n주문 c\n완료\n완료\n재조리\n재조리\n현황\n완료\n"
+  - stdin: "8\n주문 x\n완료\n주문 y\n재조리\n완료\n완료\n완료\n현황\n"
+hints:
+  - "대기열은 `append`(뒤에 넣기)와 `popleft`(앞에서 꺼내기), 완료 기록은 `append`와 `pop`(최근 것 꺼내기)만 씁니다."
+  - "`\", \".join(orders)`는 deque에도 쓸 수 있습니다."
+explanation: |
+  한 문제 안에서 큐(먼저 온 주문 먼저)와 스택(최근 완료 먼저)을 함께 쓰는 구조입니다.
+  어느 자료구조의 **어느 끝**에서 넣고 빼는지가 결과를 정합니다. 재조리를 맨 앞으로 넣으면 곧바로 다시 조리되고, 맨 뒤로 넣으면 기존 대기 주문 뒤로 밀립니다.

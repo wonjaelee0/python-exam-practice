@@ -1,0 +1,56 @@
+id: core1-01-bills
+title: "[1주차 도전1] 지폐로 환전하기"
+unit: core1
+difficulty: 1
+tags: [core.w1, op.floor-mod]
+statement: |
+  > 컴퓨팅 핵심 1주차 도전문제 1(거스름돈 영수증)과 같은 유형입니다.
+
+  은행 창구에서 원화를 지폐로 바꿔 줍니다. 직원은 50000원권, 10000원권, 5000원권, 1000원권을 사용해 **큰 단위부터** 차례대로 준비합니다.
+  금액을 입력받아 지폐가 각각 몇 장 필요한지 출력하시오.
+
+  - 입력 프롬프트: `금액을 입력하세요: `
+  - 출력: `50000원권: 1장`, `10000원권: 2장`, `5000원권: 1장`, `1000원권: 3장` (네 줄)
+  - 조건: 금액은 0 이상 1,000,000 미만이며 1000원 단위이다.
+starter: |
+  amount = int(input("금액을 입력하세요: "))
+solution: |
+  amount = int(input("금액을 입력하세요: "))
+  for bill in [50000, 10000, 5000, 1000]:
+      print(f"{bill}원권: {amount // bill}장")
+      amount = amount % bill
+alt_solutions:
+  - |
+    amount = int(input("금액을 입력하세요: "))
+    a = amount // 50000
+    b = amount % 50000 // 10000
+    c = amount % 10000 // 5000
+    d = amount % 5000 // 1000
+    print("50000원권:", str(a) + "장")
+    print("10000원권:", str(b) + "장")
+    print("5000원권:", str(c) + "장")
+    print("1000원권:", str(d) + "장")
+mutants:
+  - name: 남은 금액을 줄이지 않음
+    code: |
+      amount = int(input("금액을 입력하세요: "))
+      for bill in [50000, 10000, 5000, 1000]:
+          print(f"{bill}원권: {amount // bill}장")
+  - name: 5000원권을 빠뜨리고 계산
+    code: |
+      amount = int(input("금액을 입력하세요: "))
+      for bill in [50000, 10000, 1000]:
+          print(f"{bill}원권: {amount // bill}장")
+          amount = amount % bill
+      print("5000원권: 0장")
+tests:
+  - stdin: "78000\n"
+    public: true
+  - stdin: "0\n"
+  - stdin: "999000\n"
+  - stdin: "5000\n"
+  - stdin: "16000\n"
+hints:
+  - "큰 지폐부터 `금액 // 단위`로 장수를 구하고, `금액 % 단위`로 남은 금액을 갱신합니다."
+explanation: |
+  거스름돈 문제의 기본형입니다. 단위 목록을 리스트로 두고 반복하면 단위가 늘어나도 코드가 길어지지 않습니다.

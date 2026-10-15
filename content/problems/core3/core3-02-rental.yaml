@@ -1,0 +1,118 @@
+id: core3-02-rental
+title: "[3주차 도전2] 장비 대여료 계산 객체"
+unit: core3
+difficulty: 2
+tags: [core.w3, class.method, func.return]
+statement: |
+  > 컴퓨팅 핵심 3주차 도전문제 2(카페 주문 금액 계산기)와 같은 유형입니다.
+
+  장비 대여 정보를 `Rental` 객체에 저장하고, 객체의 메서드가 대여료를 계산해 **반환**하게 만드시오.
+
+  | 항목 | 역할 |
+  |---|---|
+  | `Rental(item, price, days)` | 물품 이름, 하루 대여료, 대여 일수를 저장한다 |
+  | `item`, `price`, `days` 속성 | 이 대여의 데이터 |
+  | `total()` 메서드 | 하루 대여료 × 일수를 반환한다. 단, **7일 이상**이면 10% 할인한 금액(원 미만 버림, `* 90 // 100`)을 반환한다. 속성 값은 바꾸지 않고, 출력하지 않는다 |
+
+  - 입력 프롬프트: `물품 이름: `, `하루 대여료(원): `, `대여 일수: `
+  - 출력: 첫 줄 `카메라 3일`, 둘째 줄 `대여료: 45000원`
+  - 조건: 대여료는 1 이상, 일수는 0 이상의 정수이다.
+starter: |
+  class Rental:
+      def __init__(self, item, price, days):
+          pass
+
+      def total(self):
+          pass
+solution: |
+  class Rental:
+      def __init__(self, item, price, days):
+          self.item = item
+          self.price = price
+          self.days = days
+
+      def total(self):
+          fee = self.price * self.days
+          if self.days >= 7:
+              fee = fee * 90 // 100
+          return fee
+
+
+  item = input("물품 이름: ")
+  price = int(input("하루 대여료(원): "))
+  days = int(input("대여 일수: "))
+  rental = Rental(item, price, days)
+  print(f"{rental.item} {rental.days}일")
+  print(f"대여료: {rental.total()}원")
+alt_solutions:
+  - |
+    class Rental:
+        def __init__(self, item, price, days):
+            self.item = item
+            self.price = price
+            self.days = days
+
+        def total(self):
+            if self.days < 7:
+                return self.price * self.days
+            return self.price * self.days * 90 // 100
+
+
+    rental = Rental(input("물품 이름: "), int(input("하루 대여료(원): ")), int(input("대여 일수: ")))
+    print(rental.item, str(rental.days) + "일")
+    print("대여료: " + str(rental.total()) + "원")
+mutants:
+  - name: 7일은 할인하지 않음 (> 사용)
+    code: |
+      class Rental:
+          def __init__(self, item, price, days):
+              self.item = item
+              self.price = price
+              self.days = days
+
+          def total(self):
+              fee = self.price * self.days
+              if self.days > 7:
+                  fee = fee * 90 // 100
+              return fee
+
+
+      item = input("물품 이름: ")
+      price = int(input("하루 대여료(원): "))
+      days = int(input("대여 일수: "))
+      rental = Rental(item, price, days)
+      print(f"{rental.item} {rental.days}일")
+      print(f"대여료: {rental.total()}원")
+  - name: 메서드가 속성을 바꿔 버림 (두 번 부르면 달라짐)
+    code: |
+      class Rental:
+          def __init__(self, item, price, days):
+              self.item = item
+              self.price = price
+              self.days = days
+
+          def total(self):
+              if self.days >= 7:
+                  self.price = self.price * 90 // 100
+              return self.price * self.days
+
+
+      item = input("물품 이름: ")
+      price = int(input("하루 대여료(원): "))
+      days = int(input("대여 일수: "))
+      rental = Rental(item, price, days)
+      print(f"{rental.item} {rental.days}일")
+      print(f"대여료: {rental.total()}원")
+tests:
+  - stdin: "카메라\n15000\n3\n"
+    public: true
+  - stdin: "텐트\n12345\n7\n"
+    note: 정확히 7일
+  - stdin: "삼각대\n3000\n0\n"
+  - stdin: "드론\n33333\n10\n"
+hints:
+  - "메서드 안에서는 `self.price`, `self.days`처럼 객체의 속성을 읽습니다. 결과는 `return`으로 돌려주고, 출력은 클래스 밖에서 합니다."
+  - "속성 읽기는 `rental.price`, 메서드 실행은 `rental.total()` — 괄호가 필요합니다."
+explanation: |
+  메서드가 속성을 직접 바꾸면 같은 메서드를 두 번 부를 때 결과가 달라질 수 있습니다. '계산해서 돌려주기만' 하는 메서드는 상태를 바꾸지 않는 것이 안전합니다.
+  할인 금액은 일당이 아니라 **전체 금액**에 적용해야 원 미만 버림 결과가 지문과 같습니다.

@@ -1,0 +1,257 @@
+id: core5-02-ride-queue
+title: "[5주차 도전2] 놀이기구 대기줄 큐"
+unit: core5
+difficulty: 3
+tags: [core.w5, queue.class]
+statement: |
+  > 컴퓨팅 핵심 5주차 도전문제 2(도서관 프린터 대기열)와 같은 유형입니다.
+
+  놀이기구 대기줄을 리스트 기반 `Queue` 클래스로 관리하시오. 리스트의 앞이 큐의 앞이며, 뒤로 줄을 서고 앞에서 탑승한다.
+
+  | 메서드 | 역할 |
+  |---|---|
+  | `Queue()` | 빈 리스트를 `self.queue`에 저장 |
+  | `enqueue(value)` | 맨 뒤에 추가 |
+  | `dequeue()` | 맨 앞을 제거하고 반환 (`pop(0)` 사용). 비어 있으면 `None` |
+  | `peek()` | 맨 앞을 제거하지 않고 반환. 비어 있으면 `None` |
+  | `isEmpty()` | 비어 있으면 `True` |
+  | `size()` | 대기 인원 수를 반환 |
+
+  명령 (첫 줄에 명령 수, 다음 줄부터 한 줄씩):
+
+  - `줄서기 이름`: 맨 뒤에 선다(출력 없음).
+  - `탑승 K`: 앞에서부터 **최대 K명**이 탑승한다. 탑승한 사람이 있으면 `탑승: 민수, 지우`처럼 `, `로 이어 출력하고, 대기 인원이 없으면 `대기 인원이 없습니다.`를 출력한다. K보다 적게 기다리면 있는 사람만 탑승한다.
+  - `다음`: `다음 차례: 이름`, 비어 있으면 `대기 인원이 없습니다.`
+  - `인원`: `대기 인원: 3명`
+
+  - 입력 프롬프트: `명령 수: `, 명령마다 `명령: `
+  - 조건: K는 1 이상 10 이하. `collections.deque`는 쓰지 않는다. 클래스 밖에서는 `line`의 메서드만 사용한다.
+starter: |
+  class Queue:
+      def __init__(self):
+          self.queue = []
+
+      def enqueue(self, value):
+          pass
+
+      def dequeue(self):
+          pass
+
+      def peek(self):
+          pass
+
+      def isEmpty(self):
+          pass
+
+      def size(self):
+          pass
+
+
+  line = Queue()
+  n = int(input("명령 수: "))
+  for _ in range(n):
+      parts = input("명령: ").split()
+solution: |
+  class Queue:
+      def __init__(self):
+          self.queue = []
+
+      def enqueue(self, value):
+          self.queue.append(value)
+
+      def dequeue(self):
+          if self.isEmpty():
+              return None
+          return self.queue.pop(0)
+
+      def peek(self):
+          if self.isEmpty():
+              return None
+          return self.queue[0]
+
+      def isEmpty(self):
+          return len(self.queue) == 0
+
+      def size(self):
+          return len(self.queue)
+
+
+  line = Queue()
+  n = int(input("명령 수: "))
+  for _ in range(n):
+      parts = input("명령: ").split()
+      if parts[0] == "줄서기":
+          line.enqueue(parts[1])
+      elif parts[0] == "탑승":
+          seats = int(parts[1])
+          riders = []
+          while len(riders) < seats and not line.isEmpty():
+              riders.append(line.dequeue())
+          if riders:
+              print("탑승: " + ", ".join(riders))
+          else:
+              print("대기 인원이 없습니다.")
+      elif parts[0] == "다음":
+          person = line.peek()
+          if person is None:
+              print("대기 인원이 없습니다.")
+          else:
+              print(f"다음 차례: {person}")
+      else:
+          print(f"대기 인원: {line.size()}명")
+alt_solutions:
+  - |
+    class Queue:
+        def __init__(self):
+            self.queue = []
+
+        def enqueue(self, value):
+            self.queue.append(value)
+
+        def dequeue(self):
+            return self.queue.pop(0) if self.queue else None
+
+        def peek(self):
+            return self.queue[0] if self.queue else None
+
+        def isEmpty(self):
+            return self.queue == []
+
+        def size(self):
+            return len(self.queue)
+
+
+    line = Queue()
+    n = int(input("명령 수: "))
+    for _ in range(n):
+        parts = input("명령: ").split()
+        cmd = parts[0]
+        if cmd == "줄서기":
+            line.enqueue(parts[1])
+        elif cmd == "탑승":
+            count = min(int(parts[1]), line.size())
+            if count == 0:
+                print("대기 인원이 없습니다.")
+            else:
+                names = [line.dequeue() for _ in range(count)]
+                print("탑승:", ", ".join(names))
+        elif cmd == "다음":
+            if line.isEmpty():
+                print("대기 인원이 없습니다.")
+            else:
+                print("다음 차례:", line.peek())
+        else:
+            print("대기 인원: " + str(line.size()) + "명")
+mutants:
+  - name: dequeue에 pop()을 사용 (스택처럼 꺼냄)
+    code: |
+      class Queue:
+          def __init__(self):
+              self.queue = []
+
+          def enqueue(self, value):
+              self.queue.append(value)
+
+          def dequeue(self):
+              if self.isEmpty():
+                  return None
+              return self.queue.pop()
+
+          def peek(self):
+              if self.isEmpty():
+                  return None
+              return self.queue[0]
+
+          def isEmpty(self):
+              return len(self.queue) == 0
+
+          def size(self):
+              return len(self.queue)
+
+
+      line = Queue()
+      n = int(input("명령 수: "))
+      for _ in range(n):
+          parts = input("명령: ").split()
+          if parts[0] == "줄서기":
+              line.enqueue(parts[1])
+          elif parts[0] == "탑승":
+              seats = int(parts[1])
+              riders = []
+              while len(riders) < seats and not line.isEmpty():
+                  riders.append(line.dequeue())
+              if riders:
+                  print("탑승: " + ", ".join(riders))
+              else:
+                  print("대기 인원이 없습니다.")
+          elif parts[0] == "다음":
+              person = line.peek()
+              if person is None:
+                  print("대기 인원이 없습니다.")
+              else:
+                  print(f"다음 차례: {person}")
+          else:
+              print(f"대기 인원: {line.size()}명")
+  - name: K명보다 적으면 아무도 탑승하지 않음
+    code: |
+      class Queue:
+          def __init__(self):
+              self.queue = []
+
+          def enqueue(self, value):
+              self.queue.append(value)
+
+          def dequeue(self):
+              if self.isEmpty():
+                  return None
+              return self.queue.pop(0)
+
+          def peek(self):
+              if self.isEmpty():
+                  return None
+              return self.queue[0]
+
+          def isEmpty(self):
+              return len(self.queue) == 0
+
+          def size(self):
+              return len(self.queue)
+
+
+      line = Queue()
+      n = int(input("명령 수: "))
+      for _ in range(n):
+          parts = input("명령: ").split()
+          if parts[0] == "줄서기":
+              line.enqueue(parts[1])
+          elif parts[0] == "탑승":
+              seats = int(parts[1])
+              if line.size() < seats:
+                  print("대기 인원이 없습니다.")
+              else:
+                  riders = []
+                  for _ in range(seats):
+                      riders.append(line.dequeue())
+                  print("탑승: " + ", ".join(riders))
+          elif parts[0] == "다음":
+              person = line.peek()
+              if person is None:
+                  print("대기 인원이 없습니다.")
+              else:
+                  print(f"다음 차례: {person}")
+          else:
+              print(f"대기 인원: {line.size()}명")
+tests:
+  - stdin: "7\n줄서기 민수\n줄서기 지우\n줄서기 서연\n다음\n탑승 2\n인원\n다음\n"
+    public: true
+  - stdin: "4\n다음\n탑승 3\n인원\n줄서기 하늘\n"
+    note: 빈 대기줄
+  - stdin: "6\n줄서기 a\n줄서기 b\n탑승 5\n인원\n탑승 1\n다음\n"
+    note: K보다 적게 기다림
+  - stdin: "8\n줄서기 a\n줄서기 b\n줄서기 c\n탑승 1\n줄서기 d\n탑승 2\n다음\n인원\n"
+hints:
+  - "탑승은 '아직 K명이 안 찼고, 줄이 비어 있지 않은 동안' dequeue를 반복합니다."
+  - "`\", \".join(리스트)`로 이름 사이에 쉼표와 공백을 넣을 수 있습니다."
+explanation: |
+  큐는 먼저 들어온 것이 먼저 나가는(FIFO) 구조라 `pop(0)`으로 앞에서 꺼냅니다. `pop()`을 쓰면 나중에 온 사람이 먼저 타는 스택이 됩니다.
+  반복 조건에 `not line.isEmpty()`를 함께 두면 남은 인원이 K보다 적을 때도 안전하게 처리됩니다.

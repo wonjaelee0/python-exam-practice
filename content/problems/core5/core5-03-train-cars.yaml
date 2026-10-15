@@ -1,0 +1,156 @@
+id: core5-03-train-cars
+title: "[5주차 도전3] 덱으로 기차 칸 편성하기"
+unit: core5
+difficulty: 3
+tags: [core.w5, deque]
+statement: |
+  > 컴퓨팅 핵심 5주차 도전문제 3(양쪽 출입구의 물품 보관대)과 같은 유형입니다.
+
+  관광 열차의 객차를 앞뒤 양쪽에서 붙이고 떼는 작업을 `collections.deque`로 관리하시오. 처음 편성은 비어 있다.
+
+  명령 (첫 줄에 명령 수, 다음 줄부터 한 줄씩):
+
+  - `앞연결 칸이름`, `뒤연결 칸이름`: 앞(왼쪽) 또는 뒤(오른쪽) 끝에 붙인다(출력 없음).
+  - `앞분리`, `뒤분리`: 해당 끝의 칸을 떼고 `분리: 칸이름`을 출력한다. 비어 있으면 `연결된 칸이 없습니다.`
+  - `순환`: 맨 앞 칸을 떼어 맨 뒤에 붙인다(출력 없음). 비어 있으면 아무것도 하지 않는다.
+  - `편성`: 앞에서부터 `편성: 식당-침대-전망`처럼 `-`로 이어 출력하고, 비어 있으면 `편성: 없음`
+
+  - 입력 프롬프트: `명령 수: `, 명령마다 `명령: `
+  - deque의 `append`, `appendleft`, `pop`, `popleft`만으로 처리한다(정렬하거나 가운데 칸을 다루지 않음).
+  - 조건: 명령 수는 1 이상 100 이하, 칸 이름은 공백이 없고 같은 이름이 여러 번 나올 수 있다.
+starter: |
+  from collections import deque
+
+  n = int(input("명령 수: "))
+  for _ in range(n):
+      parts = input("명령: ").split()
+solution: |
+  from collections import deque
+
+  train = deque()
+  n = int(input("명령 수: "))
+  for _ in range(n):
+      parts = input("명령: ").split()
+      cmd = parts[0]
+      if cmd == "앞연결":
+          train.appendleft(parts[1])
+      elif cmd == "뒤연결":
+          train.append(parts[1])
+      elif cmd == "앞분리" or cmd == "뒤분리":
+          if train:
+              if cmd == "앞분리":
+                  car = train.popleft()
+              else:
+                  car = train.pop()
+              print(f"분리: {car}")
+          else:
+              print("연결된 칸이 없습니다.")
+      elif cmd == "순환":
+          if train:
+              train.append(train.popleft())
+      else:
+          if train:
+              print("편성: " + "-".join(train))
+          else:
+              print("편성: 없음")
+alt_solutions:
+  - |
+    from collections import deque
+
+    train = deque()
+    n = int(input("명령 수: "))
+    for _ in range(n):
+        parts = input("명령: ").split()
+        cmd = parts[0]
+        if cmd in ("앞연결", "뒤연결"):
+            if cmd[0] == "앞":
+                train.appendleft(parts[1])
+            else:
+                train.append(parts[1])
+        elif cmd == "앞분리":
+            print("분리: " + train.popleft() if len(train) > 0 else "연결된 칸이 없습니다.")
+        elif cmd == "뒤분리":
+            print("분리: " + train.pop() if len(train) > 0 else "연결된 칸이 없습니다.")
+        elif cmd == "순환":
+            if len(train) > 0:
+                first = train.popleft()
+                train.append(first)
+        else:
+            text = "-".join(list(train))
+            print("편성:", text if text else "없음")
+mutants:
+  - name: 앞연결을 뒤에 붙임
+    code: |
+      from collections import deque
+
+      train = deque()
+      n = int(input("명령 수: "))
+      for _ in range(n):
+          parts = input("명령: ").split()
+          cmd = parts[0]
+          if cmd == "앞연결":
+              train.append(parts[1])
+          elif cmd == "뒤연결":
+              train.append(parts[1])
+          elif cmd == "앞분리" or cmd == "뒤분리":
+              if train:
+                  if cmd == "앞분리":
+                      car = train.popleft()
+                  else:
+                      car = train.pop()
+                  print(f"분리: {car}")
+              else:
+                  print("연결된 칸이 없습니다.")
+          elif cmd == "순환":
+              if train:
+                  train.append(train.popleft())
+          else:
+              if train:
+                  print("편성: " + "-".join(train))
+              else:
+                  print("편성: 없음")
+  - name: 순환 방향이 반대 (맨 뒤 칸을 앞으로)
+    code: |
+      from collections import deque
+
+      train = deque()
+      n = int(input("명령 수: "))
+      for _ in range(n):
+          parts = input("명령: ").split()
+          cmd = parts[0]
+          if cmd == "앞연결":
+              train.appendleft(parts[1])
+          elif cmd == "뒤연결":
+              train.append(parts[1])
+          elif cmd == "앞분리" or cmd == "뒤분리":
+              if train:
+                  if cmd == "앞분리":
+                      car = train.popleft()
+                  else:
+                      car = train.pop()
+                  print(f"분리: {car}")
+              else:
+                  print("연결된 칸이 없습니다.")
+          elif cmd == "순환":
+              if train:
+                  train.appendleft(train.pop())
+          else:
+              if train:
+                  print("편성: " + "-".join(train))
+              else:
+                  print("편성: 없음")
+tests:
+  - stdin: "6\n뒤연결 식당\n앞연결 침대\n뒤연결 전망\n편성\n앞분리\n편성\n"
+    public: true
+  - stdin: "5\n편성\n앞분리\n뒤분리\n순환\n편성\n"
+    note: 빈 편성
+  - stdin: "7\n뒤연결 A\n뒤연결 B\n뒤연결 C\n순환\n편성\n순환\n뒤분리\n"
+  - stdin: "6\n앞연결 x\n앞연결 y\n앞연결 z\n뒤분리\n순환\n편성\n"
+  - stdin: "5\n앞연결 k\n뒤연결 k\n앞연결 m\n앞분리\n편성\n"
+    note: 같은 이름의 칸
+hints:
+  - "빈 덱은 거짓으로 취급되므로 `if train:`으로 칸이 있는지 확인할 수 있습니다."
+  - "순환은 `train.append(train.popleft())` 한 줄로 쓸 수 있습니다."
+explanation: |
+  덱(deque)은 양쪽 끝 모두에서 넣고 빼는 연산이 빠른 자료구조입니다. 리스트의 `pop(0)`이나 `insert(0, x)`와 달리 남은 원소를 옮기지 않습니다.
+  `"-".join(train)`처럼 덱도 리스트와 같이 반복·join에 쓸 수 있습니다.

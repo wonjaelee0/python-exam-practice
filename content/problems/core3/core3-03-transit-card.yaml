@@ -1,0 +1,184 @@
+id: core3-03-transit-card
+title: "[3주차 도전3] 잔액을 지키는 교통카드"
+unit: core3
+difficulty: 3
+tags: [core.w3, class.encapsulation, class.state]
+statement: |
+  > 컴퓨팅 핵심 3주차 도전문제 3(잔여 매수를 지키는 인쇄 카드)과 같은 유형입니다.
+
+  교통카드 객체가 잔액을 기억하며 결제와 충전 요청을 차례로 처리하게 만드시오. 잔액은 `self.__balance`에 저장하고,
+  바깥 코드는 잔액을 직접 고치지 않고 메서드로만 확인·변경한다(캡슐화).
+
+  | 항목 | 역할 |
+  |---|---|
+  | `TransitCard(name, balance)` | 이름을 `name`, 처음 잔액을 `__balance`에 저장 |
+  | `get_balance()` | 현재 잔액을 반환 (값을 바꾸지 않음) |
+  | `pay(amount)` | 금액이 1 이상이고 잔액 **이하**일 때만 차감하고 `True`, 아니면 그대로 두고 `False` |
+  | `charge(amount)` | 금액이 1 이상일 때만 더하고 `True`, 아니면 `False` |
+
+  - 입력 프롬프트: `이름: `, `처음 잔액: `, `명령 수: `, 그다음 명령마다 `명령: ` (`결제 1250` 또는 `충전 5000` 형식)
+  - 출력: 명령마다 `민지 | 1250원 결제 성공 | 잔액 3750원` 또는 `민지 | 9000원 결제 실패 | 잔액 3750원` (충전도 같은 형식)
+  - 메서드 안에서는 출력하지 않는다. 카드 객체는 반복문 앞에서 한 번만 만든다.
+starter: |
+  class TransitCard:
+      def __init__(self, name, balance):
+          self.name = name
+          self.__balance = balance
+
+      def get_balance(self):
+          pass
+
+      def pay(self, amount):
+          pass
+
+      def charge(self, amount):
+          pass
+solution: |
+  class TransitCard:
+      def __init__(self, name, balance):
+          self.name = name
+          self.__balance = balance
+
+      def get_balance(self):
+          return self.__balance
+
+      def pay(self, amount):
+          if 1 <= amount <= self.__balance:
+              self.__balance -= amount
+              return True
+          return False
+
+      def charge(self, amount):
+          if amount >= 1:
+              self.__balance += amount
+              return True
+          return False
+
+
+  name = input("이름: ")
+  balance = int(input("처음 잔액: "))
+  card = TransitCard(name, balance)
+  n = int(input("명령 수: "))
+  for _ in range(n):
+      cmd, amount = input("명령: ").split()
+      amount = int(amount)
+      if cmd == "결제":
+          ok = card.pay(amount)
+      else:
+          ok = card.charge(amount)
+      result = "성공" if ok else "실패"
+      print(f"{card.name} | {amount}원 {cmd} {result} | 잔액 {card.get_balance()}원")
+alt_solutions:
+  - |
+    class TransitCard:
+        def __init__(self, name, balance):
+            self.name = name
+            self.__balance = balance
+
+        def get_balance(self):
+            return self.__balance
+
+        def pay(self, amount):
+            if amount < 1 or amount > self.__balance:
+                return False
+            self.__balance = self.__balance - amount
+            return True
+
+        def charge(self, amount):
+            if amount < 1:
+                return False
+            self.__balance = self.__balance + amount
+            return True
+
+
+    card = TransitCard(input("이름: "), int(input("처음 잔액: ")))
+    for _ in range(int(input("명령 수: "))):
+        parts = input("명령: ").split()
+        money = int(parts[1])
+        done = card.pay(money) if parts[0] == "결제" else card.charge(money)
+        state = "성공" if done else "실패"
+        print(card.name, "|", str(money) + "원", parts[0], state, "|", "잔액", str(card.get_balance()) + "원")
+mutants:
+  - name: 잔액 전부를 결제할 수 없음 (< 사용)
+    code: |
+      class TransitCard:
+          def __init__(self, name, balance):
+              self.name = name
+              self.__balance = balance
+
+          def get_balance(self):
+              return self.__balance
+
+          def pay(self, amount):
+              if 1 <= amount < self.__balance:
+                  self.__balance -= amount
+                  return True
+              return False
+
+          def charge(self, amount):
+              if amount >= 1:
+                  self.__balance += amount
+                  return True
+              return False
+
+
+      name = input("이름: ")
+      balance = int(input("처음 잔액: "))
+      card = TransitCard(name, balance)
+      n = int(input("명령 수: "))
+      for _ in range(n):
+          cmd, amount = input("명령: ").split()
+          amount = int(amount)
+          if cmd == "결제":
+              ok = card.pay(amount)
+          else:
+              ok = card.charge(amount)
+          result = "성공" if ok else "실패"
+          print(f"{card.name} | {amount}원 {cmd} {result} | 잔액 {card.get_balance()}원")
+  - name: 0원·음수 충전도 받아들임
+    code: |
+      class TransitCard:
+          def __init__(self, name, balance):
+              self.name = name
+              self.__balance = balance
+
+          def get_balance(self):
+              return self.__balance
+
+          def pay(self, amount):
+              if 1 <= amount <= self.__balance:
+                  self.__balance -= amount
+                  return True
+              return False
+
+          def charge(self, amount):
+              self.__balance += amount
+              return True
+
+
+      name = input("이름: ")
+      balance = int(input("처음 잔액: "))
+      card = TransitCard(name, balance)
+      n = int(input("명령 수: "))
+      for _ in range(n):
+          cmd, amount = input("명령: ").split()
+          amount = int(amount)
+          if cmd == "결제":
+              ok = card.pay(amount)
+          else:
+              ok = card.charge(amount)
+          result = "성공" if ok else "실패"
+          print(f"{card.name} | {amount}원 {cmd} {result} | 잔액 {card.get_balance()}원")
+tests:
+  - stdin: "민지\n5000\n4\n결제 1250\n결제 9000\n충전 2000\n결제 5750\n"
+    public: true
+  - stdin: "도윤\n0\n2\n결제 1\n충전 0\n"
+  - stdin: "서아\n100\n3\n결제 0\n충전 -50\n결제 100\n"
+    note: 0 이하 요청은 실패, 잔액 전부 결제는 성공
+  - stdin: "하준\n3000\n1\n충전 7000\n"
+hints:
+  - "`self.__balance`처럼 이름 앞에 밑줄 두 개를 붙인 속성은 클래스 안에서만 다루는 값이라는 표시입니다."
+  - "`pay()`의 반환값(True/False)을 if 조건에 써서 성공·실패를 출력합니다. 잔액은 `get_balance()`로 확인합니다."
+explanation: |
+  객체는 메서드가 끝난 뒤에도 바뀐 상태를 기억합니다. 그래서 카드 객체를 반복문 앞에서 **한 번만** 만들어야 잔액이 이어집니다.
+  '잔액 이하'는 잔액과 같은 금액도 포함하므로 `amount <= self.__balance`입니다.

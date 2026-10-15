@@ -1,0 +1,243 @@
+id: core5-01-browser-back
+title: "[5주차 도전1] 스택으로 만드는 뒤로 가기"
+unit: core5
+difficulty: 3
+tags: [core.w5, stack.class]
+statement: |
+  > 컴퓨팅 핵심 5주차 도전문제 1(포스터 편집 작업 되돌리기)과 같은 유형입니다.
+
+  웹 브라우저의 방문 기록을 스택으로 관리하시오. 스택의 맨 위(리스트의 마지막 원소)가 **현재 보고 있는 페이지**이다.
+
+  | 메서드 | 역할 |
+  |---|---|
+  | `Stack()` | 빈 리스트를 `self.items`에 저장 |
+  | `push(item)` | 맨 위에 추가 |
+  | `pop()` | 맨 위를 제거하고 반환. 비어 있으면 `None` |
+  | `peek()` | 맨 위를 제거하지 않고 반환. 비어 있으면 `None` |
+  | `isEmpty()` | 비어 있으면 `True` |
+  | `size()` | 저장된 페이지 수를 반환 |
+
+  명령 (첫 줄에 명령 수, 다음 줄부터 한 줄씩):
+
+  - `방문 페이지명`: 새 페이지로 이동한다(출력 없음). 단, **현재 페이지와 같은 이름이면 새로고침으로 보고 기록에 추가하지 않는다.**
+  - `뒤로`: 기록이 2개 이상이면 현재 페이지를 버리고 `현재 페이지: 이전페이지`를 출력한다. 1개 이하이면 기록을 바꾸지 않고 `뒤로 갈 수 없습니다.`를 출력한다.
+  - `현재`: `현재 페이지: 페이지명`, 기록이 비어 있으면 `열린 페이지가 없습니다.`
+
+  - 입력 프롬프트: `명령 수: `, 명령마다 `명령: `
+  - 메서드 안에서는 출력하지 않고, 클래스 밖에서는 `history`의 메서드만 사용한다(`history.items`를 직접 다루지 않음).
+starter: |
+  class Stack:
+      def __init__(self):
+          self.items = []
+
+      def push(self, item):
+          pass
+
+      def pop(self):
+          pass
+
+      def peek(self):
+          pass
+
+      def isEmpty(self):
+          pass
+
+      def size(self):
+          pass
+
+
+  history = Stack()
+  n = int(input("명령 수: "))
+  for _ in range(n):
+      parts = input("명령: ").split()
+solution: |
+  class Stack:
+      def __init__(self):
+          self.items = []
+
+      def push(self, item):
+          self.items.append(item)
+
+      def pop(self):
+          if self.isEmpty():
+              return None
+          return self.items.pop()
+
+      def peek(self):
+          if self.isEmpty():
+              return None
+          return self.items[-1]
+
+      def isEmpty(self):
+          return len(self.items) == 0
+
+      def size(self):
+          return len(self.items)
+
+
+  history = Stack()
+  n = int(input("명령 수: "))
+  for _ in range(n):
+      parts = input("명령: ").split()
+      if parts[0] == "방문":
+          if history.peek() != parts[1]:
+              history.push(parts[1])
+      elif parts[0] == "뒤로":
+          if history.size() >= 2:
+              history.pop()
+              print(f"현재 페이지: {history.peek()}")
+          else:
+              print("뒤로 갈 수 없습니다.")
+      else:
+          page = history.peek()
+          if page is None:
+              print("열린 페이지가 없습니다.")
+          else:
+              print(f"현재 페이지: {page}")
+alt_solutions:
+  - |
+    class Stack:
+        def __init__(self):
+            self.items = []
+
+        def push(self, item):
+            self.items = self.items + [item]
+
+        def pop(self):
+            if not self.items:
+                return None
+            top = self.items[-1]
+            del self.items[-1]
+            return top
+
+        def peek(self):
+            return self.items[-1] if self.items else None
+
+        def isEmpty(self):
+            return not self.items
+
+        def size(self):
+            return len(self.items)
+
+
+    history = Stack()
+    for _ in range(int(input("명령 수: "))):
+        line = input("명령: ")
+        if line.startswith("방문"):
+            page = line.split()[1]
+            if history.isEmpty() or history.peek() != page:
+                history.push(page)
+        elif line == "뒤로":
+            if history.size() < 2:
+                print("뒤로 갈 수 없습니다.")
+                continue
+            history.pop()
+            print("현재 페이지:", history.peek())
+        elif history.isEmpty():
+            print("열린 페이지가 없습니다.")
+        else:
+            print("현재 페이지:", history.peek())
+mutants:
+  - name: 기록이 1개여도 뒤로 감
+    code: |
+      class Stack:
+          def __init__(self):
+              self.items = []
+
+          def push(self, item):
+              self.items.append(item)
+
+          def pop(self):
+              if self.isEmpty():
+                  return None
+              return self.items.pop()
+
+          def peek(self):
+              if self.isEmpty():
+                  return None
+              return self.items[-1]
+
+          def isEmpty(self):
+              return len(self.items) == 0
+
+          def size(self):
+              return len(self.items)
+
+
+      history = Stack()
+      n = int(input("명령 수: "))
+      for _ in range(n):
+          parts = input("명령: ").split()
+          if parts[0] == "방문":
+              if history.peek() != parts[1]:
+                  history.push(parts[1])
+          elif parts[0] == "뒤로":
+              if history.size() >= 1:
+                  history.pop()
+                  print(f"현재 페이지: {history.peek()}")
+              else:
+                  print("뒤로 갈 수 없습니다.")
+          else:
+              page = history.peek()
+              if page is None:
+                  print("열린 페이지가 없습니다.")
+              else:
+                  print(f"현재 페이지: {page}")
+  - name: 새로고침도 기록에 추가함
+    code: |
+      class Stack:
+          def __init__(self):
+              self.items = []
+
+          def push(self, item):
+              self.items.append(item)
+
+          def pop(self):
+              if self.isEmpty():
+                  return None
+              return self.items.pop()
+
+          def peek(self):
+              if self.isEmpty():
+                  return None
+              return self.items[-1]
+
+          def isEmpty(self):
+              return len(self.items) == 0
+
+          def size(self):
+              return len(self.items)
+
+
+      history = Stack()
+      n = int(input("명령 수: "))
+      for _ in range(n):
+          parts = input("명령: ").split()
+          if parts[0] == "방문":
+              history.push(parts[1])
+          elif parts[0] == "뒤로":
+              if history.size() >= 2:
+                  history.pop()
+                  print(f"현재 페이지: {history.peek()}")
+              else:
+                  print("뒤로 갈 수 없습니다.")
+          else:
+              page = history.peek()
+              if page is None:
+                  print("열린 페이지가 없습니다.")
+              else:
+                  print(f"현재 페이지: {page}")
+tests:
+  - stdin: "6\n방문 메인\n방문 공지\n방문 성적\n뒤로\n현재\n뒤로\n"
+    public: true
+  - stdin: "5\n현재\n뒤로\n방문 메인\n뒤로\n현재\n"
+    note: 빈 기록과 기록 1개
+  - stdin: "6\n방문 a\n방문 a\n방문 b\n방문 b\n뒤로\n뒤로\n"
+    note: 새로고침
+  - stdin: "8\n방문 a\n방문 b\n뒤로\n방문 a\n방문 c\n뒤로\n뒤로\n현재\n"
+hints:
+  - "`뒤로`는 pop 한 번 + peek 한 번입니다. 버린 페이지가 아니라 **새 맨 위**를 출력합니다."
+  - "새로고침 판정은 `history.peek() != 페이지명`으로 할 수 있습니다. 빈 스택의 peek는 `None`이라 첫 방문도 자연스럽게 추가됩니다."
+explanation: |
+  뒤로 가기는 '가장 최근 것부터 되돌린다'는 점에서 되돌리기(undo)와 같은 스택 구조입니다.
+  클래스 밖에서는 `items`를 직접 보지 않고 `size()`, `peek()` 같은 메서드로만 판단하는 것이 추상자료형의 약속입니다.

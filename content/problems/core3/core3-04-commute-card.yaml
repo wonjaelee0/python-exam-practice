@@ -1,0 +1,179 @@
+id: core3-04-commute-card
+title: "[3주차 도전4] 상속으로 왕복 정기권 결제 더하기"
+unit: core3
+difficulty: 3
+tags: [core.w3, class.inherit, class.method]
+statement: |
+  > 컴퓨팅 핵심 3주차 도전문제 4(상속으로 보고서 인쇄 기능 더하기)와 같은 유형입니다.
+
+  잔액을 관리하는 `TransitCard`(완성 코드 제공)를 **상속**받는 `CommuteCard`를 만들고, 여러 날의 왕복 요금을 한 번에 결제하는 메서드를 추가하시오.
+
+  | 항목 | 역할 |
+  |---|---|
+  | `CommuteCard(TransitCard)` | 부모의 `__init__`, `get_balance()`, `pay()`를 그대로 물려받는다 |
+  | `commute(fare, days)` | 필요한 금액(`편도 요금 × 2 × 일수`)을 구해 물려받은 `pay()`에 **한 번** 전달하고, 그 반환값을 그대로 반환 |
+
+  - 잔액이 모자라면 일부만 결제하지 않고 요청 전체가 실패한다. 성공 여부와 잔액 처리는 부모의 `pay()`가 담당한다.
+  - 자식 클래스는 `__balance`를 직접 읽거나 바꾸지 않는다.
+  - 입력 프롬프트: `이름: `, `처음 잔액: `, `편도 요금과 일수(공백 구분): `
+  - 출력: 첫 줄 `민지: 5일 왕복 결제 성공` 또는 `민지: 5일 왕복 결제 실패`, 둘째 줄 `잔액: 3000원`
+  - 조건: 처음 잔액은 0 이상, 요금과 일수는 1 이상의 정수이다. 잔액을 정확히 모두 쓰는 경우도 성공이다.
+starter: |
+  class TransitCard:
+      def __init__(self, name, balance):
+          self.name = name
+          self.__balance = balance
+
+      def get_balance(self):
+          return self.__balance
+
+      def pay(self, amount):
+          if 1 <= amount <= self.__balance:
+              self.__balance -= amount
+              return True
+          return False
+
+
+  class CommuteCard(TransitCard):
+      def commute(self, fare, days):
+          pass
+solution: |
+  class TransitCard:
+      def __init__(self, name, balance):
+          self.name = name
+          self.__balance = balance
+
+      def get_balance(self):
+          return self.__balance
+
+      def pay(self, amount):
+          if 1 <= amount <= self.__balance:
+              self.__balance -= amount
+              return True
+          return False
+
+
+  class CommuteCard(TransitCard):
+      def commute(self, fare, days):
+          return self.pay(fare * 2 * days)
+
+
+  name = input("이름: ")
+  balance = int(input("처음 잔액: "))
+  fare, days = map(int, input("편도 요금과 일수(공백 구분): ").split())
+  card = CommuteCard(name, balance)
+  if card.commute(fare, days):
+      print(f"{card.name}: {days}일 왕복 결제 성공")
+  else:
+      print(f"{card.name}: {days}일 왕복 결제 실패")
+  print(f"잔액: {card.get_balance()}원")
+alt_solutions:
+  - |
+    class TransitCard:
+        def __init__(self, name, balance):
+            self.name = name
+            self.__balance = balance
+
+        def get_balance(self):
+            return self.__balance
+
+        def pay(self, amount):
+            if 1 <= amount <= self.__balance:
+                self.__balance -= amount
+                return True
+            return False
+
+
+    class CommuteCard(TransitCard):
+        def commute(self, fare, days):
+            need = fare * 2 * days
+            ok = self.pay(need)
+            return ok
+
+
+    card = CommuteCard(input("이름: "), int(input("처음 잔액: ")))
+    parts = input("편도 요금과 일수(공백 구분): ").split()
+    days = int(parts[1])
+    word = "성공" if card.commute(int(parts[0]), days) else "실패"
+    print(card.name + ": " + str(days) + "일 왕복 결제 " + word)
+    print("잔액: " + str(card.get_balance()) + "원")
+mutants:
+  - name: 편도 요금만 계산
+    code: |
+      class TransitCard:
+          def __init__(self, name, balance):
+              self.name = name
+              self.__balance = balance
+
+          def get_balance(self):
+              return self.__balance
+
+          def pay(self, amount):
+              if 1 <= amount <= self.__balance:
+                  self.__balance -= amount
+                  return True
+              return False
+
+
+      class CommuteCard(TransitCard):
+          def commute(self, fare, days):
+              return self.pay(fare * days)
+
+
+      name = input("이름: ")
+      balance = int(input("처음 잔액: "))
+      fare, days = map(int, input("편도 요금과 일수(공백 구분): ").split())
+      card = CommuteCard(name, balance)
+      if card.commute(fare, days):
+          print(f"{card.name}: {days}일 왕복 결제 성공")
+      else:
+          print(f"{card.name}: {days}일 왕복 결제 실패")
+      print(f"잔액: {card.get_balance()}원")
+  - name: 하루씩 결제해 일부만 결제됨
+    code: |
+      class TransitCard:
+          def __init__(self, name, balance):
+              self.name = name
+              self.__balance = balance
+
+          def get_balance(self):
+              return self.__balance
+
+          def pay(self, amount):
+              if 1 <= amount <= self.__balance:
+                  self.__balance -= amount
+                  return True
+              return False
+
+
+      class CommuteCard(TransitCard):
+          def commute(self, fare, days):
+              ok = True
+              for _ in range(days):
+                  if not self.pay(fare * 2):
+                      ok = False
+              return ok
+
+
+      name = input("이름: ")
+      balance = int(input("처음 잔액: "))
+      fare, days = map(int, input("편도 요금과 일수(공백 구분): ").split())
+      card = CommuteCard(name, balance)
+      if card.commute(fare, days):
+          print(f"{card.name}: {days}일 왕복 결제 성공")
+      else:
+          print(f"{card.name}: {days}일 왕복 결제 실패")
+      print(f"잔액: {card.get_balance()}원")
+tests:
+  - stdin: "민지\n15500\n1250 5\n"
+    public: true
+  - stdin: "도윤\n10000\n1250 5\n"
+    note: 잔액 부족 — 일부만 결제하지 않음
+  - stdin: "서아\n12500\n1250 5\n"
+    note: 잔액을 정확히 모두 사용
+  - stdin: "하준\n0\n1500 1\n"
+hints:
+  - "자식 클래스 선언은 `class CommuteCard(TransitCard):`. 부모의 메서드는 `self.pay(금액)`으로 부릅니다."
+  - "필요한 전체 금액을 먼저 계산해 `pay()`를 **한 번만** 호출해야 일부만 결제되는 일이 없습니다."
+explanation: |
+  상속을 쓰면 잔액 확인·차감 규칙을 다시 쓰지 않고 부모의 `pay()`를 재사용합니다. 자식 객체의 `self`가 곧 부모 기능을 가진 객체이므로 별도의 부모 객체를 만들 필요가 없습니다.

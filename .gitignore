@@ -1,5 +1,6 @@
 # 비공개 원자료: 강의 노트북(교수 저작물), elice 실습 원문·회귀 fixture — 공개 저장소에 올리지 않음
 materials/
+computing_core_extracted/
 midterms/
 *.ipynb
 

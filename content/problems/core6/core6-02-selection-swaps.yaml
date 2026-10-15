@@ -1,0 +1,130 @@
+id: core6-02-selection-swaps
+title: "[6주차 도전2] 선택 정렬과 교환 횟수 (오름차순)"
+unit: core6
+difficulty: 3
+tags: [core.w6, sort.selection]
+statement: |
+  > 컴퓨팅 핵심 6주차 도전문제 2(축제 부스 점수 정리)와 같은 유형입니다.
+
+  택배 상자 무게를 **가벼운 것부터(오름차순)** 선택 정렬하고, 각 회차의 결과와 실제 교환 횟수를 출력하시오.
+
+  | 함수 | 역할 |
+  |---|---|
+  | `selection_sort(weights)` | 리스트 자체를 오름차순으로 바꾸고, 회차마다 `1회차: [리스트]`를 출력한 뒤, 교환 횟수를 반환 |
+
+  - 앞쪽부터 자리를 확정한다. i번째 회차에는 i번 자리부터 끝까지에서 **최솟값의 위치**를 찾아 i번 자리와 교환한다.
+  - 최솟값이 여러 개면 **가장 앞에 있는 것**을 고른다 (`<`로 비교).
+  - 최솟값이 이미 i번 자리에 있으면 교환하지 않고, 교환 횟수에도 넣지 않는다.
+  - 바깥 반복은 `n - 1`번 수행한다. `sort()`, `sorted()`, `min()`, `index()`를 쓰지 않는다.
+  - 입력 프롬프트: `상자 무게(공백 구분): `
+  - 출력: 회차별 `1회차: [...]`, 그다음 `정렬된 무게: [...]`, `교환 횟수: 3회`
+starter: |
+  def selection_sort(weights):
+      pass
+
+
+  weights = list(map(int, input("상자 무게(공백 구분): ").split()))
+  swaps = selection_sort(weights)
+  print(f"정렬된 무게: {weights}")
+  print(f"교환 횟수: {swaps}회")
+solution: |
+  def selection_sort(weights):
+      swaps = 0
+      n = len(weights)
+      for i in range(n - 1):
+          min_index = i
+          for j in range(i + 1, n):
+              if weights[j] < weights[min_index]:
+                  min_index = j
+          if min_index != i:
+              weights[i], weights[min_index] = weights[min_index], weights[i]
+              swaps += 1
+          print(f"{i + 1}회차: {weights}")
+      return swaps
+
+
+  weights = list(map(int, input("상자 무게(공백 구분): ").split()))
+  swaps = selection_sort(weights)
+  print(f"정렬된 무게: {weights}")
+  print(f"교환 횟수: {swaps}회")
+alt_solutions:
+  - |
+    def selection_sort(weights):
+        count = 0
+        for i in range(len(weights) - 1):
+            best = i
+            j = i + 1
+            while j < len(weights):
+                if weights[best] > weights[j]:
+                    best = j
+                j += 1
+            if best > i:
+                tmp = weights[i]
+                weights[i] = weights[best]
+                weights[best] = tmp
+                count += 1
+            print(str(i + 1) + "회차:", weights)
+        return count
+
+
+    weights = [int(w) for w in input("상자 무게(공백 구분): ").split()]
+    swaps = selection_sort(weights)
+    print("정렬된 무게:", weights)
+    print("교환 횟수: " + str(swaps) + "회")
+mutants:
+  - name: 같은 자리여도 교환 횟수에 셈
+    code: |
+      def selection_sort(weights):
+          swaps = 0
+          n = len(weights)
+          for i in range(n - 1):
+              min_index = i
+              for j in range(i + 1, n):
+                  if weights[j] < weights[min_index]:
+                      min_index = j
+              weights[i], weights[min_index] = weights[min_index], weights[i]
+              swaps += 1
+              print(f"{i + 1}회차: {weights}")
+          return swaps
+
+
+      weights = list(map(int, input("상자 무게(공백 구분): ").split()))
+      swaps = selection_sort(weights)
+      print(f"정렬된 무게: {weights}")
+      print(f"교환 횟수: {swaps}회")
+  - name: 최솟값이 여러 개면 뒤쪽을 고름 (<=)
+    code: |
+      def selection_sort(weights):
+          swaps = 0
+          n = len(weights)
+          for i in range(n - 1):
+              min_index = i
+              for j in range(i + 1, n):
+                  if weights[j] <= weights[min_index]:
+                      min_index = j
+              if min_index != i:
+                  weights[i], weights[min_index] = weights[min_index], weights[i]
+                  swaps += 1
+              print(f"{i + 1}회차: {weights}")
+          return swaps
+
+
+      weights = list(map(int, input("상자 무게(공백 구분): ").split()))
+      swaps = selection_sort(weights)
+      print(f"정렬된 무게: {weights}")
+      print(f"교환 횟수: {swaps}회")
+tests:
+  - stdin: "5 2 9 1 7\n"
+    public: true
+  - stdin: "1 2 3\n"
+    note: 교환 0회
+  - stdin: "2 1 1\n"
+  - stdin: "5 5\n"
+  - stdin: "8\n"
+  - stdin: "4 3 2 1\n"
+hints:
+  - "`min_index = i`로 시작해 `j`를 i + 1부터 끝까지 보며 더 작은 값을 만나면 `min_index = j`."
+  - "교환은 안쪽 반복이 끝난 뒤 한 번만, `min_index != i`일 때만 합니다."
+explanation: |
+  선택 정렬은 한 자리를 확정할 때 최대 한 번만 교환합니다. 그래서 전체 교환 횟수는 최대 n - 1회로, 교환 비용이 큰 상황에서 유리합니다.
+  `<=`로 비교하면 같은 값 중 뒤쪽을 골라 불필요한 교환이 생길 수 있습니다.

@@ -1,0 +1,59 @@
+id: core2-01-outliers
+title: "[2주차 도전1] 측정값 이상치 골라내기"
+unit: core2
+difficulty: 2
+tags: [core.w2, list.filter, str.join]
+statement: |
+  > 컴퓨팅 핵심 2주차 도전문제 1(실험실 센서값 정리)과 같은 유형입니다.
+
+  정상 범위의 최솟값과 최댓값, 측정값들을 입력받아 **정상 범위를 벗어난 값(이상치)** 만 입력된 순서대로 쉼표로 이어 출력하고,
+  다음 줄에 이상치 개수를 출력하시오. 경계값은 정상 범위에 포함된다.
+
+  - 입력 프롬프트: `정상 범위를 입력하세요: ` (최솟값 최댓값), `측정값을 입력하세요: ` (공백으로 구분)
+  - 출력: `15,30,-2` (쉼표 뒤 공백 없음, 이상치가 없으면 빈 줄), 다음 줄 `이상치 개수: 3개`
+  - 조건: 모든 입력은 정수이며 최솟값 ≤ 최댓값이다.
+starter: |
+  lo, hi = map(int, input("정상 범위를 입력하세요: ").split())
+solution: |
+  lo, hi = map(int, input("정상 범위를 입력하세요: ").split())
+  values = list(map(int, input("측정값을 입력하세요: ").split()))
+  out = [v for v in values if v < lo or v > hi]
+  print(",".join([str(v) for v in out]))
+  print(f"이상치 개수: {len(out)}개")
+alt_solutions:
+  - |
+    lo, hi = map(int, input("정상 범위를 입력하세요: ").split())
+    values = input("측정값을 입력하세요: ").split()
+    out = []
+    for v in values:
+        if not (lo <= int(v) <= hi):
+            out.append(v)
+    print(",".join(out))
+    print("이상치 개수: " + str(len(out)) + "개")
+mutants:
+  - name: 경계값도 이상치로 봄
+    code: |
+      lo, hi = map(int, input("정상 범위를 입력하세요: ").split())
+      values = list(map(int, input("측정값을 입력하세요: ").split()))
+      out = [v for v in values if v <= lo or v >= hi]
+      print(",".join([str(v) for v in out]))
+      print(f"이상치 개수: {len(out)}개")
+  - name: 이상치를 정렬해서 출력
+    code: |
+      lo, hi = map(int, input("정상 범위를 입력하세요: ").split())
+      values = list(map(int, input("측정값을 입력하세요: ").split()))
+      out = sorted([v for v in values if v < lo or v > hi])
+      print(",".join([str(v) for v in out]))
+      print(f"이상치 개수: {len(out)}개")
+tests:
+  - stdin: "18 26\n15 18 21 26 30 -2\n"
+    public: true
+  - stdin: "0 100\n50 60\n"
+    note: 이상치 없음
+  - stdin: "5 5\n4 5 6 5\n"
+  - stdin: "1 9\n12 0 10 -3\n"
+hints:
+  - "리스트 컴프리헨션 `[v for v in values if 조건]`으로 조건에 맞는 값만 남깁니다."
+  - "`join`은 문자열 리스트만 이을 수 있으므로 숫자는 `str()`로 바꿉니다."
+explanation: |
+  '범위 안'은 `lo <= v <= hi`, '범위 밖'은 그 반대인 `v < lo or v > hi`입니다. 입력 순서를 지키려면 정렬하지 않습니다.

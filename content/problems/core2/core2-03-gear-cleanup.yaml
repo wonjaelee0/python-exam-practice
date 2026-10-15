@@ -1,0 +1,79 @@
+id: core2-03-gear-cleanup
+title: "[2주차 도전3] 잘 안 쓰는 장비 정리 목록"
+unit: core2
+difficulty: 3
+tags: [core.w2, sort.key-lambda, sort.stable]
+statement: |
+  > 컴퓨팅 핵심 2주차 도전문제 3(희망 도서 우선구매 목록)과 같은 유형입니다.
+
+  동아리 장비 이름들과 대여 횟수들을 입력받아, 대여 횟수가 **기준 이하**인 장비만 정리 목록에 넣으시오.
+  목록은 대여 횟수가 **적은 순서**로 정렬하고, 대여 횟수가 같으면 장비 이름의 **사전 역순(내림차순)** 으로 정렬한다.
+
+  - 입력 프롬프트: `장비 이름을 입력하세요: `, `대여 횟수를 입력하세요: `, `기준 횟수를 입력하세요: `
+  - 출력: `1. 조명 (2회)` 형식으로 여러 줄. 해당 장비가 없으면 `정리할 장비가 없습니다.`
+  - 조건: 이름과 횟수의 개수는 같고 1개 이상이다. 이름에는 공백이 없고 서로 다르며, 횟수는 0 이상의 정수이다.
+starter: |
+  names = input("장비 이름을 입력하세요: ").split()
+solution: |
+  names = input("장비 이름을 입력하세요: ").split()
+  counts = list(map(int, input("대여 횟수를 입력하세요: ").split()))
+  limit = int(input("기준 횟수를 입력하세요: "))
+  items = [(n, c) for n, c in zip(names, counts) if c <= limit]
+  items = sorted(items, key=lambda x: (-x[1], x[0]), reverse=True)
+  if not items:
+      print("정리할 장비가 없습니다.")
+  for i, (n, c) in enumerate(items, 1):
+      print(f"{i}. {n} ({c}회)")
+alt_solutions:
+  - |
+    names = input("장비 이름을 입력하세요: ").split()
+    counts = list(map(int, input("대여 횟수를 입력하세요: ").split()))
+    limit = int(input("기준 횟수를 입력하세요: "))
+    items = []
+    for k in range(len(names)):
+        if counts[k] <= limit:
+            items.append([names[k], counts[k]])
+    items.sort(key=lambda x: x[0], reverse=True)
+    items.sort(key=lambda x: x[1])
+    if len(items) == 0:
+        print("정리할 장비가 없습니다.")
+    else:
+        for i in range(len(items)):
+            print(str(i + 1) + ". " + items[i][0] + " (" + str(items[i][1]) + "회)")
+mutants:
+  - name: 같은 횟수를 이름 오름차순으로 정렬
+    code: |
+      names = input("장비 이름을 입력하세요: ").split()
+      counts = list(map(int, input("대여 횟수를 입력하세요: ").split()))
+      limit = int(input("기준 횟수를 입력하세요: "))
+      items = [(n, c) for n, c in zip(names, counts) if c <= limit]
+      items = sorted(items, key=lambda x: (x[1], x[0]))
+      if not items:
+          print("정리할 장비가 없습니다.")
+      for i, (n, c) in enumerate(items, 1):
+          print(f"{i}. {n} ({c}회)")
+  - name: 기준과 같은 횟수를 뺌
+    code: |
+      names = input("장비 이름을 입력하세요: ").split()
+      counts = list(map(int, input("대여 횟수를 입력하세요: ").split()))
+      limit = int(input("기준 횟수를 입력하세요: "))
+      items = [(n, c) for n, c in zip(names, counts) if c < limit]
+      items = sorted(items, key=lambda x: (-x[1], x[0]), reverse=True)
+      if not items:
+          print("정리할 장비가 없습니다.")
+      for i, (n, c) in enumerate(items, 1):
+          print(f"{i}. {n} ({c}회)")
+tests:
+  - stdin: "카메라 삼각대 조명 마이크\n5 2 2 7\n5\n"
+    public: true
+  - stdin: "a b c\n1 1 1\n1\n"
+    note: 모두 같은 횟수
+  - stdin: "드론\n9\n3\n"
+    note: 해당 없음
+  - stdin: "펜 공책 자 풀\n0 3 0 3\n3\n"
+hints:
+  - "`sorted(목록, key=lambda x: (기준1, 기준2))`로 여러 기준을 줄 수 있습니다."
+  - "숫자 오름차순 + 문자열 내림차순을 함께 하려면, 숫자에 `-`를 붙인 키로 `reverse=True` 정렬하거나, 안정 정렬을 두 번(이름 역순 → 횟수 순) 하면 됩니다."
+explanation: |
+  문자열은 `-`를 붙일 수 없어서 '숫자는 오름차순, 문자열은 내림차순'이 까다롭습니다.
+  `key=lambda x: (-x[1], x[0])`로 **전체를 뒤집어** 정렬하거나, 파이썬 정렬이 안정적이라는 점을 이용해 보조 기준부터 두 번 정렬합니다.

@@ -1,0 +1,206 @@
+id: core6-05-tie-ranks
+title: "[6주차 추가1] 동점자 포함 상위 k명 선발과 순위"
+unit: core6
+difficulty: 5
+tags: [core.w6, sort.insertion, sort.stable, ranking]
+statement: |
+  > 컴퓨팅 핵심 6주차 추가문제 1(사진 공모전 전시작 선정)과 같은 유형입니다.
+
+  코딩 대회 참가자를 점수 내림차순으로 삽입 정렬한 뒤 상위 k명을 선발하시오. 이번에는 원 문제와 달리
+  **k번째 사람과 점수가 같은 참가자도 모두 함께 선발**하고, 공동 순위를 매긴다.
+
+  | 항목 | 역할 |
+  |---|---|
+  | `entries` | 접수 순서대로 저장된 (이름, 점수) 튜플의 리스트 |
+  | `rank_entries(entries)` | 점수 내림차순으로 리스트 자체를 삽입 정렬. 동점이면 접수 순서 유지. 반환값 없음 |
+
+  - 순위: 점수가 같으면 같은 순위, 그다음 순위는 그만큼 건너뛴다 (예: 95, 95, 80 → 1위, 1위, 3위).
+  - 출력: 선발된 사람마다 `1위 지우 95`, 마지막 줄 `총 선발: 4명`
+  - k가 0이면 `선발된 참가자가 없습니다.` 한 줄만 출력한다.
+  - 입력: `참가자 수: `, 참가자마다 `이름과 점수: `, 마지막 `선정 인원: `
+  - 조건: 참가자는 1명 이상 8명 이하, 점수는 0 이상 100 이하의 정수, 이름은 서로 다르다. k는 0 이상 참가자 수 이하.
+  - 삽입 정렬만 사용한다. `sort()`, `sorted()`, `insert()`를 쓰지 않는다.
+starter: |
+  def rank_entries(entries):
+      pass
+
+
+  n = int(input("참가자 수: "))
+  entries = []
+  for _ in range(n):
+      name, score = input("이름과 점수: ").split()
+      entries.append((name, int(score)))
+  k = int(input("선정 인원: "))
+solution: |
+  def rank_entries(entries):
+      for i in range(1, len(entries)):
+          key = entries[i]
+          j = i - 1
+          while j >= 0 and entries[j][1] < key[1]:
+              entries[j + 1] = entries[j]
+              j -= 1
+          entries[j + 1] = key
+
+
+  n = int(input("참가자 수: "))
+  entries = []
+  for _ in range(n):
+      name, score = input("이름과 점수: ").split()
+      entries.append((name, int(score)))
+  k = int(input("선정 인원: "))
+  rank_entries(entries)
+  if k == 0:
+      print("선발된 참가자가 없습니다.")
+  else:
+      cut = entries[k - 1][1]
+      rank = 0
+      selected = 0
+      for i in range(n):
+          name, score = entries[i]
+          if score < cut:
+              break
+          if i == 0 or score != entries[i - 1][1]:
+              rank = i + 1
+          print(f"{rank}위 {name} {score}")
+          selected += 1
+      print(f"총 선발: {selected}명")
+alt_solutions:
+  - |
+    def rank_entries(entries):
+        for i in range(1, len(entries)):
+            key = entries[i]
+            j = i
+            while j > 0 and entries[j - 1][1] < key[1]:
+                entries[j] = entries[j - 1]
+                j -= 1
+            entries[j] = key
+
+
+    n = int(input("참가자 수: "))
+    entries = []
+    for _ in range(n):
+        parts = input("이름과 점수: ").split()
+        entries.append((parts[0], int(parts[1])))
+    k = int(input("선정 인원: "))
+    rank_entries(entries)
+    if k == 0:
+        print("선발된 참가자가 없습니다.")
+    else:
+        chosen = [e for e in entries if e[1] >= entries[k - 1][1]]
+        for name, score in chosen:
+            higher = 0
+            for other in entries:
+                if other[1] > score:
+                    higher += 1
+            print(str(higher + 1) + "위 " + name + " " + str(score))
+        print("총 선발: " + str(len(chosen)) + "명")
+mutants:
+  - name: 정확히 k명만 선발 (원 문제 규칙)
+    code: |
+      def rank_entries(entries):
+          for i in range(1, len(entries)):
+              key = entries[i]
+              j = i - 1
+              while j >= 0 and entries[j][1] < key[1]:
+                  entries[j + 1] = entries[j]
+                  j -= 1
+              entries[j + 1] = key
+
+
+      n = int(input("참가자 수: "))
+      entries = []
+      for _ in range(n):
+          name, score = input("이름과 점수: ").split()
+          entries.append((name, int(score)))
+      k = int(input("선정 인원: "))
+      rank_entries(entries)
+      if k == 0:
+          print("선발된 참가자가 없습니다.")
+      else:
+          rank = 0
+          for i in range(k):
+              name, score = entries[i]
+              if i == 0 or score != entries[i - 1][1]:
+                  rank = i + 1
+              print(f"{rank}위 {name} {score}")
+          print(f"총 선발: {k}명")
+  - name: 동점이어도 순위를 나눔
+    code: |
+      def rank_entries(entries):
+          for i in range(1, len(entries)):
+              key = entries[i]
+              j = i - 1
+              while j >= 0 and entries[j][1] < key[1]:
+                  entries[j + 1] = entries[j]
+                  j -= 1
+              entries[j + 1] = key
+
+
+      n = int(input("참가자 수: "))
+      entries = []
+      for _ in range(n):
+          name, score = input("이름과 점수: ").split()
+          entries.append((name, int(score)))
+      k = int(input("선정 인원: "))
+      rank_entries(entries)
+      if k == 0:
+          print("선발된 참가자가 없습니다.")
+      else:
+          cut = entries[k - 1][1]
+          selected = 0
+          for i in range(n):
+              name, score = entries[i]
+              if score < cut:
+                  break
+              print(f"{i + 1}위 {name} {score}")
+              selected += 1
+          print(f"총 선발: {selected}명")
+  - name: 동점자의 접수 순서가 뒤바뀜 (<=)
+    code: |
+      def rank_entries(entries):
+          for i in range(1, len(entries)):
+              key = entries[i]
+              j = i - 1
+              while j >= 0 and entries[j][1] <= key[1]:
+                  entries[j + 1] = entries[j]
+                  j -= 1
+              entries[j + 1] = key
+
+
+      n = int(input("참가자 수: "))
+      entries = []
+      for _ in range(n):
+          name, score = input("이름과 점수: ").split()
+          entries.append((name, int(score)))
+      k = int(input("선정 인원: "))
+      rank_entries(entries)
+      if k == 0:
+          print("선발된 참가자가 없습니다.")
+      else:
+          cut = entries[k - 1][1]
+          rank = 0
+          selected = 0
+          for i in range(n):
+              name, score = entries[i]
+              if score < cut:
+                  break
+              if i == 0 or score != entries[i - 1][1]:
+                  rank = i + 1
+              print(f"{rank}위 {name} {score}")
+              selected += 1
+          print(f"총 선발: {selected}명")
+tests:
+  - stdin: "5\n민수 80\n지우 95\n서연 95\n하늘 70\n도윤 80\n3\n"
+    public: true
+  - stdin: "3\na 50\nb 60\nc 70\n0\n"
+    note: k = 0
+  - stdin: "4\na 90\nb 90\nc 90\nd 90\n1\n"
+    note: 모두 동점
+  - stdin: "6\np 10\nq 40\nr 40\ns 20\nt 40\nu 30\n4\n"
+  - stdin: "3\nx 0\ny 100\nz 55\n3\n"
+hints:
+  - "정렬 후 k번째 사람의 점수(`entries[k - 1][1]`)를 기준선으로 두고, 그 이상인 사람을 모두 선발합니다."
+  - "순위는 '바로 앞 사람과 점수가 다를 때만' `i + 1`로 바꿉니다."
+explanation: |
+  안정 정렬 덕분에 같은 점수끼리는 접수 순서가 유지됩니다. 동점자를 함께 선발하면 인원이 k명보다 많아질 수 있으므로, 실제 선발 인원을 따로 세어 출력합니다.
+  공동 순위(1, 1, 3)는 '정렬된 위치 + 1'을 쓰되 앞 사람과 점수가 같으면 앞 사람의 순위를 그대로 이어받는 방식으로 구합니다.

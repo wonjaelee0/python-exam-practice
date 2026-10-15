@@ -1,0 +1,102 @@
+id: core1-03-snack-order
+title: "[1주차 도전3] 분식집 주문서"
+unit: core1
+difficulty: 2
+tags: [core.w1, dict.lookup, cond.if]
+statement: |
+  > 컴퓨팅 핵심 1주차 도전문제 3(캠퍼스 카페 주문서)과 같은 유형입니다.
+
+  분식집에서 메뉴와 수량, 쿠폰 사용 여부를 입력받아 주문서를 출력하시오.
+
+  | 메뉴 | 가격 |
+  |---|---|
+  | 떡볶이 | 4,500원 |
+  | 김밥 | 3,750원 |
+  | 라면 | 5,000원 |
+
+  - 쿠폰을 쓰면 전체 금액의 **15%를 할인**한다. 원 단위 미만은 버린다: `최종 금액 = 총액 * 85 // 100`
+  - 입력 프롬프트: `메뉴를 입력하세요: `, `수량을 입력하세요: `, `쿠폰을 사용할까요? (Y/N): `
+  - 출력 (네 줄): `메뉴: 김밥`, `수량: 3개`, `쿠폰: 사용` (N이면 `쿠폰: 미사용`), `최종 금액: 9562원`
+  - 조건: 메뉴는 표의 세 가지 중 하나, 수량은 양의 정수, 쿠폰 여부는 Y 또는 N이다.
+starter: |
+  prices = {"떡볶이": 4500, "김밥": 3750, "라면": 5000}
+solution: |
+  prices = {"떡볶이": 4500, "김밥": 3750, "라면": 5000}
+  menu = input("메뉴를 입력하세요: ")
+  qty = int(input("수량을 입력하세요: "))
+  coupon = input("쿠폰을 사용할까요? (Y/N): ")
+  total = prices[menu] * qty
+  if coupon == "Y":
+      total = total * 85 // 100
+      used = "사용"
+  else:
+      used = "미사용"
+  print(f"메뉴: {menu}")
+  print(f"수량: {qty}개")
+  print(f"쿠폰: {used}")
+  print(f"최종 금액: {total}원")
+alt_solutions:
+  - |
+    menu = input("메뉴를 입력하세요: ")
+    qty = int(input("수량을 입력하세요: "))
+    coupon = input("쿠폰을 사용할까요? (Y/N): ")
+    if menu == "떡볶이":
+        price = 4500
+    elif menu == "김밥":
+        price = 3750
+    else:
+        price = 5000
+    total = price * qty
+    print("메뉴:", menu)
+    print("수량: " + str(qty) + "개")
+    if coupon == "Y":
+        print("쿠폰: 사용")
+        total = total * 85 // 100
+    else:
+        print("쿠폰: 미사용")
+    print("최종 금액: " + str(total) + "원")
+mutants:
+  - name: 실수 곱셈으로 할인 (소수점이 남음)
+    code: |
+      prices = {"떡볶이": 4500, "김밥": 3750, "라면": 5000}
+      menu = input("메뉴를 입력하세요: ")
+      qty = int(input("수량을 입력하세요: "))
+      coupon = input("쿠폰을 사용할까요? (Y/N): ")
+      total = prices[menu] * qty
+      used = "미사용"
+      if coupon == "Y":
+          total = total * 0.85
+          used = "사용"
+      print(f"메뉴: {menu}")
+      print(f"수량: {qty}개")
+      print(f"쿠폰: {used}")
+      print(f"최종 금액: {total}원")
+  - name: 한 개 가격에만 할인
+    code: |
+      prices = {"떡볶이": 4500, "김밥": 3750, "라면": 5000}
+      menu = input("메뉴를 입력하세요: ")
+      qty = int(input("수량을 입력하세요: "))
+      coupon = input("쿠폰을 사용할까요? (Y/N): ")
+      price = prices[menu]
+      used = "미사용"
+      if coupon == "Y":
+          price = price * 85 // 100
+          used = "사용"
+      print(f"메뉴: {menu}")
+      print(f"수량: {qty}개")
+      print(f"쿠폰: {used}")
+      print(f"최종 금액: {price * qty}원")
+tests:
+  - stdin: "김밥\n3\nY\n"
+    public: true
+  - stdin: "라면\n1\nN\n"
+  - stdin: "떡볶이\n7\nY\n"
+  - stdin: "김밥\n10\nN\n"
+  - stdin: "라면\n3\nY\n"
+  - stdin: "김밥\n2\nY\n"
+    note: 1인분씩 할인하면 원 미만 버림 결과가 달라짐
+hints:
+  - "메뉴별 가격은 딕셔너리로 두면 `prices[menu]`로 바로 꺼낼 수 있습니다."
+  - "할인은 총액에 적용하고, `* 85 // 100`처럼 정수 연산으로 원 미만을 버립니다."
+explanation: |
+  `* 0.85`처럼 실수로 곱하면 `8925.0`처럼 소수점이 붙고, 값에 따라 오차도 생길 수 있습니다. 금액은 정수 연산으로 다루는 습관이 좋습니다.

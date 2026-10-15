@@ -1,0 +1,69 @@
+id: core2-02-scholarship
+title: "[2주차 도전2] 장학금 대상자 목록"
+unit: core2
+difficulty: 2
+tags: [core.w2, zip, enumerate]
+statement: |
+  > 컴퓨팅 핵심 2주차 도전문제 2(축제 매점 재입고 목록)와 같은 유형입니다.
+
+  학생 이름들과 점수들을 각각 한 줄로 입력받는다. 같은 위치의 이름과 점수를 묶어,
+  **기준 점수 이상**인 학생만 입력 순서대로 1번부터 번호를 붙여 출력하시오.
+
+  - 입력 프롬프트: `이름을 입력하세요: `, `점수를 입력하세요: `, `기준 점수를 입력하세요: `
+  - 출력: `1. 민수: 92점` 형식으로 여러 줄. 대상자가 없으면 `대상자가 없습니다.`
+  - 조건: 이름과 점수의 개수는 같고 1개 이상이다. 이름에는 공백이 없고, 점수와 기준은 0 이상의 정수이다.
+starter: |
+  names = input("이름을 입력하세요: ").split()
+solution: |
+  names = input("이름을 입력하세요: ").split()
+  scores = list(map(int, input("점수를 입력하세요: ").split()))
+  cut = int(input("기준 점수를 입력하세요: "))
+  picked = [(n, s) for n, s in zip(names, scores) if s >= cut]
+  if not picked:
+      print("대상자가 없습니다.")
+  for i, (n, s) in enumerate(picked, 1):
+      print(f"{i}. {n}: {s}점")
+alt_solutions:
+  - |
+    names = input("이름을 입력하세요: ").split()
+    scores = input("점수를 입력하세요: ").split()
+    cut = int(input("기준 점수를 입력하세요: "))
+    no = 0
+    for k in range(len(names)):
+        if int(scores[k]) >= cut:
+            no += 1
+            print(str(no) + ". " + names[k] + ": " + scores[k] + "점")
+    if no == 0:
+        print("대상자가 없습니다.")
+mutants:
+  - name: 기준 점수와 같은 학생을 뺌
+    code: |
+      names = input("이름을 입력하세요: ").split()
+      scores = list(map(int, input("점수를 입력하세요: ").split()))
+      cut = int(input("기준 점수를 입력하세요: "))
+      picked = [(n, s) for n, s in zip(names, scores) if s > cut]
+      if not picked:
+          print("대상자가 없습니다.")
+      for i, (n, s) in enumerate(picked, 1):
+          print(f"{i}. {n}: {s}점")
+  - name: 번호를 0부터 붙임
+    code: |
+      names = input("이름을 입력하세요: ").split()
+      scores = list(map(int, input("점수를 입력하세요: ").split()))
+      cut = int(input("기준 점수를 입력하세요: "))
+      picked = [(n, s) for n, s in zip(names, scores) if s >= cut]
+      if not picked:
+          print("대상자가 없습니다.")
+      for i, (n, s) in enumerate(picked):
+          print(f"{i}. {n}: {s}점")
+tests:
+  - stdin: "민수 지우 서연 하늘\n92 78 85 90\n85\n"
+    public: true
+  - stdin: "가람 나래\n10 20\n30\n"
+    note: 대상자 없음
+  - stdin: "솔\n50\n50\n"
+  - stdin: "x y z\n0 0 0\n0\n"
+hints:
+  - "`zip(names, scores)`로 같은 위치끼리 묶고, `enumerate(목록, 1)`로 1부터 번호를 붙입니다."
+explanation: |
+  두 리스트를 인덱스로 맞추는 대신 zip으로 묶으면 실수가 줄어듭니다. `enumerate`의 두 번째 인자는 시작 번호입니다.

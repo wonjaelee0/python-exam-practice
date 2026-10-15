@@ -1,0 +1,107 @@
+id: core6-01-bubble-passes
+title: "[6주차 도전1] 버블 정렬 회차별 출력 (내림차순)"
+unit: core6
+difficulty: 3
+tags: [core.w6, sort.bubble]
+statement: |
+  > 컴퓨팅 핵심 6주차 도전문제 1(택배 상자 무게 정리)과 같은 유형입니다.
+
+  동아리 게임 대회 점수를 **높은 점수부터(내림차순)** 버블 정렬하고, 정렬 과정을 회차마다 출력하시오.
+
+  | 함수 | 역할 |
+  |---|---|
+  | `bubble_sort(scores)` | 리스트 자체를 내림차순으로 바꾸며, 바깥 반복의 한 차례가 끝날 때마다 `1회차: [리스트]`를 출력. 반환값 없음 |
+
+  - 왼쪽부터 이웃한 두 값을 비교해 순서가 잘못되어 있으면(왼쪽이 더 작으면) 교환한다.
+  - 한 차례가 끝나면 오른쪽 끝(가장 작은 값)은 다음 비교에서 제외한다.
+  - 조기 종료 없이 바깥 반복을 정확히 `n - 1`번 수행한다 (원소가 1개면 회차 출력이 없다).
+  - `sort()`, `sorted()`를 쓰지 않는다.
+  - 입력 프롬프트: `점수(공백 구분): `
+  - 출력: 회차별 `1회차: [8, 5, 8, 3, 1]` … 마지막 줄 `정렬된 점수: [8, 8, 5, 3, 1]`
+  - 조건: 점수는 1개 이상 8개 이하, 0 이상 100 이하의 정수이며 같은 점수가 있을 수 있다.
+starter: |
+  def bubble_sort(scores):
+      pass
+
+
+  scores = list(map(int, input("점수(공백 구분): ").split()))
+  bubble_sort(scores)
+  print(f"정렬된 점수: {scores}")
+solution: |
+  def bubble_sort(scores):
+      n = len(scores)
+      for i in range(n - 1):
+          for j in range(n - 1 - i):
+              if scores[j] < scores[j + 1]:
+                  scores[j], scores[j + 1] = scores[j + 1], scores[j]
+          print(f"{i + 1}회차: {scores}")
+
+
+  scores = list(map(int, input("점수(공백 구분): ").split()))
+  bubble_sort(scores)
+  print(f"정렬된 점수: {scores}")
+alt_solutions:
+  - |
+    def bubble_sort(scores):
+        last = len(scores) - 1
+        rnd = 1
+        while last > 0:
+            j = 0
+            while j < last:
+                if scores[j + 1] > scores[j]:
+                    tmp = scores[j]
+                    scores[j] = scores[j + 1]
+                    scores[j + 1] = tmp
+                j += 1
+            print(str(rnd) + "회차:", scores)
+            rnd += 1
+            last -= 1
+
+
+    scores = [int(x) for x in input("점수(공백 구분): ").split()]
+    bubble_sort(scores)
+    print("정렬된 점수:", scores)
+mutants:
+  - name: 오름차순으로 정렬함
+    code: |
+      def bubble_sort(scores):
+          n = len(scores)
+          for i in range(n - 1):
+              for j in range(n - 1 - i):
+                  if scores[j] > scores[j + 1]:
+                      scores[j], scores[j + 1] = scores[j + 1], scores[j]
+              print(f"{i + 1}회차: {scores}")
+
+
+      scores = list(map(int, input("점수(공백 구분): ").split()))
+      bubble_sort(scores)
+      print(f"정렬된 점수: {scores}")
+  - name: 바깥 반복을 n - 2번만 수행
+    code: |
+      def bubble_sort(scores):
+          n = len(scores)
+          for i in range(n - 2):
+              for j in range(n - 1 - i):
+                  if scores[j] < scores[j + 1]:
+                      scores[j], scores[j + 1] = scores[j + 1], scores[j]
+              print(f"{i + 1}회차: {scores}")
+
+
+      scores = list(map(int, input("점수(공백 구분): ").split()))
+      bubble_sort(scores)
+      print(f"정렬된 점수: {scores}")
+tests:
+  - stdin: "3 8 5 8 1\n"
+    public: true
+  - stdin: "7\n"
+    note: 원소 1개
+  - stdin: "1 2 3 4\n"
+  - stdin: "9 7 7 2\n"
+    note: 이미 내림차순이어도 n - 1회차 모두 출력
+  - stdin: "10 20\n"
+hints:
+  - "내림차순이므로 왼쪽 값이 **더 작을 때** 교환합니다 (`scores[j] < scores[j + 1]`)."
+  - "회차 출력은 안쪽 반복이 끝난 뒤, 바깥 반복 안에 둡니다."
+explanation: |
+  버블 정렬은 한 차례마다 남은 부분의 가장 작은 값(내림차순일 때)을 오른쪽 끝으로 밀어냅니다. 그래서 i회차가 끝나면 오른쪽 i칸이 확정되어 안쪽 반복 범위가 `n - 1 - i`로 줄어듭니다.
+  회차를 n - 2번만 돌리면 앞의 두 값이 정리되지 않은 채 끝날 수 있습니다.

@@ -1,0 +1,107 @@
+id: core4-04-cut-board
+title: "[4주차 도전4] 재귀로 나무판 자르기"
+unit: core4
+difficulty: 4
+tags: [core.w4, recursion.tree, recursion.return]
+statement: |
+  > 컴퓨팅 핵심 4주차 도전문제 4(체험용 리본 나누기)와 같은 유형입니다.
+
+  긴 나무판을 아래 규칙대로 잘라 모든 조각이 최대 길이 이하가 되게 하시오.
+
+  - 현재 판이 최대 길이 이하이면 더 자르지 않고 최종 조각으로 쓴다.
+  - 최대 길이보다 길면 길이가 정수인 두 조각으로 최대한 똑같이 나눈다. 길이가 홀수면 **앞쪽 조각이 뒤쪽보다 1cm 길다**. (원 문제와 반대!)
+  - 앞쪽 조각의 처리를 모두 끝낸 뒤 뒤쪽 조각을 처리한다. 각 조각에도 같은 규칙을 적용한다.
+
+  | 함수 | 역할 |
+  |---|---|
+  | `cut(length, limit)` | 최종 조각이 나올 때마다 `조각: 3cm`를 출력하고, 만들어진 최종 조각 수를 반환 |
+
+  - 반복문을 쓰지 않고 재귀로 처리한다. 각 재귀 호출의 반환값을 변수에 저장해 더한다 (개수를 알아내려고 같은 호출을 다시 하면 출력이 중복된다).
+  - 입력 프롬프트: `판 길이(cm): `, `최대 조각 길이(cm): `
+  - 출력: 최종 조각마다 `조각: 3cm`, 마지막 줄 `총 조각: 4개` (총 조각 수는 반환값을 써서 함수 밖에서 출력)
+  - 조건: 두 입력은 1 이상 100 이하의 정수이다.
+starter: |
+  def cut(length, limit):
+      pass
+
+
+  length = int(input("판 길이(cm): "))
+  limit = int(input("최대 조각 길이(cm): "))
+solution: |
+  def cut(length, limit):
+      if length <= limit:
+          print(f"조각: {length}cm")
+          return 1
+      front = (length + 1) // 2
+      back = length // 2
+      a = cut(front, limit)
+      b = cut(back, limit)
+      return a + b
+
+
+  length = int(input("판 길이(cm): "))
+  limit = int(input("최대 조각 길이(cm): "))
+  total = cut(length, limit)
+  print(f"총 조각: {total}개")
+alt_solutions:
+  - |
+    def cut(length, limit):
+        if length > limit:
+            half = length // 2
+            return cut(length - half, limit) + cut(half, limit)
+        print("조각: " + str(length) + "cm")
+        return 1
+
+
+    length = int(input("판 길이(cm): "))
+    limit = int(input("최대 조각 길이(cm): "))
+    print("총 조각: " + str(cut(length, limit)) + "개")
+mutants:
+  - name: 앞쪽 조각을 짧게 자름 (원 문제 규칙)
+    code: |
+      def cut(length, limit):
+          if length <= limit:
+              print(f"조각: {length}cm")
+              return 1
+          front = length // 2
+          back = length - front
+          a = cut(front, limit)
+          b = cut(back, limit)
+          return a + b
+
+
+      length = int(input("판 길이(cm): "))
+      limit = int(input("최대 조각 길이(cm): "))
+      total = cut(length, limit)
+      print(f"총 조각: {total}개")
+  - name: 개수를 세려고 다시 호출해 출력이 중복됨
+    code: |
+      def cut(length, limit):
+          if length <= limit:
+              print(f"조각: {length}cm")
+              return 1
+          front = (length + 1) // 2
+          back = length // 2
+          cut(front, limit)
+          cut(back, limit)
+          return cut(front, limit) + cut(back, limit)
+
+
+      length = int(input("판 길이(cm): "))
+      limit = int(input("최대 조각 길이(cm): "))
+      total = cut(length, limit)
+      print(f"총 조각: {total}개")
+tests:
+  - stdin: "11\n3\n"
+    public: true
+  - stdin: "1\n1\n"
+  - stdin: "7\n2\n"
+  - stdin: "100\n7\n"
+  - stdin: "5\n9\n"
+    note: 자르지 않음
+hints:
+  - "종료 조건: `length <= limit`이면 조각을 출력하고 1을 반환합니다."
+  - "앞쪽은 `(length + 1) // 2`, 뒤쪽은 `length // 2`. 두 호출의 반환값을 더해 반환합니다."
+explanation: |
+  한 번에 두 갈래로 호출하는 재귀입니다. 출력은 '앞쪽을 끝까지 → 뒤쪽' 순서(깊이 우선)로 나옵니다.
+  반환값으로 개수를 모으면 한 조각을 한 번만 처리하게 되어 출력이 중복되지 않습니다.

@@ -1,0 +1,7 @@
+id: core4
+short: 4주차
+title: 재귀 함수
+course: core
+order: 104
+sort: id
+summary: 종료 조건과 재귀 호출, 자릿수 재귀, 역순 출력, 대칭 검사, 두 갈래 재귀와 반환값

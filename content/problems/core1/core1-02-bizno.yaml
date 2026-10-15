@@ -1,0 +1,68 @@
+id: core1-02-bizno
+title: "[1주차 도전2] 사업자등록번호 정리"
+unit: core1
+difficulty: 2
+tags: [core.w1, str.isdigit, str.slicing]
+statement: |
+  > 컴퓨팅 핵심 1주차 도전문제 2(전화번호 정리 도우미)와 같은 유형입니다.
+
+  가게 정보를 등록하려는데, 사업자등록번호에 공백·하이픈·점 같은 구분자가 섞여 있습니다.
+  입력에서 **숫자만** 모은 뒤 `123-45-67890` 형식(3자리-2자리-5자리)으로 정리하시오.
+
+  - 입력 프롬프트: `사업자등록번호를 입력하세요: `
+  - 올바르면 `123-45-67890` 형식으로 출력한다.
+  - 숫자가 정확히 10개가 아니면 `잘못된 번호입니다. 숫자 10개를 입력하세요.`를 출력한다.
+  - 숫자가 아닌 문자는 모두 구분자로 보고 무시한다.
+starter: |
+  raw = input("사업자등록번호를 입력하세요: ")
+solution: |
+  raw = input("사업자등록번호를 입력하세요: ")
+  digits = ""
+  for ch in raw:
+      if ch.isdigit():
+          digits += ch
+  if len(digits) == 10:
+      print(f"{digits[:3]}-{digits[3:5]}-{digits[5:]}")
+  else:
+      print("잘못된 번호입니다. 숫자 10개를 입력하세요.")
+alt_solutions:
+  - |
+    raw = input("사업자등록번호를 입력하세요: ")
+    nums = [ch for ch in raw if ch in "0123456789"]
+    if len(nums) != 10:
+        print("잘못된 번호입니다. 숫자 10개를 입력하세요.")
+    else:
+        s = "".join(nums)
+        print(s[0:3] + "-" + s[3:5] + "-" + s[5:10])
+mutants:
+  - name: 하이픈만 지우고 다른 구분자는 남김
+    code: |
+      raw = input("사업자등록번호를 입력하세요: ")
+      digits = raw.replace("-", "")
+      if len(digits) == 10:
+          print(f"{digits[:3]}-{digits[3:5]}-{digits[5:]}")
+      else:
+          print("잘못된 번호입니다. 숫자 10개를 입력하세요.")
+  - name: 자리를 3-3-4로 나눔
+    code: |
+      raw = input("사업자등록번호를 입력하세요: ")
+      digits = ""
+      for ch in raw:
+          if ch.isdigit():
+              digits += ch
+      if len(digits) == 10:
+          print(f"{digits[:3]}-{digits[3:6]}-{digits[6:]}")
+      else:
+          print("잘못된 번호입니다. 숫자 10개를 입력하세요.")
+tests:
+  - stdin: "123 45 67890\n"
+    public: true
+  - stdin: "123-45-6789\n"
+    note: 숫자 9개
+  - stdin: "220.81.62517\n"
+  - stdin: "1234567890\n"
+  - stdin: "abc\n"
+hints:
+  - "`ch.isdigit()`인 글자만 이어 붙이면 숫자만 남습니다. 자르기는 슬라이싱 `[:3]`, `[3:5]`, `[5:]`."
+explanation: |
+  '구분자를 하나씩 지우기'보다 '숫자만 모으기'가 어떤 구분자에도 통하는 방법입니다.

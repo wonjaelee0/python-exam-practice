@@ -1,0 +1,113 @@
+id: core2-05-raffle
+title: "[2주차 추가1] 경품 추첨 결과표"
+unit: core2
+difficulty: 3
+tags: [core.w2, sort.key-lambda, raise.valueerror, enumerate]
+statement: |
+  > 컴퓨팅 핵심 2주차 추가문제 1(발표 순서표 안전 생성기)과 같은 유형입니다.
+
+  참가자 이름들과 각자의 추첨 번호를 입력받아, **번호가 큰 사람부터** 순위표를 만드시오.
+  번호가 같으면 **먼저 입력된 사람**이 앞에 온다.
+
+  - 결과표를 만드는 함수 `make_table(names, numbers)`를 정의하고, 문제가 있으면 함수 안에서 `ValueError`를 발생시킨다.
+    - 이름이 하나도 없으면: `ValueError("이름이 없습니다")`
+    - 이름과 번호의 개수가 다르면: `ValueError("이름과 번호의 개수가 다릅니다")`
+  - 함수 밖에서 `try-except`로 받아 `입력 오류: 이름이 없습니다`처럼 출력한다.
+  - 입력 프롬프트: `참가자 이름을 입력하세요: `, `추첨 번호를 입력하세요: ` (두 줄 모두 먼저 입력받는다)
+  - 정상 출력: `1. 바다 (9번)` 형식으로 여러 줄
+  - 조건: 번호는 모두 정수이다. 사용할 기능 — `map`, `zip`, `sorted`와 `lambda`, `enumerate`, 리스트 컴프리헨션, `join`
+starter: |
+  def make_table(names, numbers):
+      pass
+solution: |
+  def make_table(names, numbers):
+      if not names:
+          raise ValueError("이름이 없습니다")
+      if len(names) != len(numbers):
+          raise ValueError("이름과 번호의 개수가 다릅니다")
+      pairs = sorted(zip(names, numbers), key=lambda x: x[1], reverse=True)
+      return [f"{i}. {n} ({num}번)" for i, (n, num) in enumerate(pairs, 1)]
+
+
+  names = input("참가자 이름을 입력하세요: ").split()
+  numbers = list(map(int, input("추첨 번호를 입력하세요: ").split()))
+  try:
+      lines = make_table(names, numbers)
+  except ValueError as e:
+      print(f"입력 오류: {e}")
+  else:
+      print("\n".join(lines))
+alt_solutions:
+  - |
+    def make_table(names, numbers):
+        if len(names) == 0:
+            raise ValueError("이름이 없습니다")
+        if len(names) != len(numbers):
+            raise ValueError("이름과 번호의 개수가 다릅니다")
+        order = list(range(len(names)))
+        order.sort(key=lambda k: -numbers[k])
+        return [str(r + 1) + ". " + names[k] + " (" + str(numbers[k]) + "번)" for r, k in enumerate(order)]
+
+
+    names = input("참가자 이름을 입력하세요: ").split()
+    numbers = [int(x) for x in input("추첨 번호를 입력하세요: ").split()]
+    try:
+        for line in make_table(names, numbers):
+            print(line)
+    except ValueError as err:
+        print("입력 오류:", err)
+mutants:
+  - name: 번호가 작은 사람부터 정렬
+    code: |
+      def make_table(names, numbers):
+          if not names:
+              raise ValueError("이름이 없습니다")
+          if len(names) != len(numbers):
+              raise ValueError("이름과 번호의 개수가 다릅니다")
+          pairs = sorted(zip(names, numbers), key=lambda x: x[1])
+          return [f"{i}. {n} ({num}번)" for i, (n, num) in enumerate(pairs, 1)]
+
+
+      names = input("참가자 이름을 입력하세요: ").split()
+      numbers = list(map(int, input("추첨 번호를 입력하세요: ").split()))
+      try:
+          lines = make_table(names, numbers)
+      except ValueError as e:
+          print(f"입력 오류: {e}")
+      else:
+          print("\n".join(lines))
+  - name: 같은 번호의 순서가 뒤집힘 (정렬 후 reversed)
+    code: |
+      def make_table(names, numbers):
+          if not names:
+              raise ValueError("이름이 없습니다")
+          if len(names) != len(numbers):
+              raise ValueError("이름과 번호의 개수가 다릅니다")
+          pairs = list(reversed(sorted(zip(names, numbers), key=lambda x: x[1])))
+          return [f"{i}. {n} ({num}번)" for i, (n, num) in enumerate(pairs, 1)]
+
+
+      names = input("참가자 이름을 입력하세요: ").split()
+      numbers = list(map(int, input("추첨 번호를 입력하세요: ").split()))
+      try:
+          lines = make_table(names, numbers)
+      except ValueError as e:
+          print(f"입력 오류: {e}")
+      else:
+          print("\n".join(lines))
+tests:
+  - stdin: "하늘 바다 별\n3 9 5\n"
+    public: true
+  - stdin: "a b c\n2 7 2\n"
+    note: 같은 번호는 입력 순서
+  - stdin: "\n\n"
+    note: 이름 없음
+  - stdin: "a b\n1\n"
+    note: 개수가 다름
+  - stdin: "solo\n0\n"
+hints:
+  - "`sorted(..., key=lambda x: x[1], reverse=True)`는 번호 내림차순이면서, 같은 번호끼리는 원래 순서를 유지합니다 (안정 정렬)."
+  - "`raise ValueError(\"메시지\")`로 예외를 만들고, `except ValueError as e:`에서 `e`를 출력하면 메시지가 나옵니다."
+explanation: |
+  `reverse=True`는 '정렬 후 뒤집기'와 다릅니다. 파이썬의 `reverse=True` 정렬은 같은 키를 가진 항목의 원래 순서를 그대로 둡니다.
+  검사는 함수 안에서 하고, 안내 출력은 함수 밖에서 하는 구조가 원 문제의 핵심입니다.

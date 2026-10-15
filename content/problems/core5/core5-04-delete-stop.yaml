@@ -1,0 +1,275 @@
+id: core5-04-delete-stop
+title: "[5주차 도전4] 연결 리스트에서 정류장 삭제하기"
+unit: core5
+difficulty: 4
+tags: [core.w5, linked_list]
+statement: |
+  > 컴퓨팅 핵심 5주차 도전문제 4(캠퍼스 안내 경로에 방문지 추가하기)와 같은 유형입니다.
+
+  셔틀버스 노선이 정류장 노드들의 연결 리스트로 저장되어 있다. 운행을 멈춘 정류장 하나를 노선에서 빼고, 바뀐 노선을 처음부터 출력하시오.
+
+  | 항목 | 역할 |
+  |---|---|
+  | `Node(data)` | 정류장 이름 `data`, 다음 노드 `next` (제공) |
+  | `make_route(names)` | 이름 리스트로 노선을 만들어 첫 노드를 반환 (제공) |
+  | `delete_stop(head, target)` | 이름이 `target`인 노드를 연결에서 빼고 **(새 head, True)** 를 반환. 없으면 노선을 바꾸지 않고 **(head, False)** |
+  | `route_names(head)` | next를 따라가며 이름을 순서대로 모은 리스트를 반환 |
+
+  - 첫 번째 정류장이 삭제되면 **head가 바뀐다**는 점에 주의한다.
+  - 탐색과 삭제는 반드시 `next`를 따라 수행한다. 노선을 리스트로 바꿔 `remove()` 등으로 고치지 않는다. 함수 안에서는 출력하지 않는다.
+  - 입력: `정류장(공백 구분): ` (빈 노선이면 빈 줄), `삭제할 정류장: `
+  - 출력: 대상이 없으면 먼저 `삭제할 정류장이 없습니다.`를 출력한다. 그다음 노선을 `정문 -> 공대 -> 기숙사`처럼 출력하고, 빈 노선이면 `노선이 비어 있습니다.`
+  - 조건: 정류장은 0개 이상 30개 이하이고 이름은 서로 다르다.
+starter: |
+  class Node:
+      def __init__(self, data):
+          self.data = data
+          self.next = None
+
+
+  def make_route(names):
+      head = None
+      for name in reversed(names):
+          node = Node(name)
+          node.next = head
+          head = node
+      return head
+
+
+  def delete_stop(head, target):
+      pass
+
+
+  def route_names(head):
+      pass
+
+
+  names = input("정류장(공백 구분): ").split()
+  target = input("삭제할 정류장: ")
+  head = make_route(names)
+  head, found = delete_stop(head, target)
+  if not found:
+      print("삭제할 정류장이 없습니다.")
+  result = route_names(head)
+  if result:
+      print(" -> ".join(result))
+  else:
+      print("노선이 비어 있습니다.")
+solution: |
+  class Node:
+      def __init__(self, data):
+          self.data = data
+          self.next = None
+
+
+  def make_route(names):
+      head = None
+      for name in reversed(names):
+          node = Node(name)
+          node.next = head
+          head = node
+      return head
+
+
+  def delete_stop(head, target):
+      if head is None:
+          return head, False
+      if head.data == target:
+          return head.next, True
+      current = head
+      while current.next is not None:
+          if current.next.data == target:
+              current.next = current.next.next
+              return head, True
+          current = current.next
+      return head, False
+
+
+  def route_names(head):
+      result = []
+      current = head
+      while current is not None:
+          result.append(current.data)
+          current = current.next
+      return result
+
+
+  names = input("정류장(공백 구분): ").split()
+  target = input("삭제할 정류장: ")
+  head = make_route(names)
+  head, found = delete_stop(head, target)
+  if not found:
+      print("삭제할 정류장이 없습니다.")
+  result = route_names(head)
+  if result:
+      print(" -> ".join(result))
+  else:
+      print("노선이 비어 있습니다.")
+alt_solutions:
+  - |
+    class Node:
+        def __init__(self, data):
+            self.data = data
+            self.next = None
+
+
+    def make_route(names):
+        head = None
+        for name in reversed(names):
+            node = Node(name)
+            node.next = head
+            head = node
+        return head
+
+
+    def delete_stop(head, target):
+        prev = None
+        current = head
+        while current is not None and current.data != target:
+            prev = current
+            current = current.next
+        if current is None:
+            return head, False
+        if prev is None:
+            head = current.next
+        else:
+            prev.next = current.next
+        return head, True
+
+
+    def route_names(head):
+        if head is None:
+            return []
+        return [head.data] + route_names(head.next)
+
+
+    names = input("정류장(공백 구분): ").split()
+    target = input("삭제할 정류장: ")
+    head = make_route(names)
+    head, found = delete_stop(head, target)
+    if not found:
+        print("삭제할 정류장이 없습니다.")
+    result = route_names(head)
+    if result:
+        print(" -> ".join(result))
+    else:
+        print("노선이 비어 있습니다.")
+mutants:
+  - name: 첫 정류장을 삭제하지 못함
+    code: |
+      class Node:
+          def __init__(self, data):
+              self.data = data
+              self.next = None
+
+
+      def make_route(names):
+          head = None
+          for name in reversed(names):
+              node = Node(name)
+              node.next = head
+              head = node
+          return head
+
+
+      def delete_stop(head, target):
+          if head is None:
+              return head, False
+          current = head
+          while current.next is not None:
+              if current.next.data == target:
+                  current.next = current.next.next
+                  return head, True
+              current = current.next
+          return head, False
+
+
+      def route_names(head):
+          result = []
+          current = head
+          while current is not None:
+              result.append(current.data)
+              current = current.next
+          return result
+
+
+      names = input("정류장(공백 구분): ").split()
+      target = input("삭제할 정류장: ")
+      head = make_route(names)
+      head, found = delete_stop(head, target)
+      if not found:
+          print("삭제할 정류장이 없습니다.")
+      result = route_names(head)
+      if result:
+          print(" -> ".join(result))
+      else:
+          print("노선이 비어 있습니다.")
+  - name: 삭제하면서 뒤쪽 연결까지 끊음
+    code: |
+      class Node:
+          def __init__(self, data):
+              self.data = data
+              self.next = None
+
+
+      def make_route(names):
+          head = None
+          for name in reversed(names):
+              node = Node(name)
+              node.next = head
+              head = node
+          return head
+
+
+      def delete_stop(head, target):
+          if head is None:
+              return head, False
+          if head.data == target:
+              return head.next, True
+          current = head
+          while current.next is not None:
+              if current.next.data == target:
+                  current.next = None
+                  return head, True
+              current = current.next
+          return head, False
+
+
+      def route_names(head):
+          result = []
+          current = head
+          while current is not None:
+              result.append(current.data)
+              current = current.next
+          return result
+
+
+      names = input("정류장(공백 구분): ").split()
+      target = input("삭제할 정류장: ")
+      head = make_route(names)
+      head, found = delete_stop(head, target)
+      if not found:
+          print("삭제할 정류장이 없습니다.")
+      result = route_names(head)
+      if result:
+          print(" -> ".join(result))
+      else:
+          print("노선이 비어 있습니다.")
+tests:
+  - stdin: "정문 공대 기숙사 체육관\n공대\n"
+    public: true
+  - stdin: "정문 공대 기숙사\n정문\n"
+    note: 첫 노드 삭제
+  - stdin: "정문 공대\n도서관\n"
+    note: 대상 없음
+  - stdin: "\n정문\n"
+    note: 빈 노선
+  - stdin: "정문\n정문\n"
+  - stdin: "a b c d e\nd\n"
+  - stdin: "a b c\nc\n"
+hints:
+  - "삭제할 노드의 **바로 앞 노드**에서 `앞노드.next = 삭제노드.next`로 건너뛰게 연결합니다."
+  - "첫 노드는 앞 노드가 없으므로 따로 처리해 `head.next`를 새 head로 반환합니다."
+explanation: |
+  연결 리스트의 삭제는 노드를 지우는 것이 아니라 **연결을 건너뛰게 바꾸는 것**입니다. 앞 노드의 next를 삭제 노드의 next로 바꾸면 뒤쪽 노드들은 그대로 이어집니다.
+  head가 바뀔 수 있는 연산은 새 head를 반환받아 다시 저장해야 합니다 (`head, found = delete_stop(head, target)`).

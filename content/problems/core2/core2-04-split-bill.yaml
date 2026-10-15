@@ -1,0 +1,91 @@
+id: core2-04-split-bill
+title: "[2주차 도전4] 안전한 더치페이 계산기"
+unit: core2
+difficulty: 3
+tags: [core.w2, try-except-else, error.value-zero]
+statement: |
+  > 컴퓨팅 핵심 2주차 도전문제 4(안전한 조별 평균 계산기)와 같은 유형입니다.
+
+  총 금액과 인원을 한 줄에 입력받아 1인당 금액(몫)과 남는 금액(나머지)을 출력하시오.
+  잘못된 입력은 **예외 종류에 맞게** 안내한다. `try-except-else`를 사용하시오.
+
+  - 입력 프롬프트: `총 금액과 인원을 입력하세요: `
+  - 정상 입력: `1인당: 3333원`, `남는 금액: 1원` (`//`, `%` 사용)
+  - 정수가 아닌 값이 있거나 값이 두 개가 아니면 (`ValueError`): `숫자 두 개를 정수로 입력하세요.`
+  - 인원이 0이면 (`ZeroDivisionError`): `인원은 0명일 수 없습니다.`
+starter: |
+  line = input("총 금액과 인원을 입력하세요: ")
+solution: |
+  line = input("총 금액과 인원을 입력하세요: ")
+  try:
+      total, people = map(int, line.split())
+      share = total // people
+  except ValueError:
+      print("숫자 두 개를 정수로 입력하세요.")
+  except ZeroDivisionError:
+      print("인원은 0명일 수 없습니다.")
+  else:
+      print(f"1인당: {share}원")
+      print(f"남는 금액: {total % people}원")
+alt_solutions:
+  - |
+    line = input("총 금액과 인원을 입력하세요: ")
+    try:
+        parts = line.split()
+        if len(parts) != 2:
+            raise ValueError("개수")
+        total = int(parts[0])
+        people = int(parts[1])
+        share = total // people
+        rest = total % people
+    except ZeroDivisionError:
+        print("인원은 0명일 수 없습니다.")
+    except ValueError:
+        print("숫자 두 개를 정수로 입력하세요.")
+    else:
+        print("1인당: " + str(share) + "원")
+        print("남는 금액: " + str(rest) + "원")
+mutants:
+  - name: 모든 예외를 한 문장으로 처리
+    code: |
+      line = input("총 금액과 인원을 입력하세요: ")
+      try:
+          total, people = map(int, line.split())
+          share = total // people
+      except Exception:
+          print("숫자 두 개를 정수로 입력하세요.")
+      else:
+          print(f"1인당: {share}원")
+          print(f"남는 금액: {total % people}원")
+  - name: 값의 개수를 확인하지 않음 (앞의 두 개만 사용)
+    code: |
+      line = input("총 금액과 인원을 입력하세요: ")
+      try:
+          parts = line.split()
+          total = int(parts[0])
+          people = int(parts[1])
+          share = total // people
+      except (ValueError, IndexError):
+          print("숫자 두 개를 정수로 입력하세요.")
+      except ZeroDivisionError:
+          print("인원은 0명일 수 없습니다.")
+      else:
+          print(f"1인당: {share}원")
+          print(f"남는 금액: {total % people}원")
+tests:
+  - stdin: "10000 3\n"
+    public: true
+  - stdin: "10 0\n"
+    note: 인원 0
+  - stdin: "abc 2\n"
+  - stdin: "100\n"
+    note: 값이 하나
+  - stdin: "1 2 3\n"
+    note: 값이 셋
+  - stdin: "-7 2\n"
+hints:
+  - "`total, people = map(int, line.split())`은 정수가 아니거나 값의 개수가 2가 아니면 `ValueError`를 냅니다."
+  - "`else` 블록은 try 안에서 예외가 없었을 때만 실행됩니다."
+explanation: |
+  예외 종류별로 except를 나누면 원인에 맞는 안내를 할 수 있습니다. 언패킹 개수가 맞지 않을 때도 ValueError라는 점이 핵심입니다.
+  파이썬의 `//`와 `%`는 음수에서 내림 기준이라 `-7 // 2`는 -4, `-7 % 2`는 1입니다.
