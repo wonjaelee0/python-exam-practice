@@ -37,6 +37,7 @@ sys.path.insert(0, str(PY_DIR))
 import compat36  # noqa: E402
 import elice_semantics as sem  # noqa: E402
 import lint_rules  # noqa: E402
+import quizbuild  # noqa: E402  (tools/quizbuild.py — 이론 퀴즈)
 
 DOCKER_IMAGE = "python:3.6-slim"
 FORMATS = {"write", "fill", "debug"}
@@ -220,6 +221,8 @@ def main() -> int:
         if not errors:
             problems.append(p)
 
+    quiz_sets, quiz_reports = quizbuild.load_sets(CONTENT, args.only)
+
     # ---- 실행 (정답·대체 정답·오답 코드 × 테스트)
     jobs, jobs2 = [], []
     for p in problems:
@@ -231,6 +234,9 @@ def main() -> int:
                 jobs.append({"key": f"{pid}::alt{k}::{i}", "code": alt, "stdin": t["stdin"], "timeout": build_timeout})
             for k, m in enumerate(p.get("mutants") or []):
                 jobs.append({"key": f"{pid}::mut{k}::{i}", "code": m["code"], "stdin": t["stdin"], "timeout": build_timeout})
+    qj1, qj2 = quizbuild.jobs_for(quiz_sets, build_timeout)
+    jobs += qj1
+    jobs2 += qj2
     py_version, res = run_jobs(jobs, mode, 1) if jobs else ("-", {})
     _, res2 = run_jobs(jobs2, mode, 2) if jobs2 else ("-", {})
 
@@ -280,9 +286,12 @@ def main() -> int:
             continue
         built.append((p, expected))
 
+    quiz_built = quizbuild.finish(quiz_sets, res, res2, quiz_reports)
+
     # ---- 보고
     n_err = sum(1 for r in reports.values() if r["errors"])
-    for pid, rep in reports.items():
+    n_qerr = sum(1 for r in quiz_reports.values() if r["errors"])
+    for pid, rep in list(reports.items()) + list(quiz_reports.items()):
         mark = "✗" if rep["errors"] else ("△" if rep["warnings"] else "✓")
         if rep["errors"] or rep["warnings"]:
             print(f"{mark} {pid}")
@@ -291,6 +300,9 @@ def main() -> int:
             for w in rep["warnings"]:
                 print(f"    경고: {w}")
     print(f"\n실행 환경: {mode} (Python {py_version}) · 문제 {len(reports)}개 중 통과 {len(built)}개 · 오류 {n_err}개")
+    n_quiz = sum(len(s["items"]) for s in quiz_built)
+    print(f"이론 퀴즈: {len(quiz_reports)}문항 중 통과 {n_quiz}개 · 오류 {n_qerr}개")
+    n_err += n_qerr
 
     if args.only:
         print("(--only: 출력 파일을 쓰지 않았습니다)")
@@ -339,6 +351,12 @@ def main() -> int:
         manifest_units.append({"id": uid, "title": u["title"], "short": u.get("short", uid), "order": u.get("order", 99),
                                "summary": u.get("summary", ""), "file": fname, "count": len(out_problems)})
 
+    quiz_dir = out_dir / "quiz"
+    if quiz_dir.exists():
+        shutil.rmtree(quiz_dir)
+    quiz_entries, quiz_hashes = quizbuild.write(out_dir, quiz_built)
+    hashes += quiz_hashes
+
     assets = json.loads((ROOT / "tools" / "assets.json").read_text(encoding="utf-8"))
     # 실행 엔진 파일(워커 + 파이썬)의 내용 해시 — 주소에 붙여 Pages의 10분 캐시 때문에 옛 파일과 섞이지 않게 한다
     runtime_files = sorted(PY_DIR.glob("*.py")) + [SITE / "js" / "runtime" / "py-worker.js"]
@@ -352,6 +370,7 @@ def main() -> int:
                    "title": config["site"]["title"]},
         "units": manifest_units,
         "problems": manifest_problems,
+        "quizzes": quiz_entries,
     }
     (out_dir / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=1), encoding="utf-8")
     counts = Counter(p["unit"] for p, _ in built)

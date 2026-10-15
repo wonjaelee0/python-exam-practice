@@ -1,0 +1,366 @@
+id: w07
+short: 7주차
+title: 함수
+order: 7
+summary: def·호출, 매개변수와 인자, return(조기 종료·None), 여러 값 반환, 유용한 내장 함수, 리스트·딕셔너리를 받고 돌려주는 함수
+items:
+  - id: w07-01
+    type: mc
+    prompt: 파이썬에서 함수를 **정의**할 때 쓰는 키워드는?
+    choices: ["`function`", "`def`", "`func`", "`define`"]
+    answer: 2
+    explanation: "`def 함수이름(매개변수):`로 정의하고, 다음 줄부터 들여쓰기로 함수 내용을 씁니다."
+
+  - id: w07-02
+    type: ox
+    prompt: 함수는 정의(def)만 해도 그 안의 코드가 바로 실행된다.
+    answer: "X"
+    explanation: 정의는 '만들어 두기'일 뿐입니다. `함수이름()`으로 **호출**해야 실행됩니다.
+
+  - id: w07-03
+    type: predict
+    code: |
+      def my_print():
+          print("안녕하세요")
+
+      print("시작")
+      my_print()
+      my_print()
+    explanation: 함수는 호출할 때마다 실행됩니다. 두 번 호출했으므로 두 번 출력됩니다.
+
+  - id: w07-04
+    type: mc
+    prompt: "`my_print('홍길동')`처럼 함수를 호출할 때 괄호 안에 넣어 **전달하는 값**을 무엇이라 하는가?"
+    choices: ["매개변수(parameter)", "인자(argument)", "반환값(return value)", "키워드(keyword)"]
+    answer: 2
+    explanation: 호출할 때 넘기는 값은 **인자**, 함수 정의에서 그 값을 받는 변수(`def my_print(name):`의 name)는 **매개변수**입니다.
+
+  - id: w07-05
+    type: short
+    prompt: "`def add(a, b):`에서 `a`, `b`처럼 함수가 외부로부터 값을 전달받는 변수를 무엇이라 하는가?"
+    answer: ["매개변수", "parameter", "파라미터", "매개 변수"]
+    ignore_case: true
+    explanation: 함수 정의의 괄호 안 변수가 매개변수입니다. 2개 이상이면 콤마로 나열합니다.
+
+  - id: w07-06
+    type: predict
+    code: |
+      def add(a, b):
+          print(a + b)
+
+      add(10, 20)
+      add(10.0, 20.0)
+      add('hello, ', 'python')
+    explanation: 같은 함수라도 인자의 자료형에 따라 `+`의 동작(덧셈, 실수 덧셈, 문자열 이어 붙이기)이 달라집니다.
+
+  - id: w07-07
+    type: predict
+    code: |
+      def add(a, b):
+          return a + b
+
+      result = add(10, 20)
+      print(result * 2)
+    explanation: "`return`은 계산 결과를 호출한 곳으로 돌려줍니다. 돌려받은 값은 다른 계산에 다시 쓸 수 있습니다."
+
+  - id: w07-08
+    type: predict
+    difficulty: 2
+    code: |
+      def add(a, b):
+          print(a + b)
+
+      x = add(1, 2)
+      print(x)
+    explanation: "`print`만 하고 `return`이 없는 함수는 **None**을 돌려줍니다. 화면에 3이 찍힌 뒤 x는 None입니다."
+
+  - id: w07-09
+    type: predict
+    difficulty: 2
+    code: |
+      def check_even(n):
+          if n % 2 == 0:
+              return "짝수입니다."
+          print("홀수 처리 중")
+
+      print(check_even(4))
+      print(check_even(5))
+    explanation: "`return`을 만나면 함수가 즉시 끝납니다. 5는 return을 만나지 않고 끝나므로 None을 돌려줍니다."
+
+  - id: w07-10
+    type: predict
+    code: |
+      def add_sub(a, b):
+          return a + b, a - b
+
+      res = add_sub(10, 20)
+      print(res, type(res))
+      x, y = add_sub(10, 20)
+      print(x, y)
+    explanation: 값 여러 개를 콤마로 반환하면 **튜플** 하나로 반환됩니다. 변수 여러 개로 받으면 언패킹됩니다.
+
+  - id: w07-11
+    type: ox
+    prompt: "함수에서 `return a, b`로 두 값을 반환하면 리스트 `[a, b]`가 반환된다."
+    answer: "X"
+    verify: |
+      def f():
+          return 1, 2
+      assert f() == (1, 2) and isinstance(f(), tuple)
+    explanation: 리스트가 아니라 튜플 `(a, b)`가 반환됩니다.
+
+  - id: w07-12
+    type: mc
+    prompt: "`return` 문이 없는 함수를 호출하면 무엇이 반환되는가?"
+    choices: ["`0`", "`''` (빈 문자열)", "`None`", "`False`"]
+    answer: 3
+    verify: |
+      def f():
+          pass
+      assert f() is None
+    explanation: 반환값을 지정하지 않으면 기본값 `None`이 반환됩니다.
+
+  - id: w07-13
+    type: blank
+    prompt: 반지름을 받아 원의 넓이와 둘레를 함께 반환하는 함수를 완성하시오.
+    code: |
+      _____ circle_area_circum(radius):
+          area = 3.14 * radius ** 2
+          circum = 2 * 3.14 * radius
+          return area, _____
+
+      a, c = circle_area_circum(10)
+      print(a, round(c, 1))
+    blanks: [["def"], ["circum"]]
+    explanation: "`return area, circum`은 튜플로 반환되고 `a, c = ...`로 나눠 받습니다."
+
+  - id: w07-14
+    type: blank
+    prompt: 사칙연산 결과 4개를 반환하는 함수를 호출하도록 빈칸을 채우시오.
+    code: |
+      def calc(x, y):
+          return x + y, x - y, x * y, x / y
+
+      a, s, m, d = _____(10, 5)
+      print(f'덧셈: {a}, 뺄셈: {s}, 곱셈: {m}, 나눗셈: {d}')
+    blanks: [["calc"]]
+    explanation: 반환값 4개가 순서대로 a, s, m, d에 들어갑니다.
+
+  - id: w07-15
+    type: predict
+    code: |
+      print(abs(-7), max(3, 7, 2), min([3, 7, 2]), sum([1, 2, 3]))
+    explanation: "`abs` 절댓값, `max`/`min` 최댓값·최솟값(값 여러 개나 리스트), `sum` 합계."
+
+  - id: w07-16
+    type: predict
+    difficulty: 3
+    code: |
+      print(round(3.14159, 2))
+      print(round(2.5), round(3.5))
+    explanation: "`round(값, 자릿수)`는 반올림입니다. 정확히 .5일 때는 **짝수 쪽**으로 반올림해서 `round(2.5)`는 2, `round(3.5)`는 4입니다."
+
+  - id: w07-17
+    type: predict
+    code: |
+      print(len([1, 2, 3]), len('hello'), len({'a': 1, 'b': 2}))
+    explanation: "`len()`은 리스트·문자열·딕셔너리 등의 요소 개수(딕셔너리는 키 개수)를 돌려줍니다."
+
+  - id: w07-18
+    type: predict
+    code: |
+      print(int("10") + 1, float("3.14"), str(100) + "점")
+      print(list("abc"), tuple([1, 2]))
+      print(sorted(set([3, 1, 2, 2, 3])))
+    explanation: 형 변환 내장 함수들입니다. `set()`으로 중복을 없애고 `sorted()`로 정렬했습니다.
+
+  - id: w07-19
+    type: predict
+    code: |
+      def multiply_all(numbers):
+          result = []
+          for n in numbers:
+              result.append(n * 10)
+          return result
+
+      print(multiply_all([1, 2, 3]))
+    explanation: 리스트를 인자로 받아 새 리스트를 만들어 반환하는 함수입니다.
+
+  - id: w07-20
+    type: blank
+    prompt: 리스트의 모든 단어를 첫 글자만 대문자(나머지 소문자)로 바꾼 새 리스트를 반환하도록 빈칸을 채우시오.
+    code: |
+      def upper_all(words):
+          result = []
+          for w in words:
+              result.append(w._____())
+          _____ result
+
+      print(upper_all(["apple", "BANANA"]))
+    blanks: [["capitalize"], ["return"]]
+    explanation: "`capitalize()`는 첫 글자를 대문자로, 나머지를 소문자로 바꿉니다. 결과는 `return`으로 돌려줍니다."
+
+  - id: w07-21
+    type: predict
+    code: |
+      def print_user_info(user):
+          for key, value in user.items():
+              print(f"{key}: {value}")
+
+      print_user_info({'name': 'Alice', 'age': 25})
+    explanation: 딕셔너리를 인자로 받아 `items()`로 키와 값을 모두 출력합니다.
+
+  - id: w07-22
+    type: blank
+    prompt: 학생 딕셔너리를 받아 평균 점수를 출력하는 함수를 완성하시오.
+    code: |
+      def print_avg_score(student):
+          scores = student['scores']
+          avg = _____(scores) / _____(scores)
+          print(f"{student['name']}의 평균 점수는 {avg:.1f}점입니다.")
+
+      print_avg_score({'name': 'Jisoo', 'scores': [85, 90, 100]})
+    blanks: [["sum"], ["len"]]
+    explanation: 내장 함수 `sum()`과 `len()`으로 평균을 구합니다. `:.1f`는 소수 첫째 자리까지.
+
+  - id: w07-23
+    type: blank
+    prompt: 친구가 가능한 날짜 중 내가 바쁘지 않은 날짜만 반환하도록 빈칸을 채우시오.
+    code: |
+      def get_available_dates(friend_dates, my_busy_dates):
+          days = []
+          for d in friend_dates:
+              if d _____ my_busy_dates:
+                  days.append(d)
+          return days
+
+      print(get_available_dates(["4/20", "4/21", "4/22"], ["4/21"]))
+    blanks: [["not in"]]
+    explanation: 바쁜 날짜 리스트에 **없는** 날짜만 추가합니다.
+
+  - id: w07-24
+    type: predict
+    code: |
+      def count_orders(order_list):
+          order_dict = {}
+          for item in order_list:
+              if item in order_dict:
+                  order_dict[item] += 1
+              else:
+                  order_dict[item] = 1
+          return order_dict
+
+      print(count_orders(["김밥", "떡볶이", "김밥", "라면", "김밥"]))
+    explanation: 리스트를 받아 항목별 개수를 센 딕셔너리를 반환합니다.
+
+  - id: w07-25
+    type: blank
+    prompt: (날짜, 할 일) 튜플 리스트를 날짜별 할 일 리스트 딕셔너리로 만드는 함수를 완성하시오.
+    code: |
+      def make_todo_dict(pairs):
+          todo = {}
+          for date, task in pairs:
+              if date in todo:
+                  todo[date]._____(task)
+              else:
+                  todo[date] = [_____]
+          return todo
+
+      print(make_todo_dict([("4/20", "스터디"), ("4/21", "운동"), ("4/20", "과제")]))
+    blanks: [["append"], ["task"]]
+    difficulty: 2
+    explanation: 처음 나온 날짜는 할 일 하나가 든 리스트를 새로 만들고, 이미 있으면 그 리스트에 추가합니다.
+
+  - id: w07-26
+    type: predict
+    difficulty: 3
+    code: |
+      def add_item(items):
+          items.append(4)
+
+      nums = [1, 2, 3]
+      add_item(nums)
+      print(nums)
+    explanation: 리스트를 함수에 넘기면 복사되지 않고 **같은 리스트**가 전달됩니다(5주차 '할당과 복사'와 같은 원리). 함수 안에서 바꾸면 바깥 리스트도 바뀝니다.
+
+  - id: w07-27
+    type: predict
+    error: true
+    code: |
+      hello()
+
+      def hello():
+          print("hi")
+    explanation: 함수는 **정의한 다음에** 호출해야 합니다. 정의 전에 부르면 `NameError`.
+
+  - id: w07-28
+    type: predict
+    error: true
+    code: |
+      def add(a, b):
+          return a + b
+
+      print(add(1))
+    explanation: 매개변수가 2개인 함수에 인자를 1개만 주면 `TypeError`가 납니다.
+
+  - id: w07-29
+    type: predict
+    code: |
+      def square(n):
+          return n * n
+
+      def sum_of_squares(a, b):
+          return square(a) + square(b)
+
+      print(sum_of_squares(3, 4))
+    explanation: 함수 안에서 다른 함수를 호출할 수 있습니다. 9 + 16 = 25.
+
+  - id: w07-30
+    type: mc
+    prompt: 매개변수가 2개인 함수의 정의로 올바른 것은?
+    choices: ["`def f(a b):`", "`def f(a, b):`", "`def f[a, b]:`", "`function f(a, b):`"]
+    answer: 2
+    verify: |
+      compile("def f(a, b):\n    return a\n", "t", "exec")
+    explanation: 매개변수는 소괄호 안에 콤마로 나열하고, 끝에 콜론을 붙입니다.
+
+  - id: w07-31
+    type: ox
+    prompt: 함수 안에서 다른 함수를 호출할 수 있다.
+    answer: "O"
+    explanation: 작은 함수를 만들어 다른 함수에서 재사용하는 것이 함수의 핵심 활용법입니다.
+
+  - id: w07-32
+    type: blank
+    prompt: 두 수를 더한 값을 **반환**하는 함수가 되도록 빈칸을 채우시오.
+    code: |
+      def add(a, b):
+          _____ a + b
+
+      print(add(3, 4) * 10)
+    blanks: [["return"]]
+    explanation: "`print`가 아니라 `return`으로 돌려줘야 `add(3, 4) * 10`처럼 결과를 다시 계산에 쓸 수 있습니다."
+
+  - id: w07-33
+    type: essay
+    prompt: 함수에서 `print`와 `return`의 차이를 설명하시오.
+    answer: |
+      `print`는 값을 화면에 출력할 뿐 호출한 곳으로 값을 돌려주지 않는다. 그래서 print만 하는 함수의 결과를 변수에 받으면 None이 된다.
+      `return`은 계산한 값을 호출한 곳으로 돌려주고 그 즉시 함수를 끝낸다. 돌려받은 값은 변수에 저장하거나 다른 계산에 다시 쓸 수 있다.
+    points:
+      - "print: 화면 출력만, 반환값 없음 (None)"
+      - "return: 값을 호출한 곳으로 돌려줌"
+      - return을 만나면 함수가 즉시 종료
+      - return값은 다른 계산에 재사용 가능
+
+  - id: w07-34
+    type: essay
+    prompt: 함수를 사용하면 좋은 점을 두 가지 이상 서술하시오.
+    answer: |
+      같은 작업을 함수로 만들어 두면 반복되는 코드를 줄이고 여러 곳에서 재사용할 수 있다.
+      코드의 용도를 함수 단위로 나눌 수 있어 읽기 쉽고, 한 곳만 고치면 되므로 실수를 줄일 수 있다.
+      또 인자만 바꿔 같은 코드로 다른 결과를 얻을 수 있다.
+    points:
+      - 반복되는 코드를 줄이고 재사용성을 높인다
+      - 코드의 용도를 구분할 수 있다 (가독성)
+      - 실수를 줄인다 (한 곳만 수정)

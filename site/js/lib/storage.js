@@ -73,6 +73,22 @@ export const settings = {
   },
 };
 
+/** 이론 퀴즈 기록: { 문항id: { n: 푼 횟수, ok: 맞힌 횟수, last: 마지막 결과, at } } */
+export const quizStats = {
+  all: () => read('quiz', {}),
+  record(id, correct) {
+    const all = read('quiz', {});
+    const prev = all[id] || { n: 0, ok: 0 };
+    all[id] = { n: prev.n + 1, ok: prev.ok + (correct ? 1 : 0), last: !!correct, at: Date.now() };
+    write('quiz', all);
+  },
+};
+
+export const quizPrefs = {
+  get: () => read('quizPrefs', null),
+  set: (v) => write('quizPrefs', v),
+};
+
 export const meta = {
   lastProblem: () => read('last', null),
   setLastProblem: (id) => write('last', id),

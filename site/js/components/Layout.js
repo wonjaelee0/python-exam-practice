@@ -24,6 +24,7 @@ export function Layout({ route, title, children }) {
   const nav = [
     ['#/', '홈', route === '/'],
     ['#/problems', '문제', route.startsWith('/problems')],
+    ['#/quiz', '이론 퀴즈', route.startsWith('/quiz')],
     ['#/settings', '설정', route.startsWith('/settings')],
     ['#/about', '정보', route.startsWith('/about')],
   ];

@@ -1,0 +1,121 @@
+id: w01
+short: 1주차
+title: Python 소개 · Colab · 마크다운
+order: 1
+summary: 파이썬의 역사와 특징, 개발 환경, 코랩 사용법, 마크다운 문법 (컴퓨터 개요는 시험 범위 제외)
+items:
+  - id: w01-01
+    type: mc
+    prompt: Python을 개발하여 처음 공개한 사람은?
+    choices: ["귀도 반 로섬 (Guido van Rossum)", "제임스 고슬링 (James Gosling)", "데니스 리치 (Dennis Ritchie)", "비야네 스트롭스트룹 (Bjarne Stroustrup)"]
+    answer: 1
+    explanation: |
+      Python은 네덜란드 출신 프로그래머 귀도 반 로섬이 만들어 1991년에 처음 공개했습니다.
+      제임스 고슬링은 Java, 데니스 리치는 C, 스트롭스트룹은 C++를 만들었습니다.
+
+  - id: w01-02
+    type: mc
+    prompt: Python이 처음 공개된 해는?
+    choices: ["1985년", "1991년", "2000년", "2008년"]
+    answer: 2
+    explanation: Python은 1991년에 처음 공개되었고, 현재는 Python Software Foundation(PSF)을 중심으로 개발·관리됩니다.
+
+  - id: w01-03
+    type: ox
+    prompt: Python이라는 이름은 비단뱀(python)에서 따왔다.
+    answer: "X"
+    explanation: 뱀이 아니라 귀도 반 로섬이 좋아했던 영국 코미디 프로그램 **Monty Python's Flying Circus**에서 따온 이름입니다.
+
+  - id: w01-04
+    type: ox
+    prompt: Python은 오픈소스로 제공되어 누구나 무료로 사용할 수 있다.
+    answer: "O"
+    explanation: Python은 오픈소스이며 무료입니다. 활발한 개발자 커뮤니티와 풍부한 라이브러리가 장점입니다.
+
+  - id: w01-05
+    type: mc
+    prompt: Python 활용 분야와 대표 도구의 짝이 **잘못된** 것은?
+    choices: ["데이터 분석 — NumPy, pandas", "데이터 시각화 — Matplotlib", "웹 개발 — Django, Flask", "인공지능 — Seaborn만 사용"]
+    answer: 4
+    difficulty: 2
+    explanation: Seaborn은 Matplotlib처럼 **데이터 시각화** 도구입니다. 인공지능·머신러닝에는 scikit-learn, PyTorch, TensorFlow 등을 씁니다.
+
+  - id: w01-06
+    type: ox
+    prompt: Google Colab은 별도의 설치 없이 웹 브라우저에서 파이썬 코드를 작성하고 실행할 수 있는 클라우드 기반 환경이다.
+    answer: "O"
+    explanation: 코랩은 구글 계정만 있으면 브라우저에서 바로 쓸 수 있고, 코드와 문서를 함께 작성하는 Jupyter Notebook 형태입니다.
+
+  - id: w01-07
+    type: mc
+    prompt: 코랩에서 **셀을 실행하고 다음 셀로 이동**하는 단축키는?
+    choices: ["Ctrl + Enter", "Shift + Enter", "Alt + Tab", "Ctrl + S"]
+    answer: 2
+    explanation: "`Shift + Enter`는 실행 후 다음 셀로 이동(없으면 새 셀 생성), `Ctrl + Enter`는 실행 후 현재 셀에 머무릅니다."
+
+  - id: w01-08
+    type: short
+    prompt: "코랩에서 셀을 실행한 뒤 **현재 셀에 그대로 머무르는** 단축키를 쓰시오. (예: Alt+Q 형식)"
+    answer: ["Ctrl+Enter", "Control+Enter", "컨트롤+엔터"]
+    ignore_case: true
+    explanation: "`Ctrl + Enter`는 실행하고 현재 셀에 머물러 셀을 계속 수정하기 좋습니다."
+
+  - id: w01-09
+    type: mc
+    prompt: 코랩에서 마크다운(MarkDown)으로 설명 문서를 작성하는 셀은?
+    choices: ["코드 셀", "텍스트 셀", "출력 셀", "런타임 셀"]
+    answer: 2
+    explanation: "`+ 텍스트`로 텍스트 셀을 추가해 마크다운으로 제목, 목록, 링크, 이미지, 수식 등을 작성합니다."
+
+  - id: w01-10
+    type: mc
+    prompt: 마크다운에서 **가장 큰 제목**을 만드는 방법은?
+    choices: ["`# 제목`", "`###### 제목`", "`**제목**`", "`- 제목`"]
+    answer: 1
+    explanation: "`#`의 개수로 제목 크기를 정하며(1~6개), `#`이 늘어날수록 제목이 작아집니다."
+
+  - id: w01-11
+    type: ox
+    prompt: 마크다운 제목은 `#`을 1~6개까지 쓸 수 있고, `#`이 많을수록 제목이 **커진다**.
+    answer: "X"
+    explanation: "`#` 하나가 가장 큰 제목이고, `######`(6개)가 가장 작은 제목입니다."
+
+  - id: w01-12
+    type: mc
+    prompt: 마크다운에서 글자를 **굵게** 표시하는 방법은?
+    choices: ["`*굵게*`", "`**굵게**`", "`~~굵게~~`", "`# 굵게`"]
+    answer: 2
+    explanation: "`**텍스트**`(또는 `__텍스트__`)는 굵게, `*텍스트*`는 기울임, `~~텍스트~~`는 취소선입니다."
+
+  - id: w01-13
+    type: short
+    prompt: 마크다운에서 **취소선**을 만들 때 텍스트의 앞뒤를 감싸는 기호를 쓰시오.
+    answer: ["~~"]
+    explanation: "`~~취소선~~`처럼 물결표 두 개로 감쌉니다."
+
+  - id: w01-14
+    type: mc
+    prompt: 마크다운으로 **링크**를 넣는 문법은?
+    choices: ["`[텍스트](URL)`", "`(텍스트)[URL]`", "`![텍스트](URL)`", "`<텍스트>(URL)`"]
+    answer: 1
+    explanation: "`[텍스트](URL)`은 링크, 앞에 `!`를 붙인 `![설명](이미지 URL)`은 이미지 삽입입니다."
+
+  - id: w01-15
+    type: ox
+    prompt: 마크다운의 순서 있는 목록에서 `1.` `1.` `2.`처럼 번호를 써도 화면에는 1, 2, 3으로 차례대로 번호가 매겨진다.
+    answer: "O"
+    explanation: 순서 있는 목록의 숫자 자체는 의미가 없고, 항목 순서대로 번호가 붙습니다.
+
+  - id: w01-16
+    type: essay
+    prompt: Python이 프로그래밍 입문과 데이터 분석에 널리 쓰이는 이유를 두 가지 이상 서술하시오.
+    answer: |
+      문법이 쉽고 간결해서 입문자가 배우기 쉽고 적은 코드로 기능을 구현할 수 있다.
+      또 코드를 바로 실행해 결과를 확인할 수 있어(코랩·주피터 같은 대화형 환경) 데이터를 단계별로 분석하기 좋고,
+      오픈소스·무료이며 NumPy, pandas, Matplotlib 같은 라이브러리가 풍부하다.
+    points:
+      - 쉽고 간결한 문법 (적은 코드로 구현)
+      - 바로 실행하고 결과 확인 (대화형 환경, 높은 생산성)
+      - 오픈소스·무료, 활발한 커뮤니티
+      - 풍부한 라이브러리 (데이터 분석·시각화·AI)
+      - 다양한 운영체제와 분야에서 사용

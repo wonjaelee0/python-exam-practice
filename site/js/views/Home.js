@@ -28,6 +28,7 @@ export function Home({ manifest, route }) {
         <div class="cta">
           ${lastMeta ? html`<a class="btn primary" href=${'#/p/' + lastMeta.id}>이어서 풀기 · ${lastMeta.title}</a>` : null}
           <a class=${'btn ' + (lastMeta ? '' : 'primary')} href="#/problems">문제 목록</a>
+          <a class="btn" href="#/quiz">이론 퀴즈 (객관식·O/X·단답형·출력 예측)</a>
         </div>
       </div>
       <div class="hero-stats">
