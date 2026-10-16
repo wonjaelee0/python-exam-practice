@@ -41,6 +41,7 @@ import compat36  # noqa: E402
 import elice_semantics as sem  # noqa: E402
 import lint_rules  # noqa: E402
 import quizbuild  # noqa: E402  (tools/quizbuild.py — 이론 퀴즈)
+import notesbuild  # noqa: E402  (tools/notesbuild.py — 요약 노트)
 
 DOCKER_IMAGE = "python:3.6-slim"
 FORMATS = {"write", "fill", "debug"}
@@ -241,6 +242,14 @@ def main() -> int:
         quiz_sets += qs
         quiz_reports.update(qr)
 
+    notes, note_errors = [], []
+    for root, private in roots:
+        ns, ne = notesbuild.load(root, default_course=default_course, private=private)
+        notes += ns
+        note_errors += ne
+    if not args.only:
+        note_errors += notesbuild.check_links(notes, set(units), {s["meta"]["id"] for s in quiz_sets})
+
     # ---- 실행 (정답·대체 정답·오답 코드 × 테스트)
     jobs, jobs2 = [], []
     for p in problems:
@@ -321,6 +330,10 @@ def main() -> int:
     n_quiz = sum(len(s["items"]) for s in quiz_built)
     print(f"이론 퀴즈: {len(quiz_reports)}문항 중 통과 {n_quiz}개 · 오류 {n_qerr}개")
     n_err += n_qerr
+    for e in note_errors:
+        print(f"✗ 요약 노트: {e}")
+    print(f"요약 노트: {len(notes)}개 · 오류 {len(note_errors)}개")
+    n_err += len(note_errors)
 
     if args.only:
         print("(--only: 출력 파일을 쓰지 않았습니다)")
@@ -376,6 +389,12 @@ def main() -> int:
     quiz_entries, quiz_hashes = quizbuild.write(out_dir, quiz_built)
     hashes += quiz_hashes
 
+    notes_dir = out_dir / "notes"
+    if notes_dir.exists():
+        shutil.rmtree(notes_dir)
+    note_entries, note_hashes = notesbuild.write(out_dir, notes)
+    hashes += note_hashes
+
     assets = json.loads((ROOT / "tools" / "assets.json").read_text(encoding="utf-8"))
     # 실행 엔진 파일(워커 + 파이썬)의 내용 해시 — 주소에 붙여 Pages의 10분 캐시 때문에 옛 파일과 섞이지 않게 한다
     runtime_files = sorted(PY_DIR.glob("*.py")) + [SITE / "js" / "runtime" / "py-worker.js"]
@@ -394,6 +413,7 @@ def main() -> int:
         "units": manifest_units,
         "problems": manifest_problems,
         "quizzes": quiz_entries,
+        "notes": note_entries,
     }
     (out_dir / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=1), encoding="utf-8")
     counts = Counter(p["unit"] for p, _ in built)

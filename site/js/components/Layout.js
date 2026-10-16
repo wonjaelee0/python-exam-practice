@@ -26,6 +26,7 @@ export function Layout({ route, title, children }) {
     ['#/', '홈', route === '/'],
     ['#/problems', '문제', route.startsWith('/problems')],
     ['#/quiz', '이론 퀴즈', route.startsWith('/quiz')],
+    ['#/notes', '요약 노트', route.startsWith('/notes')],
     ['#/settings', '설정', route.startsWith('/settings')],
     ['#/about', '정보', route.startsWith('/about')],
   ];

@@ -342,3 +342,177 @@ items:
       - 부동소수점 근사 (이진수 무한소수)
       - 연산 시 작은 오차 발생
       - 차이의 절댓값이 아주 작은지로 비교
+
+  # ---- 보강 문항 (2026-10-16): 단답형·O/X·코드 빈칸·객관식 위주 ----
+
+  - id: w02-38
+    type: short
+    prompt: '나눗셈의 **몫**(소수점 아래를 버린 값, 예: 7을 2로 나눈 몫 3)을 구하는 연산자 기호를 쓰시오.'
+    answer:
+    - //
+    difficulty: 1
+    verify: |
+      assert 7 // 2 == 3
+    explanation: '`7 // 2`는 3, `7 / 2`는 3.5입니다.'
+
+  - id: w02-39
+    type: short
+    prompt: '거듭제곱(예: 2의 10제곱)을 계산하는 연산자 기호를 쓰시오.'
+    answer:
+    - '**'
+    difficulty: 1
+    verify: |
+      assert 2 ** 10 == 1024
+    explanation: '`2 ** 10`은 1024입니다. `^`는 거듭제곱이 아닙니다.'
+
+  - id: w02-40
+    type: short
+    prompt: 몫과 나머지를 한 번에 튜플로 돌려주는 내장 함수 이름을 쓰시오.
+    answer:
+    - divmod
+    - divmod()
+    difficulty: 1
+    verify: |
+      assert divmod(17, 5) == (3, 2)
+    explanation: '`divmod(17, 5)`는 `(3, 2)`입니다.'
+
+  - id: w02-41
+    type: short
+    prompt: '`print()`에서 출력 끝에 붙는 문자(기본값은 줄바꿈)를 바꾸는 매개변수 이름을 쓰시오.'
+    answer:
+    - end
+    - end=
+    difficulty: 1
+    verify: |
+      print('a', end='')
+      print('b')
+    explanation: '`print(''a'', end='''')`처럼 쓰면 줄을 바꾸지 않습니다.'
+
+  - id: w02-42
+    type: short
+    prompt: '`print(1, 2, 3, sep=''-'')`에서처럼 여러 값 **사이**에 넣을 문자열을 정하는 매개변수 이름을 쓰시오.'
+    answer:
+    - sep
+    - sep=
+    difficulty: 1
+    verify: |
+      print(1, 2, 3, sep='-')
+    explanation: '`print(1, 2, 3, sep=''-'')`는 `1-2-3`을 출력합니다. 기본값은 공백 한 칸입니다.'
+
+  - id: w02-43
+    type: ox
+    prompt: '`type(3.0)`의 결과는 `<class ''int''>`이다.'
+    answer: X
+    difficulty: 1
+    verify: |
+      assert type(3.0) is float
+    explanation: 소수점이 있으면 값이 정수와 같아도 float입니다. `<class 'float'>`.
+
+  - id: w02-44
+    type: ox
+    prompt: '`int(''3.7'')`은 3을 돌려준다.'
+    answer: X
+    difficulty: 2
+    verify: |
+      try:
+          int('3.7')
+          raise AssertionError
+      except ValueError:
+          pass
+    explanation: 소수점이 있는 문자열은 `int()`로 바로 바꿀 수 없어 **ValueError**가 납니다. `int(float('3.7'))`처럼 두 번 바꿔야 합니다.
+
+  - id: w02-45
+    type: ox
+    prompt: '`int(3.7)`은 반올림하여 4를 돌려준다.'
+    answer: X
+    difficulty: 1
+    verify: |
+      assert int(3.7) == 3 and round(3.7) == 4
+    explanation: '`int()`는 소수점 아래를 **버립니다**. `int(3.7)`은 3, 반올림은 `round(3.7)`입니다.'
+
+  - id: w02-46
+    type: mc
+    prompt: 다음 중 계산 결과가 **float(실수)** 인 것은?
+    choices:
+    - '`7 // 2`'
+    - '`7 % 2`'
+    - '`6 / 2`'
+    - '`2 ** 3`'
+    answer: 3
+    difficulty: 1
+    verify: |
+      assert isinstance(6 / 2, float) and isinstance(7 // 2, int) and isinstance(2 ** 3, int)
+    explanation: '`/`는 나누어떨어져도 항상 float를 돌려줍니다. `6 / 2`는 `3.0`.'
+
+  - id: w02-47
+    type: mc
+    prompt: '`2 + 3 * 2 ** 2`의 결과는?'
+    choices:
+    - '100'
+    - '14'
+    - '20'
+    - '50'
+    answer: 2
+    difficulty: 1
+    verify: |
+      assert 2 + 3 * 2 ** 2 == 14
+    explanation: '거듭제곱 → 곱셈 → 덧셈 순서: `2 ** 2 = 4`, `3 * 4 = 12`, `2 + 12 = 14`.'
+
+  - id: w02-48
+    type: mc
+    prompt: '`a, b = map(int, input().split())`에 `3 4`를 입력했을 때 `b`의 값은?'
+    choices:
+    - '`''4''` (문자열)'
+    - '`4` (정수)'
+    - '`4.0` (실수)'
+    - '`[3, 4]` (리스트)'
+    answer: 2
+    difficulty: 1
+    verify: |
+      a, b = map(int, '3 4'.split())
+      assert b == 4 and type(b) is int
+    explanation: '`split()`으로 나눈 문자열 하나하나에 `int`가 적용되어 a는 3, b는 4(정수)가 됩니다.'
+
+  - id: w02-49
+    type: short
+    prompt: 변수 이름의 **첫 글자**로 쓸 수 없는 것은 영문자·밑줄·숫자 중 무엇인가?
+    answer:
+    - 숫자
+    difficulty: 1
+    explanation: 변수 이름은 숫자로 시작할 수 없습니다 (`1st`는 불가, `first1`·`_tmp`는 가능).
+
+  - id: w02-50
+    type: blank
+    prompt: '분(minute)을 입력받아 몇 시간 몇 분인지 출력하도록 빈칸을 채우시오. (입력 예: 135)'
+    code: |
+      minutes = int(input())
+      hours = minutes _____ 60
+      rest = minutes _____ 60
+      print(hours, '시간', rest, '분')
+    blanks: [[//], ['%']]
+    stdin: "135\n"
+    difficulty: 1
+    explanation: 몫은 `//`, 나머지는 `%`. 135분은 2시간 15분입니다.
+
+  - id: w02-51
+    type: blank
+    prompt: f-string으로 실수를 **소수 둘째 자리까지** 출력하도록 빈칸을 채우시오.
+    code: |
+      price = 1234.5678
+      print(f'{price:_____}')
+    blanks: [[.2f]]
+    difficulty: 2
+    explanation: '`{값:.2f}`는 소수 셋째 자리에서 반올림해 둘째 자리까지 보여 줍니다.'
+
+  - id: w02-52
+    type: essay
+    prompt: '`/`, `//`, `%` 연산자의 차이를 `7`과 `2`를 예로 들어 설명하시오.'
+    answer: |
+      `/`는 일반 나눗셈으로 결과가 항상 실수다 (`7 / 2` → 3.5).
+      `//`는 몫을 구하는 버림 나눗셈으로 소수점 아래를 버린다 (`7 // 2` → 3).
+      `%`는 나머지를 구한다 (`7 % 2` → 1). 짝수·홀수 판별(`n % 2 == 0`)이나 자릿수 분리에 자주 쓴다.
+    points:
+    - '`/` → 3.5 (항상 float)'
+    - '`//` → 3 (몫, 버림)'
+    - '`%` → 1 (나머지)'
+    difficulty: 1

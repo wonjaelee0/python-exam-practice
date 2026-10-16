@@ -305,3 +305,154 @@ items:
       - "for: 횟수가 정해진 반복, range·시퀀스"
       - "while: 조건이 참인 동안, 횟수를 모를 때"
       - while은 변화식이 없으면 무한 루프에 주의
+
+  # ---- 보강 문항 (2026-10-16): 단답형·O/X·코드 빈칸·객관식 위주 ----
+
+  - id: w04-34
+    type: short
+    prompt: '`range(1, 10, 3)`이 만드는 수는 모두 몇 개인가? (숫자만)'
+    answer:
+    - '3'
+    - 3개
+    difficulty: 1
+    verify: |
+      assert list(range(1, 10, 3)) == [1, 4, 7]
+    explanation: 1, 4, 7 — 10은 포함되지 않습니다.
+
+  - id: w04-35
+    type: short
+    prompt: 반복문을 **즉시 끝내는** 키워드를 쓰시오.
+    answer:
+    - break
+    difficulty: 1
+    explanation: '`break`를 만나면 가장 가까운 반복문 하나를 빠져나갑니다.'
+
+  - id: w04-36
+    type: short
+    prompt: 반복문에서 현재 반복의 남은 코드를 건너뛰고 **다음 반복으로** 넘어가는 키워드를 쓰시오.
+    answer:
+    - continue
+    difficulty: 1
+    explanation: '`continue`는 반복을 끝내지 않고 다음 차례로 넘어갑니다.'
+
+  - id: w04-37
+    type: ox
+    prompt: '`range(10, 0, -2)`가 만드는 수에는 0이 포함된다.'
+    answer: X
+    difficulty: 1
+    verify: |
+      assert list(range(10, 0, -2)) == [10, 8, 6, 4, 2]
+    explanation: 10, 8, 6, 4, 2 — end 값(0)은 포함되지 않습니다.
+
+  - id: w04-38
+    type: ox
+    prompt: 문자열도 for 문으로 한 글자씩 반복할 수 있다.
+    answer: O
+    difficulty: 1
+    verify: |
+      assert [c for c in 'abc'] == ['a', 'b', 'c']
+    explanation: 문자열은 시퀀스 자료형이라 `for ch in 'abc':`처럼 글자 단위로 반복합니다.
+
+  - id: w04-39
+    type: ox
+    prompt: while 문의 조건이 처음부터 거짓이면 반복 블록은 한 번도 실행되지 않는다.
+    answer: O
+    difficulty: 1
+    explanation: while은 블록을 실행하기 **전에** 조건을 먼저 검사합니다.
+
+  - id: w04-40
+    type: mc
+    prompt: "다음 코드에서 `*`는 모두 몇 번 출력되는가?\n\n```python\nfor i in range(3):\n    for j in range(4):\n        print('*')\n```"
+    choices:
+    - 7번
+    - 12번
+    - 3번
+    - 4번
+    answer: 2
+    difficulty: 1
+    verify: |
+      n = 0
+      for i in range(3):
+          for j in range(4):
+              n += 1
+      assert n == 12
+    explanation: 바깥 3번 × 안쪽 4번 = 12번.
+
+  - id: w04-41
+    type: mc
+    prompt: "다음 while 문이 끝나지 않는(무한 루프) 이유로 알맞은 것은?\n\n```python\ni = 1\nwhile i <= 5:\n    print(i)\n```"
+    choices:
+    - print 안에 i를 써서
+    - i를 바꾸는 코드가 없어 조건이 계속 참이라서
+    - while 뒤에 콜론이 있어서
+    - i가 1부터 시작해서
+    answer: 2
+    difficulty: 1
+    explanation: 반복 안에서 `i += 1`처럼 조건에 쓰인 변수를 바꿔야 언젠가 조건이 거짓이 되어 반복이 끝납니다.
+
+  - id: w04-42
+    type: blank
+    prompt: 1부터 100까지(100 포함) 중 3의 배수의 개수를 세도록 빈칸을 채우시오.
+    code: |
+      count = 0
+      for n in range(1, _____):
+          if n % 3 == 0:
+              count _____ 1
+      print(count)
+    blanks: [['101'], [+=]]
+    difficulty: 1
+    explanation: 끝값을 포함하려면 `range(1, 101)`. 결과는 33입니다.
+
+  - id: w04-43
+    type: blank
+    prompt: '입력한 수가 소수인지 판별하도록 빈칸을 채우시오. 약수를 하나라도 찾으면 더 볼 필요가 없다. (입력 예: 91)'
+    code: |
+      n = int(input())
+      is_prime = n > 1
+      for d in range(2, n):
+          if n % d == 0:
+              is_prime = False
+              _____
+      print(is_prime)
+    blanks: [[break]]
+    stdin: "91\n"
+    difficulty: 2
+    explanation: 약수를 찾는 순간 `break`로 반복을 끝냅니다. 91 = 7 × 13이라 False.
+
+  - id: w04-44
+    type: blank
+    prompt: '0이 입력될 때까지 정수를 입력받아 합을 출력하도록 빈칸을 채우시오. (입력 예: 3, 5, 0)'
+    code: |
+      total = 0
+      while _____:
+          x = int(input())
+          if x == 0:
+              break
+          total += x
+      print(total)
+    blanks: [['True', '1']]
+    stdin: "3\n5\n0\n"
+    difficulty: 2
+    explanation: 몇 번 반복할지 모를 때는 `while True:`로 무한 루프를 만들고, 끝낼 조건에서 `break`합니다.
+
+  - id: w04-45
+    type: blank
+    prompt: 별을 5개부터 1개까지 줄여 가며 출력하도록 빈칸을 채우시오.
+    code: |
+      for i in range(5, 0, _____):
+          print('*' * i)
+    blanks: [['-1']]
+    difficulty: 1
+    explanation: 감소하는 range는 step을 음수로 줍니다. `range(5, 0, -1)` → 5, 4, 3, 2, 1.
+
+  - id: w04-46
+    type: essay
+    prompt: while 문에서 무한 루프가 생기는 경우와, 무한 루프를 끝내는 방법을 설명하시오.
+    answer: |
+      조건식이 계속 참으로 남으면 무한 루프가 된다. 반복 안에서 조건에 쓰인 변수를 바꾸지 않거나, `while True:`처럼 항상 참인 조건을 쓴 경우다.
+      끝내려면 반복 안에서 변수를 바꿔(`i += 1`) 조건이 언젠가 거짓이 되게 하거나, 원하는 상황에서 `break`로 반복을 빠져나간다.
+    points:
+    - 조건이 계속 참이면 무한 루프
+    - 조건 변수를 갱신하지 않는 실수 / while True
+    - 변수 갱신 또는 break로 종료
+    difficulty: 1

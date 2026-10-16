@@ -21,6 +21,7 @@ export function Home({ manifest, route }) {
   const total = probs.length;
   const solved = probs.filter((p) => statusOf(prog[p.id]) === 'solved').length;
   const quizCount = (manifest.quizzes || []).filter(inCourse).reduce((n, q) => n + q.count, 0);
+  const noteCount = (manifest.notes || []).filter(inCourse).length;
 
   const firstUnsolved = (unitId) =>
     manifest.problems.find((p) => p.unit === unitId && statusOf(prog[p.id]) !== 'solved') ||
@@ -36,6 +37,7 @@ export function Home({ manifest, route }) {
           ${lastMeta ? html`<a class="btn primary" href=${'#/p/' + lastMeta.id}>이어서 풀기 · ${lastMeta.title}</a>` : null}
           <a class=${'btn ' + (lastMeta ? '' : 'primary')} href="#/problems">문제 목록</a>
           ${quizCount ? html`<a class="btn" href="#/quiz">이론 퀴즈 ${quizCount}문항 (객관식·O/X·단답형·출력 예측)</a>` : null}
+          ${noteCount ? html`<a class="btn" href="#/notes">요약 노트 ${noteCount}편</a>` : null}
         </div>
       </div>
       <div class="hero-stats">

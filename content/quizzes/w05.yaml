@@ -360,3 +360,200 @@ items:
       - "b = a: 같은 리스트 (a is b → True), b를 바꾸면 a도 바뀜"
       - "b = a.copy(): 새 리스트, a는 그대로"
       - 2차원 리스트는 deepcopy 필요
+
+  # ---- 보강 문항 (2026-10-16): 단답형·O/X·코드 빈칸·객관식 위주 ----
+
+  - id: w05-39
+    type: short
+    prompt: 리스트 **끝에** 요소 하나를 추가하는 메서드 이름을 쓰시오.
+    answer:
+    - append
+    - append()
+    - .append
+    - .append()
+    difficulty: 1
+    explanation: '`a.append(4)` → 맨 뒤에 4가 추가됩니다.'
+
+  - id: w05-40
+    type: short
+    prompt: 리스트의 **지정한 위치**에 요소를 끼워 넣는 메서드 이름을 쓰시오.
+    answer:
+    - insert
+    - insert()
+    - .insert
+    - .insert()
+    difficulty: 1
+    verify: |
+      a = [1, 2]
+      a.insert(0, 'x')
+      assert a == ['x', 1, 2]
+    explanation: '`a.insert(0, ''x'')`는 맨 앞에 넣습니다.'
+
+  - id: w05-41
+    type: short
+    prompt: 리스트에서 특정 값이 **몇 번** 나오는지 세는 메서드 이름을 쓰시오.
+    answer:
+    - count
+    - count()
+    - .count
+    - .count()
+    difficulty: 1
+    verify: |
+      assert [1, 2, 1].count(1) == 2
+    explanation: '`[1, 2, 1].count(1)`은 2.'
+
+  - id: w05-42
+    type: short
+    prompt: '`a.append([4, 5])`와 달리 `[4, 5]`의 **요소들을 하나씩** 리스트 끝에 이어 붙이는 메서드 이름을 쓰시오.'
+    answer:
+    - extend
+    - extend()
+    - .extend
+    - .extend()
+    difficulty: 2
+    verify: |
+      a = [1]
+      a.extend([4, 5])
+      assert a == [1, 4, 5]
+    explanation: '`[1].extend([4, 5])` → `[1, 4, 5]`, `append`는 `[1, [4, 5]]`.'
+
+  - id: w05-43
+    type: short
+    prompt: 요소가 **하나인 튜플**을 만들 때 값 뒤에 반드시 붙여야 하는 기호를 쓰시오.
+    answer:
+    - ','
+    - 쉼표
+    - 콤마
+    difficulty: 1
+    verify: |
+      assert type((5,)) is tuple and type((5)) is int
+    explanation: '`(5,)`는 튜플, `(5)`는 그냥 정수 5입니다.'
+
+  - id: w05-44
+    type: short
+    prompt: '`a = [10, 20, 30, 40]`일 때 `a[-1]`의 값을 쓰시오.'
+    answer:
+    - '40'
+    difficulty: 1
+    verify: |
+      assert [10, 20, 30, 40][-1] == 40
+    explanation: 음수 인덱스 -1은 마지막 요소입니다.
+
+  - id: w05-45
+    type: ox
+    prompt: '`a.sort()`는 정렬된 **새 리스트를 반환**하고 원래 리스트 a는 그대로 둔다.'
+    answer: X
+    difficulty: 1
+    verify: |
+      a = [3, 1, 2]
+      assert a.sort() is None and a == [1, 2, 3]
+    explanation: '`a.sort()`는 a 자체를 정렬하고 **None**을 반환합니다. 새 리스트가 필요하면 `sorted(a)`.'
+
+  - id: w05-46
+    type: ox
+    prompt: '`a.remove(x)`는 x와 같은 값 중 **첫 번째 하나만** 지운다.'
+    answer: O
+    difficulty: 1
+    verify: |
+      a = [1, 2, 1]
+      a.remove(1)
+      assert a == [2, 1]
+    explanation: '`[1, 2, 1].remove(1)` → `[2, 1]`. 값이 없으면 ValueError.'
+
+  - id: w05-47
+    type: ox
+    prompt: 슬라이싱 `a[1:3]`의 결과에는 인덱스 3의 요소도 포함된다.
+    answer: X
+    difficulty: 1
+    verify: |
+      assert [0, 1, 2, 3][1:3] == [1, 2]
+    explanation: 끝 인덱스는 포함되지 않습니다. 인덱스 1, 2의 요소만 들어갑니다.
+
+  - id: w05-48
+    type: ox
+    prompt: '`a.pop()`처럼 인자를 주지 않으면 마지막 요소를 꺼내 반환한다.'
+    answer: O
+    difficulty: 1
+    verify: |
+      a = [1, 2, 3]
+      assert a.pop() == 3 and a == [1, 2]
+    explanation: '`pop(i)`는 i번 요소를, `pop()`은 마지막 요소를 꺼냅니다.'
+
+  - id: w05-49
+    type: mc
+    prompt: '`a = [1, 2, 3]` 다음 `a.append([4, 5])`를 실행하면 `len(a)`는?'
+    choices:
+    - '3'
+    - '4'
+    - '5'
+    - 오류
+    answer: 2
+    difficulty: 2
+    verify: |
+      a = [1, 2, 3]
+      a.append([4, 5])
+      assert len(a) == 4
+    explanation: 리스트 `[4, 5]` 전체가 요소 **하나**로 추가되어 `[1, 2, 3, [4, 5]]`, 길이는 4입니다.
+
+  - id: w05-50
+    type: mc
+    prompt: '`m = [[1, 2, 3], [4, 5, 6]]`에서 6을 꺼내는 코드는?'
+    choices:
+    - '`m[2][1]`'
+    - '`m[1][2]`'
+    - '`m[1, 2]`'
+    - '`m[6]`'
+    answer: 2
+    difficulty: 1
+    verify: |
+      m = [[1, 2, 3], [4, 5, 6]]
+      assert m[1][2] == 6
+    explanation: '`m[행][열]` — 두 번째 행(1)의 세 번째 값(2).'
+
+  - id: w05-51
+    type: blank
+    prompt: 리스트 표현식으로 **짝수만** 제곱한 리스트를 만들도록 빈칸을 채우시오.
+    code: |
+      nums = [1, 2, 3, 4, 5, 6]
+      squares = [x ** 2 for x in nums _____ x % 2 == 0]
+      print(squares)
+    blanks: [[if]]
+    difficulty: 1
+    explanation: '`[식 for 변수 in 리스트 if 조건]` — 조건이 참인 요소만 식을 적용합니다.'
+
+  - id: w05-52
+    type: blank
+    prompt: 원래 리스트는 그대로 두고 정렬된 **새 리스트**를 만들도록 빈칸을 채우시오.
+    code: |
+      a = [3, 1, 2]
+      b = _____(a)
+      print(a, b)
+    blanks: [[sorted]]
+    difficulty: 1
+    explanation: '`sorted(a)`는 새 리스트를 반환하고 a는 바꾸지 않습니다. `a.sort()`는 a 자체를 바꿉니다.'
+
+  - id: w05-53
+    type: blank
+    prompt: 2차원 리스트의 모든 요소의 합을 구하도록 빈칸을 채우시오.
+    code: |
+      m = [[1, 2, 3], [4, 5, 6]]
+      total = 0
+      for row in m:
+          for v in _____:
+              total += v
+      print(total)
+    blanks: [[row]]
+    difficulty: 1
+    explanation: 바깥 반복이 행(row)을 하나씩 꺼내고, 안쪽 반복이 그 행의 값을 꺼냅니다.
+
+  - id: w05-54
+    type: essay
+    prompt: 리스트의 인덱싱과 슬라이싱의 차이를, 결과의 자료형과 범위를 벗어났을 때의 동작을 들어 설명하시오.
+    answer: |
+      인덱싱 `a[i]`는 요소 하나를 꺼내므로 결과가 그 요소의 자료형이다(예: 정수). 범위를 벗어난 인덱스를 쓰면 IndexError가 난다.
+      슬라이싱 `a[i:j]`는 i부터 j 앞까지의 요소를 담은 **새 리스트**를 만든다. 범위를 벗어나도 오류 없이 있는 부분까지만(또는 빈 리스트) 돌려준다.
+    points:
+    - '인덱싱: 요소 하나, 범위 밖이면 IndexError'
+    - '슬라이싱: 새 리스트, 끝 인덱스 미포함'
+    - 슬라이싱은 범위 밖이어도 오류 없음
+    difficulty: 2

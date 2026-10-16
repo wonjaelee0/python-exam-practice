@@ -47,3 +47,18 @@ export function loadUnit(manifest, unitId) {
   }
   return unitCache.get(unit.file);
 }
+
+const noteCache = new Map();
+
+/** 요약 노트 본문 (manifest.notes의 항목 하나) */
+export function loadNote(entry) {
+  if (!noteCache.has(entry.file)) {
+    const p = fetch(asset('data/' + entry.file)).then((r) => {
+      if (!r.ok) throw new Error(`${entry.file} (HTTP ${r.status})`);
+      return r.json();
+    });
+    p.catch(() => noteCache.delete(entry.file));
+    noteCache.set(entry.file, p);
+  }
+  return noteCache.get(entry.file);
+}

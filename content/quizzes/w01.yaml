@@ -119,3 +119,99 @@ items:
       - 오픈소스·무료, 활발한 커뮤니티
       - 풍부한 라이브러리 (데이터 분석·시각화·AI)
       - 다양한 운영체제와 분야에서 사용
+
+  # ---- 보강 문항 (2026-10-16): 단답형·O/X·코드 빈칸·객관식 위주 ----
+
+  - id: w01-17
+    type: short
+    prompt: Python의 개발과 관리를 이끄는 비영리 재단 Python Software Foundation의 약칭(영문 3글자)을 쓰시오.
+    answer:
+    - PSF
+    ignore_case: true
+    difficulty: 1
+    explanation: Python은 오픈소스이며 **PSF(Python Software Foundation)** 를 중심으로 개발·관리됩니다.
+
+  - id: w01-18
+    type: mc
+    prompt: Python이라는 이름의 유래로 알맞은 것은?
+    choices:
+    - 비단뱀(python)
+    - 영국 코미디 프로그램 《Monty Python's Flying Circus》
+    - 그리스 신화의 괴물 피톤
+    - 개발자가 키우던 반려동물의 이름
+    answer: 2
+    difficulty: 1
+    explanation: 귀도 반 로섬이 좋아한 영국 코미디 프로그램 《Monty Python's Flying Circus》에서 따왔습니다. 뱀이 아닙니다.
+
+  - id: w01-19
+    type: mc
+    prompt: 다음 중 **온라인(클라우드) 개발 환경**에 해당하는 것은?
+    choices:
+    - Python IDLE
+    - PyCharm
+    - Google Colab
+    - VSCode
+    answer: 3
+    difficulty: 1
+    explanation: IDLE·PyCharm·VSCode는 내 PC에 설치하는 로컬 개발 환경이고, Colab·Replit·Kaggle Notebooks는 브라우저에서 바로 쓰는 온라인 환경입니다.
+
+  - id: w01-20
+    type: ox
+    prompt: Google Colab은 무료 GPU와 TPU를 제공하여 딥러닝·머신러닝 학습에 유리하다.
+    answer: O
+    difficulty: 1
+    explanation: Colab은 구글 계정만 있으면 설치 없이 쓸 수 있고, 무료 GPU/TPU를 제공합니다.
+
+  - id: w01-21
+    type: mc
+    prompt: 데이터 분석 과정에서 **배열·행렬 연산(수치 계산)** 에 주로 쓰는 Python 도구는?
+    choices:
+    - pandas
+    - NumPy
+    - Matplotlib
+    - Flask
+    answer: 2
+    difficulty: 1
+    explanation: 수치 계산은 NumPy, 데이터 정제·분석은 pandas, 시각화는 Matplotlib/Seaborn, Flask는 웹 개발 도구입니다.
+
+  - id: w01-22
+    type: short
+    prompt: 마크다운에서 **인용구**를 만들 때 줄 맨 앞에 쓰는 기호를 쓰시오.
+    answer:
+    - '>'
+    difficulty: 1
+    explanation: '`> 이것은 인용문입니다.`처럼 `>`로 시작하면 인용구가 됩니다.'
+
+  - id: w01-23
+    type: mc
+    prompt: 마크다운에서 **이미지**를 넣는 문법은?
+    choices:
+    - '`[설명](URL)`'
+    - '`![설명](URL)`'
+    - '`<설명>(URL)`'
+    - '`#[설명](URL)`'
+    answer: 2
+    difficulty: 1
+    explanation: 링크 `[텍스트](URL)` 앞에 느낌표를 붙인 `![설명](URL)`이 이미지입니다.
+
+  - id: w01-24
+    type: short
+    prompt: '마크다운에서 문장 안에 LaTeX 수식(예: E = mc²)을 넣을 때 수식의 앞뒤를 감싸는 기호 **한 개**를 쓰시오.'
+    answer:
+    - $
+    difficulty: 1
+    explanation: '`$E = mc^2$`처럼 `$`로 감싸면 문장 속 수식, `$$ … $$`로 감싸면 따로 한 줄을 차지하는 수식이 됩니다.'
+
+  - id: w01-25
+    type: ox
+    prompt: 마크다운에서 한 줄에 `---`만 쓰면 구분선(가로줄)이 된다.
+    answer: O
+    difficulty: 1
+    explanation: '`---`, `***`, `___` 모두 구분선을 만듭니다.'
+
+  - id: w01-26
+    type: ox
+    prompt: 마크다운의 순서 없는 목록은 `*`, `+`, `-` 중 어느 기호로 시작해도 만들 수 있다.
+    answer: O
+    difficulty: 1
+    explanation: 세 기호 모두 순서 없는 목록이 됩니다. 들여쓰기를 하면 하위 목록이 됩니다.

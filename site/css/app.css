@@ -434,3 +434,25 @@ table.diff td.ln { color: var(--ide-muted); }
   .site-header { gap: 10px; padding: 0 12px; overflow-x: auto; }
   .brand { white-space: nowrap; }
 }
+
+/* ---- 요약 노트 ---- */
+.note-card { color: inherit; text-decoration: none; transition: border-color 0.15s; }
+.note-card:hover { border-color: var(--accent); }
+.study-note { max-width: 860px; }
+.note-crumbs { margin: 0 0 4px; font-size: 13px; color: var(--muted); }
+.study-note h1 { display: flex; align-items: center; gap: 10px; margin-top: 0; }
+.study-note h1 .badge { font-size: 14px; }
+.note-body { line-height: 1.75; }
+.note-body h2 { margin-top: 28px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.note-body h3 { margin-top: 20px; }
+.note-body code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+.note-body pre { position: relative; background: #24252b; color: #e6e6e6; padding: 12px 14px; border-radius: 8px; overflow-x: auto; }
+.note-body pre code { background: transparent; padding: 0; color: inherit; }
+.note-body table { border-collapse: collapse; margin: 10px 0; font-size: 14px; display: block; overflow-x: auto; }
+.note-body th, .note-body td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
+.note-body th { background: var(--surface); }
+.note-body blockquote { margin: 14px 0; padding: 10px 14px; border-left: 4px solid var(--tried); background: var(--warn-bg); border-radius: 0 8px 8px 0; }
+.note-body blockquote p { margin: 4px 0; }
+.note-actions { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line); }
+.note-actions h2 { margin: 0; font-size: 18px; }
+.note-pager { display: flex; justify-content: space-between; gap: 12px; margin: 28px 0 8px; font-size: 14px; }

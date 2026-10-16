@@ -1,0 +1,70 @@
+id: w04
+short: 4주차
+title: 반복문 · range · while · break/continue
+order: 4
+summary: range의 끝값 미포함, while 무한 루프와 break, break·continue·pass 비교, 중첩 루프 횟수
+quiz: w04
+units: [b04]
+body: |
+  ## range
+
+  | 코드 | 만드는 수 |
+  |---|---|
+  | `range(5)` | 0 1 2 3 4 |
+  | `range(2, 6)` | 2 3 4 5 |
+  | `range(1, 10, 3)` | 1 4 7 |
+  | `range(10, 0, -2)` | 10 8 6 4 2 |
+  | `range(5, 0)` | (없음 — step 기본값 1로는 내려갈 수 없음) |
+  | `reversed(range(4))` | 3 2 1 0 |
+
+  > ⚠️ 끝값은 **포함하지 않는다**. 1부터 100까지는 `range(1, 101)`. 내려가려면 step을 음수로.
+
+  ## for 반복
+
+  - 시퀀스(문자열, 리스트, 튜플, range)를 앞에서부터 하나씩 꺼낸다: `for ch in 'abc':` → `a`, `b`, `c`
+  - 반복 횟수가 **정해져 있을 때** 주로 사용
+  - 반복이 끝난 뒤에도 변수는 마지막 값을 가진다: `for i in range(3): pass` 후 `i`는 `2`
+
+  ## while 반복
+
+  - 블록을 실행하기 **전에** 조건을 검사 → 처음부터 거짓이면 0번 실행
+  - 반복 횟수를 **모를 때** 사용 (특정 값이 입력될 때까지 등)
+  - 조건에 쓰인 변수를 반복 안에서 바꾸지 않으면 **무한 루프**
+
+  ```python
+  total = 0
+  while True:          # 무한 루프 + break 패턴
+      x = int(input())
+      if x == 0:
+          break
+      total += x
+  ```
+
+  `while 1:`, `while 'hi':`도 무한 루프 (조건이 항상 참). `while 0:`, `while '':`은 한 번도 실행 안 됨.
+
+  ## break · continue · pass
+
+  | 키워드 | 동작 |
+  |---|---|
+  | `break` | 반복문을 **즉시 끝냄** (가장 안쪽 반복문 하나만) |
+  | `continue` | 이번 차례의 남은 코드를 건너뛰고 **다음 차례로** |
+  | `pass` | 아무것도 안 함 (문법상 블록이 필요할 때 자리만 채움) |
+
+  ```python
+  for i in range(1, 6):
+      if i == 3:
+          continue     # 3만 건너뜀 → 1 2 4 5
+      print(i, end=' ')
+  ```
+
+  ## 중첩 루프
+
+  - 실행 횟수 = 바깥 횟수 × 안쪽 횟수 (`range(3)` 안에 `range(4)` → 12번)
+  - 별 찍기: 바깥은 **줄**, 안쪽(또는 `'*' * i`)은 **한 줄의 별**
+
+  ```python
+  for i in range(1, 4):
+      print('*' * i)     # *, **, ***
+  ```
+
+  > ⚠️ 자주 하는 실수 — 누적 변수(`total = 0`)를 반복문 **안**에 두면 매번 0으로 초기화된다. 반복문 **앞**에 둔다.
