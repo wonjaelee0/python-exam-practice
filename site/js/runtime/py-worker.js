@@ -32,6 +32,22 @@ self.onmessage = async (ev) => {
       self.postMessage({ kind: 'graded', runId: m.runId, result });
     } else if (m.kind === 'check') {
       self.postMessage({ kind: 'checked', runId: m.runId, warnings: JSON.parse(bridge.check(m.code)) });
+    } else if (m.kind === 'trace') {
+      if (interrupt) interrupt[0] = 0;
+      const result = JSON.parse(bridge.trace_run(m.code, m.stdin ?? '', m.maxSteps ?? 1000));
+      self.postMessage({ kind: 'traced', runId: m.runId, result });
+    } else if (m.kind === 'repl') {
+      if (interrupt) interrupt[0] = 0;
+      const emit = (stream, text) => self.postMessage({ kind: 'stdout', runId: m.runId, stream, text });
+      const readLine = ctrl ? () => readLineBlocking(m.runId) : () => undefined;
+      const res = JSON.parse(bridge.run_repl(m.source, emit, readLine, !!ctrl));
+      self.postMessage({ kind: 'done', runId: m.runId, ...res });
+    } else if (m.kind === 'repl-check') {
+      self.postMessage({ kind: 'repl-checked', runId: m.runId, status: bridge.repl_check(m.source) });
+    } else if (m.kind === 'repl-reset') {
+      self.postMessage({ kind: 'repl-done', runId: m.runId, status: bridge.repl_reset() });
+    } else if (m.kind === 'repl-adopt') {
+      self.postMessage({ kind: 'repl-done', runId: m.runId, status: bridge.repl_adopt_last_run() });
     }
   } catch (e) {
     self.postMessage({ kind: 'done', runId: m.runId, status: 'error', traceback: String((e && e.message) || e) });

@@ -128,3 +128,43 @@ export function resetAll() {
   keys.forEach((k) => localStorage.removeItem(k));
   return keys.length;
 }
+
+/** 자유 연습 IDE: 파일 목록 [{id, name, code, tests:[{stdin, expected}], traceInput}], 열린 파일, 화면 설정 */
+export const ideStore = {
+  files: () => read('ide:files', null),
+  saveFiles: (files) => write('ide:files', files),
+  active: () => read('ide:active', null),
+  setActive: (id) => write('ide:active', id),
+  prefs: () => ({ fontSize: 15, whitespace: false, wrap: false, bigPanel: false, ...read('ide:prefs', {}) }),
+  setPrefs(patch) {
+    const next = { ...this.prefs(), ...patch };
+    write('ide:prefs', next);
+    return next;
+  },
+  /** 다른 화면(풀이 화면 등)에서 IDE로 파일을 보낸다 */
+  addFile(file) {
+    const files = this.files() || [];
+    const id = newFileId();
+    files.push({ tests: [], traceInput: '', ...file, id, name: uniqueFileName(files, file.name) });
+    this.saveFiles(files);
+    this.setActive(id);
+    return id;
+  },
+};
+
+export function newFileId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+/** 같은 이름이 있으면 abc_2.py, abc_3.py … */
+export function uniqueFileName(files, name, exceptId) {
+  let base = String(name || 'untitled.py').trim().replace(/[\\/]/g, '_') || 'untitled.py';
+  if (!/\.py$/i.test(base)) base += '.py';
+  const taken = new Set(files.filter((f) => f.id !== exceptId).map((f) => f.name));
+  if (!taken.has(base)) return base;
+  const stem = base.replace(/\.py$/i, '');
+  for (let n = 2; ; n += 1) {
+    const cand = `${stem}_${n}.py`;
+    if (!taken.has(cand)) return cand;
+  }
+}

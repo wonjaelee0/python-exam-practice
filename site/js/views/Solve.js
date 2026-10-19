@@ -3,8 +3,9 @@
 import { html, useEffect, useMemo, useRef, useState } from '../lib/ui.js';
 import { loadUnit } from '../lib/data.js';
 import { md, addCopyButtons, copyText } from '../lib/markdown.js';
-import { drafts, progress, settings, meta, statusOf } from '../lib/storage.js';
-import { VERDICT, lineDiff, showSpaces } from '../lib/diff.js';
+import { drafts, progress, settings, meta, statusOf, ideStore } from '../lib/storage.js';
+import { VERDICT } from '../lib/diff.js';
+import { OutputDiff } from '../components/OutputDiff.js';
 import { runner } from '../runtime/client.js';
 import { loadMonaco, createEditor, setMarkers } from '../components/editor.js';
 import { TermView } from '../components/terminal.js';
@@ -223,6 +224,15 @@ function Workspace({ problem, siblings, unit, manifest }) {
     drafts.clear(id);
   };
 
+  // 지금 코드와 공개 예시를 자유 연습 IDE의 새 파일로 보낸다 (한 줄씩 실행·셸로 실험할 때)
+  const openInIde = () => {
+    const code = currentCode();
+    drafts.set(id, code);
+    const tests = problem.tests.filter((t) => t.public).map((t) => ({ stdin: t.stdin || '', expected: t.expected || '' }));
+    ideStore.addFile({ name: `${id}.py`, code, tests, traceInput: tests[0]?.stdin || '' });
+    location.hash = '#/ide';
+  };
+
   const toggleNumbar = () => setConf(settings.set({ showNumbar: !conf.showNumbar }));
   const hide = conf.hideResults;
 
@@ -257,6 +267,7 @@ function Workspace({ problem, siblings, unit, manifest }) {
         <div class="tabs">
           <span class="tab active"><span class="py-dot"></span>main.py</span>
           <span class="spacer"></span>
+          <button class="icon-btn ide-link" title="이 코드와 공개 예시를 자유 연습 IDE로 복사 (한 줄씩 실행·셸로 실험)" onClick=${openInIde}>IDE ↗</button>
           <button class="icon-btn" title="처음 코드로 되돌리기" onClick=${resetCode}>⟳</button>
         </div>
         <div class="editor-host" ref=${editorEl}>
@@ -407,19 +418,6 @@ function ResultPanel({ results, grading, warnings, hide, tests }) {
       })}
     </div>
   </div>`;
-}
-
-function OutputDiff({ expected, actual }) {
-  const rows = lineDiff(expected, actual);
-  return html`<table class="diff">
-    <thead><tr><th></th><th>기대 출력</th><th>내 출력</th></tr></thead>
-    <tbody>${rows.map((r) => html`<tr class=${r.same ? '' : 'neq'}>
-      <td class="ln">${r.no}</td>
-      <td><code>${r.exp === undefined ? html`<i class="muted">(없음)</i>` : showSpaces(r.exp)}</code></td>
-      <td><code>${r.act === undefined ? html`<i class="muted">(없음)</i>` : showSpaces(r.act)}</code></td>
-    </tr>`)}</tbody>
-  </table>
-  <p class="muted small">공백은 · 로 표시했습니다. 빨간 줄이 다른 줄입니다.</p>`;
 }
 
 function TestInfo({ open, onClose }) {

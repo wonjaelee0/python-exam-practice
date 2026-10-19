@@ -38,6 +38,7 @@ export function Home({ manifest, route }) {
           <a class=${'btn ' + (lastMeta ? '' : 'primary')} href="#/problems">문제 목록</a>
           ${quizCount ? html`<a class="btn" href="#/quiz">이론 퀴즈 ${quizCount}문항 (객관식·O/X·단답형·출력 예측)</a>` : null}
           ${noteCount ? html`<a class="btn" href="#/notes">요약 노트 ${noteCount}편</a>` : null}
+          <a class="btn" href="#/ide">자유 연습 Python IDE</a>
         </div>
       </div>
       <div class="hero-stats">

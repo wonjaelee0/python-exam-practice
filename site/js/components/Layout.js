@@ -27,6 +27,7 @@ export function Layout({ route, title, children }) {
     ['#/problems', '문제', route.startsWith('/problems')],
     ['#/quiz', '이론 퀴즈', route.startsWith('/quiz')],
     ['#/notes', '요약 노트', route.startsWith('/notes')],
+    ['#/ide', 'Python IDE', false],
     ['#/settings', '설정', route.startsWith('/settings')],
     ['#/about', '정보', route.startsWith('/about')],
   ];

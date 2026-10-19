@@ -112,10 +112,17 @@ export class PyRunner {
   }
 
   _runBlocking(code, term) {
+    return this._exec('run', { code }, term);
+  }
+
+  /** 출력을 터미널로 흘려보내며 실행하고, 입력 요청(계층 A)이 오면 터미널에서 한 줄을 받아 넘긴다 */
+  _exec(kind, payload, term) {
     return new Promise((resolve) => {
       const runId = this._newId();
-      Atomics.store(this.ctrl, 0, 0);
-      this.interrupt[0] = 0;
+      if (this.tier === 'A') {
+        Atomics.store(this.ctrl, 0, 0);
+        this.interrupt[0] = 0;
+      }
       this.current = { runId, term };
       const finish = (res) => {
         this.handlers.delete(runId);
@@ -140,7 +147,7 @@ export class PyRunner {
         },
         onAbort: () => finish({ status: 'interrupted' }),
       });
-      this.worker.postMessage({ kind: 'run', runId, code });
+      this.worker.postMessage({ kind, runId, ...payload });
     });
   }
 
@@ -241,6 +248,86 @@ export class PyRunner {
           this.restart(); // onAbort → TIMEOUT
         }
       }, timeoutMs);
+    });
+  }
+
+  // ---------------------------------------------------------------- IDE: 한 줄씩 실행
+  /** 줄마다 변수 상태를 기록해 돌려준다. 너무 오래 걸리면 멈추고 그때까지의 기록을 돌려준다. */
+  async trace(code, stdin, { maxSteps = 1000, timeoutMs = 10000 } = {}) {
+    await this.start();
+    return new Promise((resolve) => {
+      const runId = this._newId();
+      let done = false;
+      let timer = null;
+      const finish = (r) => {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        this.handlers.delete(runId);
+        resolve(r);
+      };
+      this.handlers.set(runId, {
+        onMessage: (m) => {
+          if (m.kind === 'traced') finish(m.result);
+          else if (m.kind === 'done') finish({ status: 'error', error: m.traceback, steps: [], output: '' });
+        },
+        onAbort: () => finish({ status: 'timeout', error: null, steps: [], output: '' }),
+      });
+      if (this.tier === 'A') this.interrupt[0] = 0;
+      this.worker.postMessage({ kind: 'trace', runId, code, stdin: stdin || '', maxSteps });
+      timer = setTimeout(() => {
+        if (this.tier === 'A') {
+          this.interrupt[0] = 2; // → 그때까지의 기록과 함께 'interrupted'로 돌아온다
+          setTimeout(() => {
+            if (!done) this.restart();
+          }, 1000);
+        } else {
+          this.restart();
+        }
+      }, timeoutMs);
+    });
+  }
+
+  // ---------------------------------------------------------------- IDE: 파이썬 셸
+  async repl(source, term) {
+    await this.start();
+    this.stopping = false;
+    return this._exec('repl', { source }, term);
+  }
+
+  /** 'incomplete'(다음 줄이 더 필요) | 'complete' */
+  async replCheck(source) {
+    const m = await this._request('repl-check', { source });
+    return m?.status === 'incomplete' ? 'incomplete' : 'complete';
+  }
+
+  async replReset() {
+    await this._request('repl-reset', {});
+  }
+
+  /** 마지막 Run이 끝난 뒤의 변수로 셸을 새로 시작 → 'ok' | 'none' */
+  async replAdopt() {
+    const m = await this._request('repl-adopt', {});
+    return m?.status || 'none';
+  }
+
+  /** 응답 하나로 끝나는 요청 */
+  async _request(kind, payload) {
+    try {
+      await this.start();
+    } catch {
+      return null;
+    }
+    return new Promise((resolve) => {
+      const runId = this._newId();
+      this.handlers.set(runId, {
+        onMessage: (m) => {
+          this.handlers.delete(runId);
+          resolve(m);
+        },
+        onAbort: () => resolve(null),
+      });
+      this.worker.postMessage({ kind, runId, ...payload });
     });
   }
 

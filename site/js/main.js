@@ -11,6 +11,7 @@ import { About } from './views/About.js';
 import { QuizHome } from './views/QuizHome.js';
 import { QuizPlay } from './views/QuizPlay.js';
 import { NotesHome, NoteView } from './views/Notes.js';
+import { Ide } from './views/Ide.js';
 
 // 해시 라우팅: GitHub Pages는 서버 rewrite가 없으므로 #/경로 를 쓴다 (새로고침·링크 공유 안전)
 function parseRoute() {
@@ -72,6 +73,7 @@ function App() {
   if (a === 'problems') return html`<${Problems} key=${currentCourse() + route.query.toString()} manifest=${manifest} route=${route.path} query=${route.query} />`;
   if (a === 'quiz' && b === 'play') return html`<${QuizPlay} key=${route.query.toString()} manifest=${manifest} route=${route.path} query=${route.query} />`;
   if (a === 'quiz') return html`<${QuizHome} key=${currentCourse()} manifest=${manifest} route=${route.path} />`;
+  if (a === 'ide') return html`<${Ide} key=${'ide:' + (route.query.get('share') || '')} manifest=${manifest} query=${route.query} />`;
   if (a === 'notes' && b) return html`<${NoteView} key=${b} id=${decodeURIComponent(b)} manifest=${manifest} route=${route.path} />`;
   if (a === 'notes') return html`<${NotesHome} key=${currentCourse()} manifest=${manifest} route=${route.path} />`;
   if (a === 'settings') return html`<${Settings} manifest=${manifest} route=${route.path} />`;
