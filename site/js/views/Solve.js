@@ -9,7 +9,8 @@ import { OutputDiff } from '../components/OutputDiff.js';
 import { runner } from '../runtime/client.js';
 import { loadMonaco, createEditor, setMarkers } from '../components/editor.js';
 import { TermView } from '../components/terminal.js';
-import { EngineBadge, Stars, DISCLAIMER } from '../components/Layout.js';
+import { EngineBadge, Stars, DISCLAIMER, toggleFullscreen } from '../components/Layout.js';
+import { Splitter, clamp } from '../components/Splitter.js';
 
 const splitLines = (s) => (s || '').replace(/\r\n/g, '\n').replace(/\n$/, '').split('\n');
 const mmss = (sec) => `${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}`;
@@ -62,6 +63,9 @@ function Workspace({ problem, siblings, unit, manifest }) {
   const runningRef = useRef(false);
   const timerRef = useRef(null);
   const actions = useRef({});
+  const rootRef = useRef(null);
+  const codePaneRef = useRef(null);
+  const dragVal = useRef(null);
 
   const idx = siblings.findIndex((p) => p.id === id);
   const prev = siblings[idx - 1];
@@ -92,6 +96,8 @@ function Workspace({ problem, siblings, unit, manifest }) {
           onRun: () => actions.current.run(),
           onSubmit: () => actions.current.submit(),
         });
+        editorRef.current.updateOptions({ renderWhitespace: conf.showWhitespace ? 'all' : 'selection' });
+        editorRef.current.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyB, () => actions.current.toggleProblem());
         editorRef.current.focus();
       })
       .catch((e) => setEditorError(String(e)));
@@ -107,14 +113,29 @@ function Workspace({ problem, siblings, unit, manifest }) {
     };
   }, []);
 
+  // 글자 크기 · 공백 보기를 바로 반영
+  useEffect(() => {
+    editorRef.current?.updateOptions({ fontSize: conf.fontSize, renderWhitespace: conf.showWhitespace ? 'all' : 'selection' });
+    const term = termRef.current;
+    if (term && term.term.options.fontSize !== conf.termFontSize) {
+      term.term.options.fontSize = conf.termFontSize;
+      term.refit();
+    }
+  }, [conf.fontSize, conf.termFontSize, conf.showWhitespace]);
+
   // 에디터 밖에서도 단축키 동작
   useEffect(() => {
     const onKey = (e) => {
-      if (!(e.ctrlKey || e.metaKey) || e.key !== 'Enter') return;
+      if (!(e.ctrlKey || e.metaKey)) return;
       if (e.target.closest?.('.monaco-editor')) return; // 에디터 안에서는 Monaco가 처리
-      e.preventDefault();
-      if (e.shiftKey) actions.current.submit();
-      else actions.current.run();
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (e.shiftKey) actions.current.submit();
+        else actions.current.run();
+      } else if ((e.key === 'b' || e.key === 'B') && !e.shiftKey && !e.altKey) {
+        e.preventDefault();
+        actions.current.toggleProblem();
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -234,9 +255,44 @@ function Workspace({ problem, siblings, unit, manifest }) {
   };
 
   const toggleNumbar = () => setConf(settings.set({ showNumbar: !conf.showNumbar }));
+  // 빠르게 여러 번 눌러도 누락되지 않도록 저장된 최신 값을 기준으로 바꾼다
+  const toggleProblem = () => setConf(settings.set({ problemHidden: !settings.get().problemHidden }));
+  actions.current.toggleProblem = toggleProblem;
+  const setFont = (d) => {
+    const fontSize = clamp(settings.get().fontSize + d, 11, 26);
+    setConf(settings.set({ fontSize, termFontSize: clamp(fontSize - 1, 11, 24) }));
+  };
+  const setProblemFont = (d) => setConf(settings.set({ problemFontSize: clamp(settings.get().problemFontSize + d, 12, 22) }));
+
+  // 문제 칸 너비 · 터미널 높이 끌어서 조절 (끄는 동안은 CSS 변수만 바꾸고, 놓을 때 저장)
+  const dragProblem = (x) => {
+    const root = rootRef.current;
+    const pane = root.querySelector('.problem-pane').getBoundingClientRect();
+    const body = root.querySelector('.solve-body').getBoundingClientRect();
+    const w = clamp(x - pane.left, 240, body.right - pane.left - 360);
+    root.classList.remove('problem-hidden');
+    root.style.setProperty('--problem-w', w + 'px');
+    dragVal.current = { problemWidth: Math.round(w), problemHidden: false };
+  };
+  const dragBottom = (x, y) => {
+    const pane = codePaneRef.current.getBoundingClientRect();
+    const h = clamp(pane.bottom - y, 90, pane.height - 38 - 52 - 80);
+    rootRef.current.style.setProperty('--bottom-h', h + 'px');
+    dragVal.current = { bottomHeight: Math.round(h) };
+  };
+  const endDrag = () => {
+    if (dragVal.current) setConf(settings.set(dragVal.current));
+    dragVal.current = null;
+  };
+  const layoutVars = [
+    conf.problemHidden ? '--problem-w: 0px' : conf.problemWidth ? `--problem-w: ${conf.problemWidth}px` : '',
+    conf.bottomHeight ? `--bottom-h: ${conf.bottomHeight}px` : '',
+    `--problem-fs: ${conf.problemFontSize}px`,
+  ].filter(Boolean).join('; ');
+  const nextUnsolved = [...siblings.slice(idx + 1), ...siblings.slice(0, idx)].find((p) => statusOf(prog[p.id]) !== 'solved');
   const hide = conf.hideResults;
 
-  return html`<div class=${'solve' + (conf.showNumbar ? '' : ' no-numbar')}>
+  return html`<div class=${'solve' + (conf.showNumbar ? '' : ' no-numbar') + (conf.problemHidden ? ' problem-hidden' : '')} ref=${rootRef} style=${layoutVars}>
     <header class="solve-top">
       <button class="icon-btn" title="번호 목록 접기/펴기" onClick=${toggleNumbar}>${conf.showNumbar ? '⇤' : '⇥'}</button>
       <a class="crumb" href=${'#/problems?unit=' + unit.id}>${unit.short} ${unit.title}</a>
@@ -244,6 +300,16 @@ function Workspace({ problem, siblings, unit, manifest }) {
       <b class="crumb-title">${problem.no}. ${problem.title}</b>
       <span class="spacer"></span>
       ${hide ? html`<span class="mode-pill" title="설정에서 끌 수 있습니다">시험처럼 모드</span>` : null}
+      <div class="ide-tools solve-tools">
+        <button class=${'tool' + (conf.problemHidden ? ' on' : '')} onClick=${toggleProblem} title="문제 칸을 접어 코드 칸을 넓게 씁니다 (Ctrl/⌘ + B)">
+          ${conf.problemHidden ? '문제 보기' : '문제 숨기기'}</button>
+        <button class="tool" onClick=${() => setFont(-1)} title="코드 글자 작게">A−</button>
+        <span class="tool-val">${conf.fontSize}</span>
+        <button class="tool" onClick=${() => setFont(1)} title="코드 글자 크게">A+</button>
+        <button class=${'tool' + (conf.showWhitespace ? ' on' : '')} onClick=${() => setConf(settings.set({ showWhitespace: !conf.showWhitespace }))}
+          title="코드의 공백을 ·으로 보여 줍니다 (: 뒤 공백 확인용)">공백 보기</button>
+        <button class="tool" onClick=${toggleFullscreen} title="전체 화면으로 보기 (Esc로 나가기)">전체 화면</button>
+      </div>
       <button class="info-btn" onClick=${() => setDrawer(true)}>ⓘ Test Information</button>
       <a class="top-link" href="#/problems">문제 목록</a>
       <a class="top-link" href="#/">홈</a>
@@ -261,9 +327,12 @@ function Workspace({ problem, siblings, unit, manifest }) {
       </nav>
 
       <${ProblemPanel} problem=${problem} unit=${unit} onRunWith=${(lines) => actions.current.run(lines)}
-        toTerminal=${(text) => actions.current.typeInput(text)} />
+        toTerminal=${(text) => actions.current.typeInput(text)} onFont=${setProblemFont} />
 
-      <section class="code-pane">
+      <section class="code-pane" ref=${codePaneRef}>
+        <${Splitter} dir="x" className="split-problem" onDrag=${dragProblem} onEnd=${endDrag}
+          onReset=${() => setConf(settings.set({ problemWidth: null, problemHidden: false }))}
+          title="끌어서 문제·코드 칸 너비 조절 · 두 번 클릭하면 처음 너비" />
         <div class="tabs">
           <span class="tab active"><span class="py-dot"></span>main.py</span>
           <span class="spacer"></span>
@@ -288,12 +357,15 @@ function Workspace({ problem, siblings, unit, manifest }) {
           <${EngineBadge} info=${engine} />
         </div>
         <div class="bottom">
+          <${Splitter} dir="y" className="split-bottom" onDrag=${dragBottom} onEnd=${endDrag}
+            onReset=${() => setConf(settings.set({ bottomHeight: null }))} title="끌어서 터미널 높이 조절 · 두 번 클릭하면 처음 높이" />
           <div class="bottom-tabs">
             <button class=${tab === 'terminal' ? 'active' : ''} onClick=${() => setTab('terminal')}>터미널</button>
             <button class=${tab === 'results' ? 'active' : ''} onClick=${() => setTab('results')}>
               채점 결과${results?.items && !hide ? ` (${results.passed}/${results.total})` : ''}
             </button>
             ${warnings.length ? html`<button class="warn-count" onClick=${() => setTab('results')} title="코드 검사 경고">⚠ ${warnings.length}</button>` : null}
+            ${tab === 'terminal' && !running ? html`<button class="tab-tool" onClick=${() => termRef.current?.reset()} title="터미널 내용 지우기">출력 지우기</button>` : null}
           </div>
           <div class="term-host" ref=${termEl} style=${tab === 'terminal' ? '' : 'display:none'}></div>
           ${tab === 'results'
@@ -307,13 +379,16 @@ function Workspace({ problem, siblings, unit, manifest }) {
       ${prev ? html`<a class="pager" href=${'#/p/' + prev.id}>‹ PREVIOUS</a>` : html`<span class="pager disabled">‹ PREVIOUS</span>`}
       <span class="pager-count">${problem.no} / ${siblings.length}</span>
       ${next ? html`<a class="pager next" href=${'#/p/' + next.id}>NEXT ›</a>` : html`<span class="pager disabled">NEXT ›</span>`}
+      ${nextUnsolved && nextUnsolved.id !== id
+        ? html`<a class="pager unsolved" href=${'#/p/' + nextUnsolved.id} title=${nextUnsolved.title}>안 푼 다음 문제 ${nextUnsolved.no}번 »</a>`
+        : null}
     </footer>
 
     <${TestInfo} open=${drawer} onClose=${() => setDrawer(false)} />
   </div>`;
 }
 
-function ProblemPanel({ problem, unit, onRunWith, toTerminal }) {
+function ProblemPanel({ problem, unit, onRunWith, toTerminal, onFont }) {
   const ref = useRef(null);
   const body = useMemo(() => md(problem.statement), [problem.id]);
   const [solution, setSolution] = useState(null);
@@ -328,6 +403,10 @@ function ProblemPanel({ problem, unit, onRunWith, toTerminal }) {
       <${Stars} n=${problem.difficulty} />
       ${problem.format === 'fill' ? html`<span class="badge alt">빈칸 채우기</span>` : null}
       ${problem.format === 'debug' ? html`<span class="badge alt">버그 고치기</span>` : null}
+      <span class="p-font">
+        <button onClick=${() => onFont(-1)} title="문제 글자 작게">가−</button>
+        <button onClick=${() => onFont(1)} title="문제 글자 크게">가+</button>
+      </span>
     </div>
     <div class="md" ref=${ref} dangerouslySetInnerHTML=${{ __html: body }}></div>
 
@@ -449,6 +528,16 @@ function TestInfo({ open, onClose }) {
           <li><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Enter</kbd> — Run (실행 중이면 Stop)</li>
           <li><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>Enter</kbd> — Submit</li>
           <li>터미널에서 <kbd>Ctrl</kbd> + <kbd>C</kbd> — 실행 중단</li>
+          <li><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>B</kbd> — 문제 칸 숨기기·보이기</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <h3>화면 조절</h3>
+        <ul>
+          <li>문제와 코드 사이 경계선을 끌면 너비가, 코드와 터미널 사이 경계선을 끌면 높이가 바뀝니다. 두 번 클릭하면 처음 크기로 돌아갑니다.</li>
+          <li>위쪽 <b>문제 숨기기</b>로 코드 칸을 넓게 쓰고, <b>A− / A+</b>로 코드 글자, 문제 칸의 <b>가− / 가+</b>로 문제 글자 크기를 바꿉니다.</li>
+          <li><b>공백 보기</b>를 켜면 코드의 공백이 ·으로 보여 <code>: </code> 뒤 공백을 확인하기 쉽습니다.</li>
+          <li>바꾼 배치는 이 브라우저에 저장됩니다. 설정에서 한 번에 초기화할 수 있습니다.</li>
         </ul>
       </div>
     </div>

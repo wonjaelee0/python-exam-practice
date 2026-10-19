@@ -54,6 +54,20 @@ export function Settings({ manifest, route }) {
         <input type="range" min="12" max="22" value=${s.fontSize} onInput=${(e) => update({ fontSize: +e.target.value })} /> ${s.fontSize}px</label>
       <label class="row">터미널
         <input type="range" min="11" max="20" value=${s.termFontSize} onInput=${(e) => update({ termFontSize: +e.target.value })} /> ${s.termFontSize}px</label>
+      <label class="row">문제 글자
+        <input type="range" min="12" max="22" value=${s.problemFontSize} onInput=${(e) => update({ problemFontSize: +e.target.value })} /> ${s.problemFontSize}px</label>
+    </section>
+    <section class="card">
+      <h2>풀이 화면 배치</h2>
+      <label class="row">
+        <input type="checkbox" checked=${s.showWhitespace} onChange=${(e) => update({ showWhitespace: e.target.checked })} />
+        <span><b>공백 보기</b> — 코드의 공백을 ·으로 보여 줍니다. <code>: </code> 뒤 공백 같은 제출 규칙을 확인할 때 좋습니다.</span>
+      </label>
+      <p class="muted">풀이 화면에서 문제와 코드 사이, 코드와 터미널 사이 경계선을 끌어 크기를 바꿀 수 있습니다.
+        지금: 문제 칸 ${s.problemHidden ? '숨김' : s.problemWidth ? s.problemWidth + 'px' : '기본'} · 터미널 ${s.bottomHeight ? s.bottomHeight + 'px' : '기본'}</p>
+      <div class="row gap">
+        <button class="btn" onClick=${() => { update({ problemWidth: null, problemHidden: false, bottomHeight: null, showNumbar: true }); setMsg('풀이 화면 배치를 처음대로 되돌렸습니다.'); }}>배치 초기화</button>
+      </div>
     </section>
     <section class="card">
       <h2>내 기록 (이 브라우저에만 저장됨)</h2>

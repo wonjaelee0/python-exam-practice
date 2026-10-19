@@ -62,7 +62,11 @@ export function statusOf(p) {
 }
 
 export const settings = {
-  defaults: { fontSize: 15, termFontSize: 14, hideResults: false, showNumbar: true },
+  defaults: {
+    fontSize: 15, termFontSize: 14, hideResults: false, showNumbar: true,
+    // 풀이 화면 배치: 문제 칸 너비(px, null이면 기본), 문제 숨기기, 터미널 높이(px), 문제 글자 크기, 공백 보기
+    problemWidth: null, problemHidden: false, bottomHeight: null, problemFontSize: 15, showWhitespace: false,
+  },
   get() {
     return { ...this.defaults, ...read('settings', {}) };
   },

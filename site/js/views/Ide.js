@@ -6,10 +6,11 @@ import { ideStore, newFileId, uniqueFileName } from '../lib/storage.js';
 import { runner } from '../runtime/client.js';
 import { loadMonaco, createEditor, setMarkers } from '../components/editor.js';
 import { TermView } from '../components/terminal.js';
-import { EngineBadge } from '../components/Layout.js';
+import { EngineBadge, toggleFullscreen } from '../components/Layout.js';
 import { OutputDiff } from '../components/OutputDiff.js';
 import { VERDICT, showSpaces } from '../lib/diff.js';
 import { WELCOME, EXAMPLES, SNIPPETS } from '../lib/ide-content.js';
+import { Splitter, clamp } from '../components/Splitter.js';
 
 const MAX_STEPS = 1000;
 const splitLines = (s) => (s || '').replace(/\r\n/g, '\n').replace(/\n$/, '').split('\n');
@@ -95,6 +96,8 @@ export function Ide({ manifest, query }) {
   const timers = useRef({});
   const disposed = useRef(false);
   const actions = useRef({});
+  const paneRef = useRef(null);
+  const dragH = useRef(null);
   traceRef.current = trace;
 
   const files = filesRef.current;
@@ -687,6 +690,18 @@ export function Ide({ manifest, query }) {
     editor.focus();
   };
 
+  // 아래 패널 높이 끌어서 조절
+  const dragBottom = (x, y) => {
+    const pane = paneRef.current.getBoundingClientRect();
+    const h = clamp(pane.bottom - y, 110, pane.height - 38 - 52 - 80);
+    paneRef.current.style.setProperty('--bottom-h', h + 'px');
+    dragH.current = Math.round(h);
+  };
+  const endBottom = () => {
+    if (dragH.current) setPrefs({ bottomH: dragH.current, bigPanel: false });
+    dragH.current = null;
+  };
+
   const res = results[active.id];
   const passCount = res?.items ? res.items.filter((r) => r.verdict === 'PASS').length : 0;
   const inTrace = !!(trace?.steps?.length && trace.fileId === active.id);
@@ -707,11 +722,12 @@ export function Ide({ manifest, query }) {
       <b class="crumb-title">Python IDE</b>
       <span class="spacer"></span>
       <div class="ide-tools">
-        <button class="tool" title="글자 작게" onClick=${() => setPrefs({ fontSize: Math.max(11, prefs.fontSize - 1) })}>A−</button>
+        <button class="tool" title="글자 작게" onClick=${() => setPrefs({ fontSize: Math.max(11, ideStore.prefs().fontSize - 1) })}>A−</button>
         <span class="tool-val">${prefs.fontSize}</span>
-        <button class="tool" title="글자 크게" onClick=${() => setPrefs({ fontSize: Math.min(28, prefs.fontSize + 1) })}>A+</button>
+        <button class="tool" title="글자 크게" onClick=${() => setPrefs({ fontSize: Math.min(28, ideStore.prefs().fontSize + 1) })}>A+</button>
         <button class=${'tool' + (prefs.whitespace ? ' on' : '')} title="공백을 ·으로 보이기" onClick=${() => setPrefs({ whitespace: !prefs.whitespace })}>공백 보기</button>
         <button class=${'tool' + (prefs.wrap ? ' on' : '')} title="긴 줄 자동 줄 바꿈" onClick=${() => setPrefs({ wrap: !prefs.wrap })}>줄 바꿈</button>
+        <button class="tool" title="전체 화면으로 보기 (Esc로 나가기)" onClick=${toggleFullscreen}>전체 화면</button>
       </div>
       <button class="info-btn" onClick=${() => setHelp(true)}>ⓘ 사용법</button>
       <a class="top-link" href="#/problems">문제 목록</a>
@@ -721,7 +737,8 @@ export function Ide({ manifest, query }) {
     <div class=${'ide-body' + (prefs.side === false ? ' no-side' : '')}>
       <${Sidebar} files=${files} activeId=${active.id} act=${fileActions} />
 
-      <section class=${'code-pane ide-pane' + (prefs.bigPanel ? ' big' : '')}>
+      <section class=${'code-pane ide-pane' + (prefs.bigPanel ? ' big' : '')} ref=${paneRef}
+        style=${prefs.bottomH && !prefs.bigPanel ? `--bottom-h: ${prefs.bottomH}px` : ''}>
         <div class="tabs">
           <span class="tab active"><span class="py-dot"></span>${active.name}</span>
           ${inTrace ? html`<span class="trace-pill" title="Esc 또는 ✕ 끝내기로 편집으로 돌아갑니다">한 줄씩 실행 중 · 편집 잠김</span>` : null}
@@ -751,12 +768,14 @@ export function Ide({ manifest, query }) {
           <${EngineBadge} info=${engine} />
         </div>
         <div class="bottom">
+          <${Splitter} dir="y" className="split-bottom" onDrag=${dragBottom} onEnd=${endBottom}
+            onReset=${() => setPrefs({ bottomH: null, bigPanel: false })} title="끌어서 아래 패널 높이 조절 · 두 번 클릭하면 처음 높이" />
           <div class="bottom-tabs">
             ${tabs.map(([key, label]) => html`<button class=${tab === key ? 'active' : ''} onClick=${() => setTab(key)}>${label}</button>`)}
             <span class="spacer"></span>
             ${tab === 'terminal' ? html`<button class="tab-tool" onClick=${() => termRef.current?.reset()}>출력 지우기</button>` : null}
             ${tab === 'shell' ? html`<button class="tab-tool" onClick=${() => actions.current.resetShell()}>셸 초기화</button>` : null}
-            <button class="tab-tool" onClick=${() => setPrefs({ bigPanel: !prefs.bigPanel })}>${prefs.bigPanel ? '패널 작게 ▾' : '패널 크게 ▴'}</button>
+            <button class="tab-tool" onClick=${() => setPrefs({ bigPanel: !prefs.bigPanel, bottomH: null })}>${prefs.bigPanel ? '패널 작게 ▾' : '패널 크게 ▴'}</button>
           </div>
           <div class="term-host" ref=${termEl} style=${tab === 'terminal' ? '' : 'display:none'}></div>
           <div class="term-host" ref=${shellEl} style=${tab === 'shell' ? '' : 'display:none'}></div>

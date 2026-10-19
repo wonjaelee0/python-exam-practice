@@ -55,6 +55,12 @@ export function CourseSwitch() {
   </label>`;
 }
 
+/** 브라우저 전체 화면 켜기·끄기 (풀이 화면·IDE) */
+export function toggleFullscreen() {
+  if (document.fullscreenElement) document.exitFullscreen?.();
+  else document.documentElement.requestFullscreen?.().catch(() => {});
+}
+
 export function Stars({ n }) {
   return html`<span class="stars" title=${`난이도 ${n}/5`}>${'★'.repeat(n)}<span class="dim">${'★'.repeat(5 - n)}</span></span>`;
 }
